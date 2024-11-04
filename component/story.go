@@ -1,5 +1,7 @@
 package component
 
+import "fmt"
+
 type RawStory struct {
 	Title    string
 	Passages []RawPassage
@@ -34,14 +36,6 @@ func NewStory(rawStory RawStory) *Story {
 
 	passagesMap := map[string]*Passage{}
 	for _, p := range rawStory.Passages {
-		var links []Link
-		for _, l := range p.Links {
-			links = append(links, Link{
-				Text:       l.Text,
-				Conditions: l.Conditions,
-			})
-		}
-
 		var isOneTime bool
 		for _, tag := range p.Tags {
 			if tag == "once" {
@@ -49,14 +43,25 @@ func NewStory(rawStory RawStory) *Story {
 			}
 		}
 
-		passagesMap[p.Title] = &Passage{
+		passage := &Passage{
 			story:     story,
 			Title:     p.Title,
 			Content:   p.Content,
 			Macros:    p.Macros,
-			AllLinks:  links,
 			IsOneTime: isOneTime,
 		}
+
+		var links []*Link
+		for _, l := range p.Links {
+			links = append(links, &Link{
+				passage:    passage,
+				Text:       l.Text,
+				Conditions: l.Conditions,
+			})
+		}
+
+		passage.AllLinks = links
+		passagesMap[p.Title] = passage
 	}
 
 	for _, p := range rawStory.Passages {
@@ -108,7 +113,7 @@ type Passage struct {
 	Title    string
 	Content  string
 	Macros   []Macro
-	AllLinks []Link
+	AllLinks []*Link
 
 	IsOneTime bool
 	Visited   bool
@@ -127,8 +132,8 @@ func (p *Passage) Visit() {
 	}
 }
 
-func (p *Passage) Links() []Link {
-	var links []Link
+func (p *Passage) Links() []*Link {
+	var links []*Link
 	for _, l := range p.AllLinks {
 		if l.Target.IsOneTime && l.Target.Visited {
 			continue
@@ -153,9 +158,62 @@ func (p *Passage) Links() []Link {
 }
 
 type Link struct {
+	passage *Passage
+
 	Text       string
 	Target     *Passage
 	Conditions []Condition
+	Visited    bool
+}
+
+func (l *Link) Visit() {
+	l.Visited = true
+	l.Target.Visit()
+}
+
+func (l *Link) AllVisited() bool {
+	if !l.Visited {
+		return false
+	}
+	fmt.Println(l.Text, l.Visited)
+
+	for _, link := range deepChildLinks(l, l.passage) {
+		fmt.Println("\t", link.Text, link.Visited)
+		if !link.Visited {
+			return false
+		}
+	}
+
+	return true
+}
+
+func deepChildLinks(link *Link, source *Passage) []*Link {
+	visited := make(map[*Link]bool)
+	var links []*Link
+	deepChildLinksRecursive(link, source, visited, &links)
+	return links
+}
+
+func deepChildLinksRecursive(link *Link, source *Passage, visited map[*Link]bool, result *[]*Link) {
+	// Skip if we've already visited this link
+	if visited[link] {
+		return
+	}
+
+	// Mark current link as visited
+	visited[link] = true
+
+	// Process all child links
+	for _, l := range link.Target.Links() {
+		if l.Target == source {
+			continue
+		}
+		// Add the link if we haven't seen it
+		if !visited[l] {
+			*result = append(*result, l)
+			deepChildLinksRecursive(l, source, visited, result)
+		}
+	}
 }
 
 type MacroType string

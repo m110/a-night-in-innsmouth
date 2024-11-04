@@ -63,11 +63,10 @@ func (d *Dialog) Update(w donburi.World) {
 		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 			link := dialog.Passage.Links()[dialog.ActiveOption]
 
-			passage := link.Target
-			passage.Visit()
+			link.Visit()
 
 			transform.RemoveRecursive(entry)
-			archetype.NewDialog(w, passage)
+			archetype.NewDialog(w, link.Target)
 		}
 	})
 }

@@ -111,7 +111,7 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 		}
 
 		color := assets.TextColor
-		if link.Target.Visited {
+		if link.AllVisited() {
 			color = assets.TextDarkColor
 		}
 
