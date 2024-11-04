@@ -6,10 +6,12 @@ import (
 	"github.com/yohamta/donburi/features/math"
 	"golang.org/x/image/colornames"
 
+	"github.com/m110/secrets/assets"
+
 	"github.com/m110/secrets/component"
 )
 
-func NewDialog(w donburi.World, dialogData component.DialogData) *donburi.Entry {
+func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 	img := ebiten.NewImage(500, 400)
 	img.Fill(colornames.Darkgreen)
 
@@ -26,14 +28,28 @@ func NewDialog(w donburi.World, dialogData component.DialogData) *donburi.Entry 
 		}).
 		Entry()
 
-	component.Dialog.SetValue(dialog, dialogData)
+	component.Dialog.SetValue(dialog, component.DialogData{
+		Passage:      passage,
+		ActiveOption: 0,
+	})
 
-	textImg := ebiten.NewImage(200, 100)
+	New(w).
+		WithParent(dialog).
+		WithLayerInherit().
+		WithPosition(math.Vec2{
+			X: 220,
+			Y: 20,
+		}).
+		WithText(component.TextData{
+			Text: passage.Title,
+		})
+
+	textImg := ebiten.NewImage(400, 10)
 	textImg.Fill(colornames.Darkred)
 
 	New(w).
 		WithText(component.TextData{
-			Text: dialogData.Text,
+			Text: passage.Content,
 		}).
 		WithSprite(component.SpriteData{
 			Image: textImg,
@@ -45,10 +61,10 @@ func NewDialog(w donburi.World, dialogData component.DialogData) *donburi.Entry 
 		}).
 		WithLayerInherit()
 
-	optionImg := ebiten.NewImage(200, 30)
+	optionImg := ebiten.NewImage(400, 10)
 	optionImg.Fill(colornames.Darkblue)
 
-	for i, option := range dialogData.Options {
+	for i, link := range passage.Links() {
 		op := New(w).
 			WithParent(dialog).
 			WithLayerInherit().
@@ -59,7 +75,30 @@ func NewDialog(w donburi.World, dialogData component.DialogData) *donburi.Entry 
 			WithSprite(component.SpriteData{
 				Image: optionImg,
 			}).
+			With(component.DialogOption).
 			Entry()
+
+		if i == 0 {
+			indicatorImg := ebiten.NewImage(10, 10)
+			indicatorImg.Fill(colornames.Lightyellow)
+
+			New(w).
+				WithParent(op).
+				WithLayerInherit().
+				WithPosition(math.Vec2{
+					X: -20,
+					Y: 0,
+				}).
+				WithSprite(component.SpriteData{
+					Image: indicatorImg,
+				}).
+				With(component.ActiveOptionIndicator)
+		}
+
+		color := assets.TextColor
+		if link.Target.Visited {
+			color = assets.TextDarkColor
+		}
 
 		New(w).
 			WithParent(op).
@@ -69,7 +108,8 @@ func NewDialog(w donburi.World, dialogData component.DialogData) *donburi.Entry 
 				Y: 0,
 			}).
 			WithText(component.TextData{
-				Text: option.Text,
+				Text:  link.Text,
+				Color: color,
 			})
 	}
 

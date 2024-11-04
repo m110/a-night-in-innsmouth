@@ -9,6 +9,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
+
+	"github.com/m110/secrets/assets/twine"
+	"github.com/m110/secrets/component"
 )
 
 var (
@@ -20,6 +23,11 @@ var (
 	//go:embed *
 	assetsFS embed.FS
 
+	//go:embed story.twee
+	story []byte
+
+	Story component.RawStory
+
 	SmallFont  font.Face
 	NormalFont font.Face
 	NarrowFont font.Face
@@ -29,6 +37,12 @@ func MustLoadAssets() {
 	SmallFont = mustLoadFont(normalFontData, 10)
 	NormalFont = mustLoadFont(normalFontData, 24)
 	NarrowFont = mustLoadFont(narrowFontData, 24)
+
+	s, err := twine.ParseStory(string(story))
+	if err != nil {
+		panic(err)
+	}
+	Story = s
 }
 
 func mustLoadFont(data []byte, size int) font.Face {

@@ -1,11 +1,13 @@
 package component
 
 import (
-	"github.com/m110/secrets/engine"
 	"github.com/yohamta/donburi"
+
+	"github.com/m110/secrets/engine"
 )
 
 type GameData struct {
+	Story    *Story
 	Settings Settings
 }
 

@@ -7,6 +7,7 @@ import (
 	"github.com/yohamta/donburi/features/math"
 
 	"github.com/m110/secrets/archetype"
+	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/engine"
 	"github.com/m110/secrets/system"
@@ -49,6 +50,7 @@ func (g *Game) loadLevel() {
 	debug := system.NewDebug(g.loadLevel)
 
 	g.systems = []System{
+		system.NewDialog(),
 		system.NewControls(),
 		system.NewVelocity(),
 		system.NewCollision(),
@@ -78,8 +80,11 @@ func (g *Game) createWorld() donburi.World {
 		Max: 1,
 	})
 
+	story := component.NewStory(assets.Story)
+
 	game := world.Entry(world.Create(component.Game))
 	component.Game.SetValue(game, component.GameData{
+		Story: story,
 		Settings: component.Settings{
 			ScreenWidth:  g.screenWidth,
 			ScreenHeight: g.screenHeight,
@@ -90,23 +95,7 @@ func (g *Game) createWorld() donburi.World {
 
 	archetype.NewUIRoot(world)
 
-	archetype.NewDialog(world, component.DialogData{
-		Text: "Hello, stranger. What are you doing in our town?.\n\nDo you need something?",
-		Options: []component.DialogOption{
-			{
-				Text: "Option 1",
-				Effect: func() {
-
-				},
-			},
-			{
-				Text: "Option 2",
-				Effect: func() {
-
-				},
-			},
-		},
-	})
+	archetype.NewDialog(world, story.PassageByTitle("Arkham"))
 
 	return world
 }

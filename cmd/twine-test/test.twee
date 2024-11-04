@@ -1,0 +1,67 @@
+:: StoryTitle
+Test
+
+
+:: StoryData
+{
+  "ifid": "D53E6B8D-8F81-4B7F-A6AC-8DD985B2B85E",
+  "format": "Chapbook",
+  "format-version": "2.2.0",
+  "start": "Arkham",
+  "tag-colors": {
+    "aaa": "red",
+    "once": "red"
+  },
+  "zoom": 1
+}
+
+
+:: Any news about Innsmouth? {"position":"575,800","size":"100,100"}
+The shopkeeper looks at your nervously.
+
+*Why would you ask about it, young lad?*
+
+> [[Just curious]]
+> [[Nevermind->Arkham Shopkeeper]]
+
+
+:: Arkham {"position":"700,350","size":"100,100"}
+You arrived in Arkham.
+
+The sun is getting low.
+
+> [[Talk with the Shopkeeper->Arkham Shopkeeper]]
+> [[Go get a hotel room for the night]]
+> [[Drive to Innsmouth today]]
+
+
+:: Arkham Shopkeeper {"position":"575,525","size":"100,100"}
+Hello, mister.
+
+
+> [[Any news about Innsmouth?]]
+> [[Buy the local newspaper]]
+> [[I gotta go->Arkham]]
+
+
+:: Buy the local newspaper [once] {"position":"450,675","size":"100,100"}
+Here you go!
+
+> [[Put the newspaper away->Arkham Shopkeeper]] 
+
+
+:: Drive to Innsmouth today {"position":"1025,550","size":"100,100"}
+You board the bus.
+
+
+:: Go get a hotel room for the night {"position":"800,575","size":"100,100"}
+It's closed.
+
+> [[Go back->Arkham]]
+
+
+:: Just curious {"position":"750,800","size":"100,100"}
+*I don't know anything interesting, sir.*
+
+
+[[Sure thing->Arkham Shopkeeper]]
