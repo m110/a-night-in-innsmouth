@@ -85,8 +85,66 @@ func parsePassage(titleLine, content string) component.RawPassage {
 	}
 
 	passage.Title = strings.TrimSpace(titleLine)
-	passage.Content = strings.TrimSpace(content)
-	passage.Content, passage.Links = parseLinks(content)
+	content = strings.TrimSpace(content)
+	content, passage.Links = parseLinks(content)
+
+	var segments []component.Segment
+	currentSegment := component.Segment{}
+	conditionStarted := false
+
+	for _, segment := range strings.Split(content, "\n") {
+		if segment == "[continue]" {
+			if !conditionStarted {
+				panic("Invalid [continue] tag")
+			}
+
+			if currentSegment.Text != "" {
+				segments = append(segments, currentSegment)
+			}
+			currentSegment = component.Segment{}
+			conditionStarted = false
+			continue
+		}
+
+		if strings.HasPrefix(segment, "[") {
+			if conditionStarted {
+				panic("Invalid tag inside condition: " + segment)
+			}
+
+			if currentSegment.Text != "" {
+				segments = append(segments, currentSegment)
+			}
+			currentSegment = component.Segment{}
+			conditionStarted = true
+
+			parts := strings.SplitN(strings.Trim(segment, "[]"), " ", 3)
+
+			// TODO deduplicate
+			var positive bool
+			if parts[0] == "if" {
+				positive = true
+			} else if parts[0] != "unless" {
+				panic("Invalid tag condition: " + parts[0])
+			}
+
+			condition := component.Condition{
+				Positive: positive,
+				Type:     component.ConditionType(parts[1]),
+				Value:    parts[2],
+			}
+
+			currentSegment.Conditions = append(currentSegment.Conditions, condition)
+			continue
+		}
+
+		currentSegment.Text += segment + "\n"
+	}
+
+	if currentSegment.Text != "" {
+		segments = append(segments, currentSegment)
+	}
+
+	passage.Segments = segments
 
 	return passage
 }

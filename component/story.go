@@ -1,18 +1,21 @@
 package component
 
-import "fmt"
-
 type RawStory struct {
 	Title    string
 	Passages []RawPassage
 }
 
 type RawPassage struct {
-	Title   string
-	Tags    []string
-	Content string
-	Macros  []Macro
-	Links   []RawLink
+	Title    string
+	Tags     []string
+	Segments []Segment
+	Macros   []Macro
+	Links    []RawLink
+}
+
+type Segment struct {
+	Text       string
+	Conditions []Condition
 }
 
 type RawLink struct {
@@ -46,7 +49,7 @@ func NewStory(rawStory RawStory) *Story {
 		passage := &Passage{
 			story:     story,
 			Title:     p.Title,
-			Content:   p.Content,
+			Segments:  p.Segments,
 			Macros:    p.Macros,
 			IsOneTime: isOneTime,
 		}
@@ -111,12 +114,34 @@ type Passage struct {
 	story *Story
 
 	Title    string
-	Content  string
+	Segments []Segment
 	Macros   []Macro
 	AllLinks []*Link
 
 	IsOneTime bool
 	Visited   bool
+}
+
+func (p *Passage) Content() string {
+	var content string
+	for _, s := range p.Segments {
+		if len(s.Conditions) > 0 {
+			var skip bool
+			for _, c := range s.Conditions {
+				if !p.story.TestCondition(c) {
+					skip = true
+					break
+				}
+			}
+
+			if skip {
+				continue
+			}
+		}
+		content += s.Text
+	}
+
+	return content
 }
 
 func (p *Passage) Visit() {
@@ -175,10 +200,8 @@ func (l *Link) AllVisited() bool {
 	if !l.Visited {
 		return false
 	}
-	fmt.Println(l.Text, l.Visited)
 
 	for _, link := range deepChildLinks(l, l.passage) {
-		fmt.Println("\t", link.Text, link.Visited)
 		if !link.Visited {
 			return false
 		}

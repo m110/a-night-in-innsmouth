@@ -25,6 +25,14 @@ The shopkeeper looks at your nervously. He clearly doesn't want to talk about it
 > [[Nevermind->Arkham Shopkeeper]]
 
 
+:: Approach a stranger in the lobby {"position":"925,700","size":"100,100"}
+A gray-skinned old man sits alone in the lobby. You have a sudden impression that he's dead but suddenly, he looks you in the eye.
+
+You don't feel like talking with this man.
+
+[[Exit the hotel->Arkham]]
+
+
 :: Arkham {"position":"700,350","size":"100,100"}
 You arrived in Arkham.
 
@@ -53,13 +61,25 @@ Here you go!
 > [[Put the newspaper away->Arkham Shopkeeper]]
 
 
+:: Check the last page {"position":"1150,250","size":"100,100"}
+*A cult has been found in the hills near Arkham.*
+
+[[Stop reading->Arkham]]
+
+
 :: Drive to Innsmouth today {"position":"1025,550","size":"100,100"}
 You board the bus.
 
 
 :: Go get a hotel room for the night {"position":"800,575","size":"100,100"}
-It's closed.
+No rooms for tonight.
 
+[if fact askedAboutInnsmouth]
+You notice an old man sitting in the lobby.
+[continue]
+
+
+> [if fact askedAboutInnsmouth] [[Approach a stranger in the lobby]]
 > [[Go back->Arkham]]
 
 
@@ -77,4 +97,5 @@ Nothing interesting in the paper.
 
 You flip the pages and get bored soon.
 
+> [[Check the last page]]
 > [[Go Back->Arkham]]

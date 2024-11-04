@@ -63,7 +63,7 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 
 	text := New(w).
 		WithText(component.TextData{
-			Text:           passage.Content,
+			Text:           passage.Content(),
 			Streaming:      true,
 			StreamingTimer: engine.NewTimer(500 * time.Millisecond),
 		}).
