@@ -88,6 +88,26 @@ func (g *Game) createWorld() donburi.World {
 
 	world.Create(component.Debug)
 
+	archetype.NewUIRoot(world)
+
+	archetype.NewDialog(world, component.DialogData{
+		Text: "Hello, stranger. What are you doing in our town?.\n\nDo you need something?",
+		Options: []component.DialogOption{
+			{
+				Text: "Option 1",
+				Effect: func() {
+
+				},
+			},
+			{
+				Text: "Option 2",
+				Effect: func() {
+
+				},
+			},
+		},
+	})
+
 	return world
 }
 

@@ -58,6 +58,19 @@ func (b EntryBuilder) WithLayer(layer component.LayerID) EntryBuilder {
 	return b
 }
 
+func (b EntryBuilder) WithLayerInherit() EntryBuilder {
+	b.With(component.Layer)
+
+	parent, ok := transform.GetParent(b.entry)
+	if !ok {
+		panic("parent not found")
+	}
+
+	parentLayer := component.Layer.Get(parent).Layer
+	component.Layer.Get(b.entry).Layer = parentLayer + 1
+	return b
+}
+
 func (b EntryBuilder) WithText(text component.TextData) EntryBuilder {
 	if !b.entry.HasComponent(component.Layer) {
 		b.With(component.Layer)

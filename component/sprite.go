@@ -8,8 +8,8 @@ import (
 type SpritePivot int
 
 const (
-	SpritePivotCenter SpritePivot = iota
-	SpritePivotTopLeft
+	SpritePivotTopLeft SpritePivot = iota
+	SpritePivotCenter
 )
 
 type SpriteData struct {
