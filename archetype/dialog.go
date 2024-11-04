@@ -1,14 +1,16 @@
 package archetype
 
 import (
+	"time"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"golang.org/x/image/colornames"
 
 	"github.com/m110/secrets/assets"
-
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/engine"
 )
 
 func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
@@ -44,12 +46,14 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 			Text: passage.Title,
 		})
 
-	textImg := ebiten.NewImage(400, 10)
+	textImg := ebiten.NewImage(400, 220)
 	textImg.Fill(colornames.Darkred)
 
 	New(w).
 		WithText(component.TextData{
-			Text: passage.Content,
+			Text:           passage.Content,
+			Streaming:      true,
+			StreamingTimer: engine.NewTimer(500 * time.Millisecond),
 		}).
 		WithSprite(component.SpriteData{
 			Image: textImg,
@@ -61,7 +65,7 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 		}).
 		WithLayerInherit()
 
-	optionImg := ebiten.NewImage(400, 10)
+	optionImg := ebiten.NewImage(400, 32)
 	optionImg.Fill(colornames.Darkblue)
 
 	for i, link := range passage.Links() {
@@ -70,7 +74,7 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 			WithLayerInherit().
 			WithPosition(math.Vec2{
 				X: 50,
-				Y: 200 + float64(i)*70,
+				Y: 300 + float64(i)*70,
 			}).
 			WithSprite(component.SpriteData{
 				Image: optionImg,
@@ -79,7 +83,7 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 			Entry()
 
 		if i == 0 {
-			indicatorImg := ebiten.NewImage(10, 10)
+			indicatorImg := ebiten.NewImage(10, 32)
 			indicatorImg.Fill(colornames.Lightyellow)
 
 			New(w).
@@ -105,7 +109,7 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 			WithLayerInherit().
 			WithPosition(math.Vec2{
 				X: 10,
-				Y: 0,
+				Y: 2,
 			}).
 			WithText(component.TextData{
 				Text:  link.Text,

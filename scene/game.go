@@ -54,6 +54,7 @@ func (g *Game) loadLevel() {
 		system.NewControls(),
 		system.NewVelocity(),
 		system.NewCollision(),
+		system.NewText(),
 		system.NewTimeToLive(),
 		system.NewDestroy(),
 		debug,

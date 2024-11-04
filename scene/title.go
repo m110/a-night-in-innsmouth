@@ -1,13 +1,8 @@
 package scene
 
 import (
-	"image/color"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/hajimehoshi/ebiten/v2/text"
-
-	"github.com/m110/secrets/assets"
 )
 
 type Title struct {
@@ -38,5 +33,4 @@ func (t *Title) Update() {
 }
 
 func (t *Title) Draw(screen *ebiten.Image) {
-	text.Draw(screen, "Press space to start", assets.NormalFont, t.screenWidth/5, 500, color.White)
 }

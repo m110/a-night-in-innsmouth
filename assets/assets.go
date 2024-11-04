@@ -6,9 +6,10 @@ import (
 	"image"
 	_ "image/png"
 
+	"golang.org/x/text/language"
+
 	"github.com/hajimehoshi/ebiten/v2"
-	"golang.org/x/image/font"
-	"golang.org/x/image/font/opentype"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/m110/secrets/assets/twine"
 	"github.com/m110/secrets/component"
@@ -17,8 +18,6 @@ import (
 var (
 	//go:embed fonts/UndeadPixelLight.ttf
 	normalFontData []byte
-	//go:embed fonts/kenney-future-narrow.ttf
-	narrowFontData []byte
 
 	//go:embed *
 	assetsFS embed.FS
@@ -28,15 +27,13 @@ var (
 
 	Story component.RawStory
 
-	SmallFont  font.Face
-	NormalFont font.Face
-	NarrowFont font.Face
+	SmallFont  *text.GoTextFace
+	NormalFont *text.GoTextFace
 )
 
 func MustLoadAssets() {
 	SmallFont = mustLoadFont(normalFontData, 10)
 	NormalFont = mustLoadFont(normalFontData, 24)
-	NarrowFont = mustLoadFont(narrowFontData, 24)
 
 	s, err := twine.ParseStory(string(story))
 	if err != nil {
@@ -45,22 +42,18 @@ func MustLoadAssets() {
 	Story = s
 }
 
-func mustLoadFont(data []byte, size int) font.Face {
-	f, err := opentype.Parse(data)
+func mustLoadFont(data []byte, size int) *text.GoTextFace {
+	s, err := text.NewGoTextFaceSource(bytes.NewReader(data))
 	if err != nil {
 		panic(err)
 	}
 
-	face, err := opentype.NewFace(f, &opentype.FaceOptions{
-		Size:    float64(size),
-		DPI:     72,
-		Hinting: font.HintingFull,
-	})
-	if err != nil {
-		panic(err)
+	return &text.GoTextFace{
+		Source:    s,
+		Direction: text.DirectionLeftToRight,
+		Size:      float64(size),
+		Language:  language.English,
 	}
-
-	return face
 }
 
 func mustNewEbitenImage(data []byte) *ebiten.Image {

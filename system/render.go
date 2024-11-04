@@ -9,7 +9,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
@@ -208,7 +208,8 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 
 		textToDraw := t.Text[:length]
 
-		op := &ebiten.DrawImageOptions{}
+		op := &text.DrawOptions{}
+		op.LineSpacing = 15
 		op.GeoM.Translate(pos.X, pos.Y)
 		op.ColorScale.ScaleWithColor(col)
 
@@ -217,7 +218,7 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 			offscreen = r.uiOffscreen
 		}
 
-		text.DrawWithOptions(offscreen, textToDraw, font, op)
+		text.Draw(offscreen, textToDraw, font, op)
 	}
 
 	var layers []int

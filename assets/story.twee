@@ -72,7 +72,7 @@ addFact: askedAboutInnsmouth
 > [[Sure thing->Arkham Shopkeeper]]
 
 
-:: Read the newspaper {"position":"975,350","size":"100,100"}
+:: Read the newspaper [once] {"position":"975,350","size":"100,100"}
 Nothing interesting in the paper.
 
 You flip the pages and get bored soon.
