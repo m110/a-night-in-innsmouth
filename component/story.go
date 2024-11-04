@@ -22,6 +22,7 @@ type RawLink struct {
 	Text       string
 	Target     string
 	Conditions []Condition
+	Tags       []string
 }
 
 type Story struct {
@@ -60,6 +61,7 @@ func NewStory(rawStory RawStory) *Story {
 				passage:    passage,
 				Text:       l.Text,
 				Conditions: l.Conditions,
+				Tags:       l.Tags,
 			})
 		}
 
@@ -189,6 +191,7 @@ type Link struct {
 	Target     *Passage
 	Conditions []Condition
 	Visited    bool
+	Tags       []string
 }
 
 func (l *Link) Visit() {
@@ -202,12 +205,22 @@ func (l *Link) AllVisited() bool {
 	}
 
 	for _, link := range deepChildLinks(l, l.passage) {
-		if !link.Visited {
+		if !link.Visited && !link.HasTag("exit") {
 			return false
 		}
 	}
 
 	return true
+}
+
+func (l *Link) HasTag(tag string) bool {
+	for _, t := range l.Tags {
+		if t == tag {
+			return true
+		}
+	}
+
+	return false
 }
 
 func deepChildLinks(link *Link, source *Passage) []*Link {
@@ -231,6 +244,11 @@ func deepChildLinksRecursive(link *Link, source *Passage, visited map[*Link]bool
 		if l.Target == source {
 			continue
 		}
+
+		if l.HasTag("back") {
+			continue
+		}
+
 		// Add the link if we haven't seen it
 		if !visited[l] {
 			*result = append(*result, l)

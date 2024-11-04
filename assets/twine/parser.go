@@ -154,32 +154,38 @@ func parseLinks(content string) (string, []component.RawLink) {
 	links := []component.RawLink{}
 
 	// Match both [[Target]] and [[Text->Target]] format links
-	linkRegex := regexp.MustCompile(`(?m)^(?:> )?(\[.*?\] )*\[\[(.*?)\]\]`)
+	linkRegex := regexp.MustCompile(`(?m)^(?:> )?(\{.*?\} )?(\[.*?\] )*\[\[(.*?)\]\]`)
 	matches := linkRegex.FindAllStringSubmatch(content, -1)
 
 	content = linkRegex.ReplaceAllString(content, "")
 
 	for _, match := range matches {
-		if len(match) < 3 {
+		if len(match) < 4 {
 			continue
 		}
 
 		link := component.RawLink{}
 
-		tagPattern := regexp.MustCompile(`\[(.*?)\]`)
+		tagPattern := regexp.MustCompile(`\{(.*?)\}`)
 		tagMatches := tagPattern.FindAllStringSubmatch(match[1], -1)
 		for _, tm := range tagMatches {
-			parts := strings.SplitN(tm[1], " ", 3)
+			link.Tags = strings.Fields(tm[1])
+		}
+
+		conditionPattern := regexp.MustCompile(`\[(.*?)\]`)
+		conditionMatches := conditionPattern.FindAllStringSubmatch(match[2], -1)
+		for _, cm := range conditionMatches {
+			parts := strings.SplitN(cm[1], " ", 3)
 
 			if len(parts) < 2 {
-				panic("Invalid tag format: " + tm[1])
+				panic("Invalid tag format: " + cm[1])
 			}
 
 			var positive bool
 			if parts[0] == "if" {
 				positive = true
 			} else if parts[0] != "unless" {
-				panic("Invalid tag condition: " + parts[0])
+				panic("Invalid condition: " + parts[0])
 			}
 
 			cond := component.Condition{
@@ -192,7 +198,7 @@ func parseLinks(content string) (string, []component.RawLink) {
 		}
 
 		// Check if link has display text
-		parts := strings.Split(match[2], "->")
+		parts := strings.Split(match[3], "->")
 		if len(parts) > 1 {
 			link.Text = strings.TrimSpace(parts[0])
 			link.Target = strings.TrimSpace(parts[1])

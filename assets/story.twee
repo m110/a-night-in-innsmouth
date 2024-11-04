@@ -22,15 +22,15 @@ The shopkeeper looks at your nervously. He clearly doesn't want to talk about it
 *Why would you ask about it, young lad?*
 
 > [[Just curious]]
-> [[Nevermind->Arkham Shopkeeper]]
+> {back} [[Nevermind->Arkham Shopkeeper]]
 
 
-:: Approach a stranger in the lobby {"position":"925,700","size":"100,100"}
+:: Approach a stranger in the lobby {"position":"975,700","size":"100,100"}
 A gray-skinned old man sits alone in the lobby. You have a sudden impression that he's dead but suddenly, he looks you in the eye.
 
 You don't feel like talking with this man.
 
-[[Exit the hotel->Arkham]]
+> {back} [[Exit the hotel->Arkham]]
 
 
 :: Arkham {"position":"700,350","size":"100,100"}
@@ -50,7 +50,7 @@ Hello, mister.
 
 > [[Any news about Innsmouth?]]
 > [[Buy the local newspaper]]
-> [[I gotta go->Arkham]]
+> {back} [[I gotta go->Arkham]]
 
 
 :: Buy the local newspaper [once] {"position":"400,650","size":"100,100"}
@@ -64,7 +64,7 @@ Here you go!
 :: Check the last page {"position":"1150,250","size":"100,100"}
 *A cult has been found in the hills near Arkham.*
 
-[[Stop reading->Arkham]]
+> {back} [[Stop reading->Arkham]]
 
 
 :: Drive to Innsmouth today {"position":"1025,550","size":"100,100"}
@@ -80,7 +80,7 @@ You notice an old man sitting in the lobby.
 
 
 > [if fact askedAboutInnsmouth] [[Approach a stranger in the lobby]]
-> [[Go back->Arkham]]
+> {back} [[Go back->Arkham]]
 
 
 :: Just curious {"position":"800,800","size":"100,100"}
@@ -89,7 +89,7 @@ addFact: askedAboutInnsmouth
 *I don't know anything interesting, sir.*
 
 
-> [[Sure thing->Arkham Shopkeeper]]
+> {back} [[Sure thing->Arkham Shopkeeper]]
 
 
 :: Read the newspaper [once] {"position":"975,350","size":"100,100"}
@@ -98,4 +98,4 @@ Nothing interesting in the paper.
 You flip the pages and get bored soon.
 
 > [[Check the last page]]
-> [[Go Back->Arkham]]
+> {back} [[Go Back->Arkham]]
