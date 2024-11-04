@@ -17,7 +17,7 @@ Test
 
 
 :: Any news about Innsmouth? {"position":"575,800","size":"100,100"}
-The shopkeeper looks at your nervously.
+The shopkeeper looks at your nervously. He clearly doesn't want to talk about it.
 
 *Why would you ask about it, young lad?*
 
@@ -28,7 +28,7 @@ The shopkeeper looks at your nervously.
 :: Arkham {"position":"700,350","size":"100,100"}
 You arrived in Arkham.
 
-The sun is getting low.
+The sun is getting low. The wind is howling, and you see crows sitting on the shops around you.
 
 > [[Talk with the Shopkeeper->Arkham Shopkeeper]]
 > [[Go get a hotel room for the night]]
@@ -50,7 +50,7 @@ addItem: Arkham Daily Newspaper
 --
 Here you go!
 
-> [[Put the newspaper away->Arkham Shopkeeper]] 
+> [[Put the newspaper away->Arkham Shopkeeper]]
 
 
 :: Drive to Innsmouth today {"position":"1025,550","size":"100,100"}

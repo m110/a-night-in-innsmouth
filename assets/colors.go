@@ -10,9 +10,9 @@ var (
 		A: 255,
 	}
 	TextDarkColor = color.RGBA{
-		R: 207,
-		G: 199,
-		B: 159,
+		R: 100,
+		G: 100,
+		B: 100,
 		A: 255,
 	}
 )

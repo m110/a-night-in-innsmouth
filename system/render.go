@@ -185,14 +185,7 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 			return
 		}
 
-		font := assets.NormalFont
-		switch t.Size {
-		case component.TextSizeL:
-		case component.TextSizeM:
-			font = assets.NormalFont
-		case component.TextSizeS:
-			font = assets.SmallFont
-		}
+		font := archetype.FontFromSize(t.Size)
 
 		pos := transform.WorldPosition(entry)
 
@@ -209,7 +202,7 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 		textToDraw := t.Text[:length]
 
 		op := &text.DrawOptions{}
-		op.LineSpacing = 15
+		op.LineSpacing = 24
 		op.GeoM.Translate(pos.X, pos.Y)
 		op.ColorScale.ScaleWithColor(col)
 

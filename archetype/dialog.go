@@ -49,21 +49,32 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 	textImg := ebiten.NewImage(400, 220)
 	textImg.Fill(colornames.Darkred)
 
-	New(w).
+	textBg := New(w).
+		WithParent(dialog).
+		WithLayerInherit().
+		WithPosition(math.Vec2{
+			X: 50,
+			Y: 50,
+		}).
+		WithSprite(component.SpriteData{
+			Image: textImg,
+		}).
+		Entry()
+
+	text := New(w).
 		WithText(component.TextData{
 			Text:           passage.Content,
 			Streaming:      true,
 			StreamingTimer: engine.NewTimer(500 * time.Millisecond),
 		}).
-		WithSprite(component.SpriteData{
-			Image: textImg,
-		}).
-		WithParent(dialog).
+		WithParent(textBg).
+		WithLayerInherit().
 		WithPosition(math.Vec2{
-			X: 50,
-			Y: 50,
-		}).
-		WithLayerInherit()
+			X: 10,
+			Y: 10,
+		})
+
+	AdjustTextWidth(text.Entry(), 380)
 
 	optionImg := ebiten.NewImage(400, 32)
 	optionImg.Fill(colornames.Darkblue)
