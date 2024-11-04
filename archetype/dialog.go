@@ -12,7 +12,7 @@ import (
 )
 
 func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
-	img := ebiten.NewImage(500, 400)
+	img := ebiten.NewImage(500, 500)
 	img.Fill(colornames.Darkgreen)
 
 	dialog := New(w).

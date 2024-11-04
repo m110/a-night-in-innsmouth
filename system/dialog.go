@@ -64,7 +64,7 @@ func (d *Dialog) Update(w donburi.World) {
 			link := dialog.Passage.Links()[dialog.ActiveOption]
 
 			passage := link.Target
-			passage.Visited = true
+			passage.Visit()
 
 			transform.RemoveRecursive(entry)
 			archetype.NewDialog(w, passage)

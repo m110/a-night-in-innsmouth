@@ -32,6 +32,7 @@ The sun is getting low.
 
 > [[Talk with the Shopkeeper->Arkham Shopkeeper]]
 > [[Go get a hotel room for the night]]
+> [if hasItem Arkham Daily Newspaper] [[Read the newspaper]]
 > [[Drive to Innsmouth today]]
 
 
@@ -44,7 +45,9 @@ Hello, mister.
 > [[I gotta go->Arkham]]
 
 
-:: Buy the local newspaper [once] {"position":"450,675","size":"100,100"}
+:: Buy the local newspaper [once] {"position":"400,650","size":"100,100"}
+addItem: Arkham Daily Newspaper
+--
 Here you go!
 
 > [[Put the newspaper away->Arkham Shopkeeper]] 
@@ -60,8 +63,18 @@ It's closed.
 > [[Go back->Arkham]]
 
 
-:: Just curious {"position":"750,800","size":"100,100"}
+:: Just curious {"position":"800,800","size":"100,100"}
+addFact: askedAboutInnsmouth
+--
 *I don't know anything interesting, sir.*
 
 
-[[Sure thing->Arkham Shopkeeper]]
+> [[Sure thing->Arkham Shopkeeper]]
+
+
+:: Read the newspaper {"position":"975,350","size":"100,100"}
+Nothing interesting in the paper.
+
+You flip the pages and get bored soon.
+
+> [[Go Back->Arkham]]

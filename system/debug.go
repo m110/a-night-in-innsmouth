@@ -49,6 +49,11 @@ func (d *Debug) Update(w donburi.World) {
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		d.debug.Enabled = !d.debug.Enabled
+
+		game := component.MustFindGame(w)
+
+		fmt.Println("Items:", game.Story.Items)
+		fmt.Println("Facts:", game.Story.Facts)
 	}
 }
 
