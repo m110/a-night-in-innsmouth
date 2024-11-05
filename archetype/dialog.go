@@ -20,7 +20,7 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 	dialog := New(w).
 		WithParent(MustFindUIRoot(w)).
 		WithPosition(math.Vec2{
-			X: 100,
+			X: 300,
 			Y: 50,
 		}).
 		WithLayer(component.SpriteUILayerUI).

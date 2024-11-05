@@ -40,8 +40,13 @@ type Story struct {
 	Passages map[string]*Passage
 
 	Money int
-	Items map[string]int
+	Items []Item
 	Facts map[string]struct{}
+}
+
+type Item struct {
+	Name  string
+	Count int
 }
 
 func NewStory(w donburi.World, rawStory RawStory) *Story {
@@ -89,7 +94,7 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 	}
 
 	story.Passages = passagesMap
-	story.Items = map[string]int{}
+	story.Items = []Item{}
 	story.Facts = map[string]struct{}{}
 
 	return story
@@ -115,7 +120,28 @@ func (s *Story) PassageByTitle(title string) *Passage {
 }
 
 func (s *Story) AddItem(item string) {
-	s.Items[item]++
+	for _, i := range s.Items {
+		if i.Name == item {
+			i.Count++
+			return
+		}
+	}
+
+	s.Items = append(s.Items, Item{
+		Name:  item,
+		Count: 1,
+	})
+
+	var eventItems []events.Item
+	for _, i := range s.Items {
+		eventItems = append(eventItems, events.Item{
+			Name:  i.Name,
+			Count: i.Count,
+		})
+	}
+	events.InventoryUpdatedEvent.Publish(s.world, events.InventoryUpdated{
+		Items: eventItems,
+	})
 }
 
 func (s *Story) AddFact(fact string) {
@@ -125,8 +151,15 @@ func (s *Story) AddFact(fact string) {
 func (s *Story) TestCondition(c Condition) bool {
 	switch c.Type {
 	case ConditionTypeHasItem:
-		_, ok := s.Items[c.Value]
-		return ok == c.Positive
+		found := false
+		for _, i := range s.Items {
+			if i.Name == c.Value {
+				found = true
+				break
+			}
+		}
+
+		return found == c.Positive
 	case ConditionTypeFact:
 		_, ok := s.Facts[c.Value]
 		return ok == c.Positive

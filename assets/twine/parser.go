@@ -1,7 +1,6 @@
 package twine
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -146,10 +145,6 @@ func parsePassage(titleLine, content string) component.RawPassage {
 	}
 
 	passage.Segments = segments
-
-	if passage.Title == "Buy the local newspaper" {
-		fmt.Println(passage)
-	}
 
 	return passage
 }
