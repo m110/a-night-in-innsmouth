@@ -1,5 +1,13 @@
 package component
 
+import (
+	"strconv"
+
+	"github.com/yohamta/donburi"
+
+	"github.com/m110/secrets/events"
+)
+
 type RawStory struct {
 	Title    string
 	Passages []RawPassage
@@ -26,15 +34,20 @@ type RawLink struct {
 }
 
 type Story struct {
+	world donburi.World
+
 	Title    string
 	Passages map[string]*Passage
 
+	Money int
 	Items map[string]int
 	Facts map[string]struct{}
 }
 
-func NewStory(rawStory RawStory) *Story {
+func NewStory(w donburi.World, rawStory RawStory) *Story {
 	story := &Story{
+		world: w,
+
 		Title: rawStory.Title,
 	}
 
@@ -82,6 +95,16 @@ func NewStory(rawStory RawStory) *Story {
 	return story
 }
 
+func (s *Story) AddMoney(amount int) {
+	s.Money += amount
+	if s.Money < 0 {
+		panic("Negative money")
+	}
+	events.MoneyUpdatedEvent.Publish(s.world, events.MoneyUpdated{
+		Amount: s.Money,
+	})
+}
+
 func (s *Story) PassageByTitle(title string) *Passage {
 	p, ok := s.Passages[title]
 	if !ok {
@@ -107,6 +130,15 @@ func (s *Story) TestCondition(c Condition) bool {
 	case ConditionTypeFact:
 		_, ok := s.Facts[c.Value]
 		return ok == c.Positive
+	case ConditionTypeHasMoney:
+		money, err := strconv.Atoi(c.Value)
+		if err != nil {
+			panic(err)
+		}
+
+		return s.Money >= money == c.Positive
+	default:
+		panic("Unknown condition type: " + c.Type)
 	}
 
 	return false
@@ -155,6 +187,20 @@ func (p *Passage) Visit() {
 			p.story.AddItem(m.Value)
 		case MacroTypeAddFact:
 			p.story.AddFact(m.Value)
+		case MacroTypeAddMoney:
+			money, err := strconv.Atoi(m.Value)
+			if err != nil {
+				panic(err)
+			}
+			p.story.AddMoney(money)
+		case MacroTypeTakeMoney:
+			money, err := strconv.Atoi(m.Value)
+			if err != nil {
+				panic(err)
+			}
+			p.story.AddMoney(-money)
+		default:
+			panic("Unknown macro type: " + m.Type)
 		}
 	}
 }
@@ -260,8 +306,10 @@ func deepChildLinksRecursive(link *Link, source *Passage, visited map[*Link]bool
 type MacroType string
 
 const (
-	MacroTypeAddItem MacroType = "addItem"
-	MacroTypeAddFact MacroType = "addFact"
+	MacroTypeAddItem   MacroType = "addItem"
+	MacroTypeAddFact   MacroType = "addFact"
+	MacroTypeAddMoney  MacroType = "addMoney"
+	MacroTypeTakeMoney MacroType = "takeMoney"
 )
 
 type Macro struct {
@@ -272,8 +320,9 @@ type Macro struct {
 type ConditionType string
 
 const (
-	ConditionTypeHasItem ConditionType = "hasItem"
-	ConditionTypeFact    ConditionType = "fact"
+	ConditionTypeHasItem  ConditionType = "hasItem"
+	ConditionTypeFact     ConditionType = "fact"
+	ConditionTypeHasMoney ConditionType = "hasMoney"
 )
 
 type Condition struct {

@@ -16,7 +16,7 @@ Test
 }
 
 
-:: Any news about Innsmouth? {"position":"575,800","size":"100,100"}
+:: Any news about Innsmouth? {"position":"525,800","size":"100,100"}
 The shopkeeper looks at your nervously. He clearly doesn't want to talk about it.
 
 *Why would you ask about it, young lad?*
@@ -44,17 +44,18 @@ The sun is getting low. The wind is howling, and you see crows sitting on the sh
 > [[Drive to Innsmouth today]]
 
 
-:: Arkham Shopkeeper {"position":"575,525","size":"100,100"}
+:: Arkham Shopkeeper {"position":"500,525","size":"100,100"}
 Hello, mister.
 
 
 > [[Any news about Innsmouth?]]
-> [[Buy the local newspaper]]
+> [[Buy the local newspaper (3 cents)->Buy the local newspaper]]
 > {back} [[I gotta go->Arkham]]
 
 
-:: Buy the local newspaper [once] {"position":"400,650","size":"100,100"}
+:: Buy the local newspaper [once] {"position":"350,650","size":"100,100"}
 addItem: Arkham Daily Newspaper
+takeMoney: 3
 --
 Here you go!
 
@@ -83,7 +84,7 @@ You notice an old man sitting in the lobby.
 > {back} [[Go back->Arkham]]
 
 
-:: Just curious {"position":"800,800","size":"100,100"}
+:: Just curious {"position":"800,725","size":"100,100"}
 addFact: askedAboutInnsmouth
 --
 *I don't know anything interesting, sir.*

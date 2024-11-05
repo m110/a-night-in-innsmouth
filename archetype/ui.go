@@ -7,14 +7,14 @@ import (
 	"github.com/yohamta/donburi"
 
 	"github.com/m110/secrets/assets"
-
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/engine"
 )
 
-func NewUIRoot(w donburi.World) {
-	New(w).
-		With(component.UI)
+func NewUIRoot(w donburi.World) *donburi.Entry {
+	return New(w).
+		With(component.UI).
+		Entry()
 }
 
 func MustFindUIRoot(w donburi.World) *donburi.Entry {

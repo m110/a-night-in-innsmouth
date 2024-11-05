@@ -1,10 +1,14 @@
 package scene
 
 import (
+	"fmt"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
-	"github.com/yohamta/donburi/features/events"
+	donburievents "github.com/yohamta/donburi/features/events"
 	"github.com/yohamta/donburi/features/math"
+
+	events "github.com/m110/secrets/events"
 
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/assets"
@@ -81,7 +85,7 @@ func (g *Game) createWorld() donburi.World {
 		Max: 1,
 	})
 
-	story := component.NewStory(assets.Story)
+	story := component.NewStory(world, assets.Story)
 
 	game := world.Entry(world.Create(component.Game))
 	component.Game.SetValue(game, component.GameData{
@@ -94,9 +98,27 @@ func (g *Game) createWorld() donburi.World {
 
 	world.Create(component.Debug)
 
-	archetype.NewUIRoot(world)
+	ui := archetype.NewUIRoot(world)
 
 	archetype.NewDialog(world, story.PassageByTitle("Arkham"))
+
+	moneyText := archetype.New(world).
+		WithParent(ui).
+		WithLayer(component.SpriteUILayerBackground).
+		WithPosition(math.Vec2{
+			X: 10,
+			Y: 10,
+		}).
+		WithText(component.TextData{
+			Text: "Money:",
+		}).
+		Entry()
+
+	events.MoneyUpdatedEvent.Subscribe(world, func(w donburi.World, event events.MoneyUpdated) {
+		component.Text.Get(moneyText).Text = fmt.Sprintf("Money: %v", event.Amount)
+	})
+
+	story.AddMoney(100)
 
 	return world
 }
@@ -120,7 +142,7 @@ func (g *Game) Update() {
 		s.Update(g.world)
 	}
 
-	events.ProcessAllEvents(g.world)
+	donburievents.ProcessAllEvents(g.world)
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {

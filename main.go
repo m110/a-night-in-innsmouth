@@ -15,8 +15,8 @@ func main() {
 
 	config := game.Config{
 		Quick:        *quickFlag,
-		ScreenWidth:  800,
-		ScreenHeight: 600,
+		ScreenWidth:  1024,
+		ScreenHeight: 768,
 	}
 
 	ebiten.SetWindowSize(config.ScreenWidth, config.ScreenHeight)
