@@ -29,6 +29,8 @@ var (
 
 	SmallFont  *text.GoTextFace
 	NormalFont *text.GoTextFace
+
+	Background *ebiten.Image
 )
 
 func MustLoadAssets() {
@@ -40,6 +42,8 @@ func MustLoadAssets() {
 		panic(err)
 	}
 	Story = s
+
+	Background = mustNewEbitenImage(mustReadFile("background.png"))
 }
 
 func mustLoadFont(data []byte, size int) *text.GoTextFace {
@@ -54,6 +58,15 @@ func mustLoadFont(data []byte, size int) *text.GoTextFace {
 		Size:      float64(size),
 		Language:  language.English,
 	}
+}
+
+func mustReadFile(name string) []byte {
+	data, err := assetsFS.ReadFile(name)
+	if err != nil {
+		panic(err)
+	}
+
+	return data
 }
 
 func mustNewEbitenImage(data []byte) *ebiten.Image {

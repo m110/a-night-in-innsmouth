@@ -9,4 +9,6 @@ var (
 
 	DialogOption          = donburi.NewTag()
 	ActiveOptionIndicator = donburi.NewTag()
+
+	Inventory = donburi.NewTag()
 )

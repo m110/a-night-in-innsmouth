@@ -8,13 +8,8 @@ type Item struct {
 }
 
 type InventoryUpdated struct {
+	Money int
 	Items []Item
 }
 
 var InventoryUpdatedEvent = events.NewEventType[InventoryUpdated]()
-
-type MoneyUpdated struct {
-	Amount int
-}
-
-var MoneyUpdatedEvent = events.NewEventType[MoneyUpdated]()

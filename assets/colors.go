@@ -15,4 +15,11 @@ var (
 		B: 100,
 		A: 255,
 	}
+
+	UIBackgroundColor = color.RGBA{
+		R: 25,
+		G: 25,
+		B: 25,
+		A: 200,
+	}
 )

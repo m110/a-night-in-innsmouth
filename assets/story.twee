@@ -1,5 +1,5 @@
 :: StoryTitle
-Test
+story
 
 
 :: StoryData
@@ -7,7 +7,7 @@ Test
   "ifid": "D53E6B8D-8F81-4B7F-A6AC-8DD985B2B85E",
   "format": "Chapbook",
   "format-version": "2.2.0",
-  "start": "Arkham",
+  "start": "Start",
   "tag-colors": {
     "aaa": "red",
     "once": "red"
@@ -16,63 +16,64 @@ Test
 }
 
 
-:: Any news about Innsmouth? {"position":"525,800","size":"100,100"}
+:: Any news about Innsmouth? {"position":"450,800","size":"100,100"}
 The shopkeeper looks at your nervously. He clearly doesn't want to talk about it.
 
 *Why would you ask about it, young lad?*
 
 > [[Just curious]]
-> {back} [[Nevermind->Arkham Shopkeeper]]
+> {back} [[Nevermind->Newburyport Shopkeeper]]
 
 
-:: Approach a stranger in the lobby {"position":"975,700","size":"100,100"}
+:: Approach a stranger in the lobby {"position":"975,600","size":"100,100"}
 A gray-skinned old man sits alone in the lobby. You have a sudden impression that he's dead but suddenly, he looks you in the eye.
 
 You don't feel like talking with this man.
 
-> {back} [[Exit the hotel->Arkham]]
+> {back} [[Exit the hotel->Newburyport]]
 
 
-:: Arkham {"position":"700,350","size":"100,100"}
-You arrived in Arkham.
-
-The sun is getting low. The wind is howling, and you see crows sitting on the shops around you.
-
-> [[Talk with the Shopkeeper->Arkham Shopkeeper]]
-> [[Go get a hotel room for the night]]
-> [if hasItem Arkham Daily Newspaper] [[Read the newspaper]]
-> [[Drive to Innsmouth today]]
+:: Board the train to Arkham {"position":"1475,150","size":"100,100"}
+You arrive safely in Arkham.
 
 
-:: Arkham Shopkeeper {"position":"500,525","size":"100,100"}
-Hello, mister.
-
-
-> [[Any news about Innsmouth?]]
-> [[Buy the local newspaper (3 cents)->Buy the local newspaper]]
-> {back} [[I gotta go->Arkham]]
-
-
-:: Buy the local newspaper [once] {"position":"350,650","size":"100,100"}
+:: Buy the local newspaper [once] {"position":"200,575","size":"100,100"}
 addItem: Arkham Daily Newspaper
 takeMoney: 3
 --
 Here you go!
 
-> [[Put the newspaper away->Arkham Shopkeeper]]
+> [[Put the newspaper away->Newburyport Shopkeeper]]
 
 
-:: Check the last page {"position":"1150,250","size":"100,100"}
+:: Buy the ticket to Arkham ($5) {"position":"1450,0","size":"100,100"}
+takeMoney: 500
+addItem: Train Ticket to Arkham
+--
+
+You bough the ticket.
+
+> [[Go back to Newburyport->Newburyport]]
+
+
+:: Check the last page {"position":"125,275","size":"100,100"}
 *A cult has been found in the hills near Arkham.*
 
-> {back} [[Stop reading->Arkham]]
+> {back} [[Stop reading->Newburyport]]
 
 
-:: Drive to Innsmouth today {"position":"1025,550","size":"100,100"}
+:: Check tickets to Arkham {"position":"1300,100","size":"100,100"}
+The ticket is quite expensive.
+
+> [[Buy the ticket to Arkham ($5)]]
+> [[On the other hand...->Train Station]]
+
+
+:: Drive to Innsmouth today {"position":"1025,375","size":"100,100"}
 You board the bus.
 
 
-:: Go get a hotel room for the night {"position":"800,575","size":"100,100"}
+:: Go get a hotel room for the night {"position":"800,500","size":"100,100"}
 No rooms for tonight.
 
 [if fact askedAboutInnsmouth]
@@ -81,22 +82,59 @@ You notice an old man sitting in the lobby.
 
 
 > [if fact askedAboutInnsmouth] [[Approach a stranger in the lobby]]
-> {back} [[Go back->Arkham]]
+> {back} [[Go back->Newburyport]]
 
 
-:: Just curious {"position":"800,725","size":"100,100"}
+:: Just curious {"position":"650,800","size":"100,100"}
 addFact: askedAboutInnsmouth
 --
 *I don't know anything interesting, sir.*
 
 
-> {back} [[Sure thing->Arkham Shopkeeper]]
+> {back} [[Sure thing->Newburyport Shopkeeper]]
 
 
-:: Read the newspaper [once] {"position":"975,350","size":"100,100"}
+:: Newburyport {"position":"675,275","size":"100,100"}
+The sun is getting low. The wind is howling, and you see crows sitting on the shops around you.
+
+> [[Go to the train station->Train Station]]
+> [[Talk with the Shopkeeper->Newburyport Shopkeeper]]
+> [[Go get a hotel room for the night]]
+> [if hasItem Arkham Daily Newspaper] [[Read the newspaper]]
+> [[Drive to Innsmouth today]]
+
+
+:: Newburyport Shopkeeper {"position":"500,525","size":"100,100"}
+Hello, mister.
+
+
+> [[Any news about Innsmouth?]]
+> [[Buy the local newspaper (3 cents)->Buy the local newspaper]]
+> {back} [[I gotta go->Newburyport]]
+
+
+:: Read the newspaper {"position":"200,425","size":"100,100"}
 Nothing interesting in the paper.
 
 You flip the pages and get bored soon.
 
 > [[Check the last page]]
-> {back} [[Go Back->Arkham]]
+> {back} [[Go Back->Newburyport]]
+
+
+:: Start {"position":"675,100","size":"100,100"}
+You arrive in Newburyport, meaning to continue to Arkham.
+
+[[Explore the city->Newburyport]]
+
+
+:: Talk to the agent {"position":"1175,225","size":"100,100"}
+
+
+
+:: Train Station {"position":"1075,50","size":"100,100"}
+
+> [unless hasItem Train Ticket to Arkham] [[Check tickets to Arkham]]
+> [if hasItem Train Ticket to Arkham] [[Board the train to Arkham]] 
+> [[Talk to the agent]]
+> [[Exit->Newburyport]] 

@@ -203,6 +203,7 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 
 		op := &text.DrawOptions{}
 		op.LineSpacing = 24
+		op.PrimaryAlign = t.Align
 		op.GeoM.Translate(pos.X, pos.Y)
 		op.ColorScale.ScaleWithColor(col)
 
@@ -224,7 +225,7 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 	for _, layer := range layers {
 		for _, entry := range byLayer[layer] {
 			if !isActive(entry.entry) {
-				return
+				continue
 			}
 
 			if entry.ui {

@@ -9,7 +9,8 @@ import (
 )
 
 type Controls struct {
-	query *donburi.Query
+	query       *donburi.Query
+	dialogQuery *donburi.Query
 }
 
 func NewControls() *Controls {
@@ -20,6 +21,11 @@ func NewControls() *Controls {
 				component.Velocity,
 			),
 		),
+		dialogQuery: donburi.NewQuery(
+			filter.Contains(
+				component.Dialog,
+			),
+		),
 	}
 }
 
@@ -28,6 +34,10 @@ func (i *Controls) Update(w donburi.World) {
 		in := component.Input.Get(entry)
 
 		if in.Disabled {
+			return
+		}
+
+		if i.dialogQuery.Count(w) > 0 {
 			return
 		}
 

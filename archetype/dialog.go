@@ -1,7 +1,10 @@
 package archetype
 
 import (
+	"image/color"
 	"time"
+
+	text2 "github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
@@ -13,20 +16,32 @@ import (
 	"github.com/m110/secrets/engine"
 )
 
-func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
-	img := ebiten.NewImage(500, 500)
-	img.Fill(colornames.Darkgreen)
+const (
+	dialogWidth = 500
+)
+
+func NewDialog(
+	w donburi.World,
+	passage *component.Passage,
+) *donburi.Entry {
+	game := component.MustFindGame(w)
+	pos := math.Vec2{
+		X: float64(game.Settings.ScreenWidth) - dialogWidth - 25,
+		Y: 0,
+	}
+
+	height := game.Settings.ScreenHeight
+
+	backgroundImage := ebiten.NewImage(dialogWidth, height)
+	backgroundImage.Fill(assets.UIBackgroundColor)
 
 	dialog := New(w).
 		WithParent(MustFindUIRoot(w)).
-		WithPosition(math.Vec2{
-			X: 300,
-			Y: 50,
-		}).
+		WithPosition(pos).
 		WithLayer(component.SpriteUILayerUI).
 		With(component.Dialog).
 		WithSprite(component.SpriteData{
-			Image: img,
+			Image: backgroundImage,
 		}).
 		Entry()
 
@@ -43,11 +58,9 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 			Y: 20,
 		}).
 		WithText(component.TextData{
-			Text: passage.Title,
+			Text:  passage.Title,
+			Align: text2.AlignCenter,
 		})
-
-	textImg := ebiten.NewImage(400, 220)
-	textImg.Fill(colornames.Darkred)
 
 	textBg := New(w).
 		WithParent(dialog).
@@ -55,9 +68,6 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 		WithPosition(math.Vec2{
 			X: 50,
 			Y: 50,
-		}).
-		WithSprite(component.SpriteData{
-			Image: textImg,
 		}).
 		Entry()
 
@@ -71,13 +81,19 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 		WithLayerInherit().
 		WithPosition(math.Vec2{
 			X: 10,
-			Y: 10,
+			Y: 50,
 		})
 
 	AdjustTextWidth(text.Entry(), 380)
 
 	optionImg := ebiten.NewImage(400, 32)
-	optionImg.Fill(colornames.Darkblue)
+	optionColor := color.RGBA{
+		R: 50,
+		G: 50,
+		B: 50,
+		A: 150,
+	}
+	optionImg.Fill(optionColor)
 
 	for i, link := range passage.Links() {
 		op := New(w).
@@ -85,7 +101,7 @@ func NewDialog(w donburi.World, passage *component.Passage) *donburi.Entry {
 			WithLayerInherit().
 			WithPosition(math.Vec2{
 				X: 50,
-				Y: 300 + float64(i)*70,
+				Y: 300 + float64(i)*60,
 			}).
 			WithSprite(component.SpriteData{
 				Image: optionImg,

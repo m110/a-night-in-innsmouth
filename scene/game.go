@@ -8,12 +8,11 @@ import (
 	donburievents "github.com/yohamta/donburi/features/events"
 	"github.com/yohamta/donburi/features/math"
 
-	events "github.com/m110/secrets/events"
-
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/engine"
+	"github.com/m110/secrets/events"
 	"github.com/m110/secrets/system"
 )
 
@@ -56,6 +55,7 @@ func (g *Game) loadLevel() {
 	g.systems = []System{
 		system.NewDialog(),
 		system.NewControls(),
+		system.NewInventory(),
 		system.NewVelocity(),
 		system.NewCollision(),
 		system.NewText(),
@@ -100,45 +100,24 @@ func (g *Game) createWorld() donburi.World {
 
 	ui := archetype.NewUIRoot(world)
 
-	archetype.NewDialog(world, story.PassageByTitle("Arkham"))
+	archetype.NewDialog(
+		world,
+		story.PassageByTitle("Start"),
+	)
 
-	moneyText := archetype.New(world).
-		WithParent(ui).
-		WithLayer(component.SpriteUILayerBackground).
-		WithPosition(math.Vec2{
-			X: 10,
-			Y: 10,
-		}).
-		WithText(component.TextData{
-			Text: "Money:",
-		}).
-		Entry()
-
-	events.MoneyUpdatedEvent.Subscribe(world, func(w donburi.World, event events.MoneyUpdated) {
-		component.Text.Get(moneyText).Text = fmt.Sprintf("Money: %v", formatAsDollars(event.Amount))
-	})
-
-	inventoryText := archetype.New(world).
-		WithParent(ui).
-		WithLayer(component.SpriteUILayerBackground).
-		WithPosition(math.Vec2{
-			X: 10,
-			Y: 40,
-		}).
-		WithText(component.TextData{
-			Text: "Inventory:",
-		}).
-		Entry()
-
-	events.InventoryUpdatedEvent.Subscribe(world, func(w donburi.World, event events.InventoryUpdated) {
-		text := "Inventory:\n\n"
-		for _, item := range event.Items {
-			text += fmt.Sprintf("- %v x%v\n", item.Name, item.Count)
-		}
-		component.Text.Get(inventoryText).Text = text
-	})
+	g.createInventory(world, ui)
 
 	story.AddMoney(1000)
+
+	archetype.New(world).
+		WithScale(math.Vec2{
+			X: 0.5,
+			Y: 0.5,
+		}).
+		WithLayer(component.SpriteLayerBackground).
+		WithSprite(component.SpriteData{
+			Image: assets.Background,
+		})
 
 	return world
 }
@@ -169,6 +148,73 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	for _, s := range g.drawables {
 		s.Draw(g.world, screen)
 	}
+}
+
+const inventoryWidth = 250
+
+func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
+	inventoryButtonImg := ebiten.NewImage(inventoryWidth, 50)
+	inventoryButtonImg.Fill(assets.UIBackgroundColor)
+
+	inventoryButton := archetype.New(w).
+		WithParent(ui).
+		WithLayer(component.SpriteUILayerUI).
+		With(component.Active).
+		WithSprite(component.SpriteData{
+			Image: inventoryButtonImg,
+		}).
+		With(component.Inventory).
+		Entry()
+	component.Active.Get(inventoryButton).Active = true
+
+	archetype.New(w).
+		WithParent(inventoryButton).
+		WithLayerInherit().
+		WithText(component.TextData{
+			Text: "Inventory (e)",
+		}).
+		WithPosition(math.Vec2{
+			X: 10,
+			Y: 10,
+		})
+
+	inventoryImg := ebiten.NewImage(inventoryWidth, g.screenHeight)
+	inventoryImg.Fill(assets.UIBackgroundColor)
+
+	inventory := archetype.New(w).
+		WithParent(ui).
+		WithLayer(component.SpriteUILayerUI).
+		With(component.Active).
+		WithSprite(component.SpriteData{
+			Image: inventoryImg,
+		}).
+		With(component.Inventory).
+		Entry()
+
+	inventoryText := archetype.New(w).
+		WithParent(inventory).
+		WithLayerInherit().
+		WithPosition(math.Vec2{
+			X: 10,
+			Y: 10,
+		}).
+		WithText(component.TextData{
+			Text: "Inventory (e)",
+		}).
+		Entry()
+
+	events.InventoryUpdatedEvent.Subscribe(w, func(w donburi.World, event events.InventoryUpdated) {
+		text := "Inventory (e)\n\n- " + formatAsDollars(event.Money) + "\n"
+		for _, item := range event.Items {
+			var count string
+			if item.Count > 1 {
+				count = fmt.Sprintf(" x%v", item.Count)
+			}
+			text += fmt.Sprintf("- %v%v\n", item.Name, count)
+		}
+		component.Text.Get(inventoryText).Text = text
+		archetype.AdjustTextWidth(inventoryText, inventoryWidth-20)
+	})
 }
 
 func formatAsDollars(amount int) string {

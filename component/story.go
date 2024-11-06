@@ -105,9 +105,7 @@ func (s *Story) AddMoney(amount int) {
 	if s.Money < 0 {
 		panic("Negative money")
 	}
-	events.MoneyUpdatedEvent.Publish(s.world, events.MoneyUpdated{
-		Amount: s.Money,
-	})
+	s.publishInventoryUpdated()
 }
 
 func (s *Story) PassageByTitle(title string) *Passage {
@@ -132,6 +130,10 @@ func (s *Story) AddItem(item string) {
 		Count: 1,
 	})
 
+	s.publishInventoryUpdated()
+}
+
+func (s *Story) publishInventoryUpdated() {
 	var eventItems []events.Item
 	for _, i := range s.Items {
 		eventItems = append(eventItems, events.Item{
@@ -140,6 +142,7 @@ func (s *Story) AddItem(item string) {
 		})
 	}
 	events.InventoryUpdatedEvent.Publish(s.world, events.InventoryUpdated{
+		Money: s.Money,
 		Items: eventItems,
 	})
 }
