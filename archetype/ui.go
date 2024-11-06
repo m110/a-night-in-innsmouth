@@ -21,7 +21,7 @@ func MustFindUIRoot(w donburi.World) *donburi.Entry {
 	return engine.MustFindWithComponent(w, component.UI)
 }
 
-func AdjustTextWidth(entry *donburi.Entry, width int) {
+func AdjustTextWidth(entry *donburi.Entry, width int) string {
 	txt := component.Text.Get(entry)
 	font := FontFromSize(txt.Size)
 	var newText strings.Builder
@@ -61,6 +61,7 @@ func AdjustTextWidth(entry *donburi.Entry, width int) {
 	}
 
 	txt.Text = newText.String()
+	return txt.Text
 }
 
 func FontFromSize(size component.TextSize) *text.GoTextFace {

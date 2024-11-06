@@ -44,7 +44,6 @@ func ParseStory(content string) (component.RawStory, error) {
 	return story, nil
 }
 
-// parsePassage parses a single passage section
 func parsePassage(titleLine, content string) component.RawPassage {
 	passage := component.RawPassage{}
 
