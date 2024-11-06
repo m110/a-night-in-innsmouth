@@ -108,7 +108,7 @@ You wake up early in the morning.
 > [[Exit->Newburyport]]
 
 
-:: Innsmouth {"position":"2525,1550","size":"200,200"}
+:: Innsmouth {"position":"2700,1600","size":"200,200"}
 
 
 
@@ -124,15 +124,30 @@ addFact: askedAboutInnsmouth
 :: Newburyport {"position":"1150,1200","size":"200,200"}
 [if fact day2]
 It's early morning. The town is still quiet
+
 [else]
 The sun is getting low.
+
 [continue]
 
 > [[Go to the train station->Train Station]]
 > [[Talk with the Shopkeeper->Newburyport Shopkeeper]]
-> [unless fact day2] [[Visit your room at YMCA->YMCA]]
-> [if hasItem Arkham Daily Newspaper] [[Read the newspaper]]
-> [if fact day2] [[Go to Bus Station->Bus Station]]
+
+[if hasItem Arkham Daily Newspaper]
+
+> [[Read the newspaper]]
+
+[continue]
+
+[if fact day2]
+
+> [[Go to Bus Station->Bus Station]]
+
+[else]
+
+> [[Visit your room at YMCA->YMCA]]
+
+[continue]
 
 
 :: Newburyport Shopkeeper {"position":"1050,1550","size":"200,100"}
@@ -162,8 +177,14 @@ You heard that the steam train is your best option. Just need to keep in mind yo
 :: Train Station {"position":"1550,925","size":"100,100"}
 You arrive at the train station.
 
-> [unless hasItem Train Ticket to Arkham] [[Check tickets to Arkham]]
-> [if hasItem Train Ticket to Arkham] [if fact day2] [[Board the train to Arkham]] 
+[unless hasItem Train Ticket to Arkham]
+> [[Check tickets to Arkham]]
+[continue]
+
+[if hasItem Train Ticket to Arkham && fact day2]
+>  [[Board the train to Arkham]] 
+[continue]
+
 > [[Talk to the Agent->Agent]]
 > [[Exit->Newburyport]] 
 
@@ -171,9 +192,11 @@ You arrive at the train station.
 :: YMCA {"position":"1600,1475","size":"100,100"}
 [if fact hasWayOutOfNewburyport]
 You can go to sleep now.
+
+> [[Go to Sleep]]
+
 [else]
 You need a way to get our of Newburyport before you go to sleep.
 [continue]
 
-> [if fact hasWayOutOfNewburyport] [[Go to Sleep]]
 > {back} [[Go back->Newburyport]]

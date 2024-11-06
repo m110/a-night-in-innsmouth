@@ -75,7 +75,7 @@ func parsePassage(titleLine, content string) component.RawPassage {
 			}
 
 			macro := component.Macro{
-				Type:  component.MacroType(strings.TrimSpace(parts[0])),
+				Type:  parseMacroType(strings.TrimSpace(parts[0])),
 				Value: strings.TrimSpace(parts[1]),
 			}
 			passage.Macros = append(passage.Macros, macro)
@@ -85,11 +85,10 @@ func parsePassage(titleLine, content string) component.RawPassage {
 
 	passage.Title = strings.TrimSpace(titleLine)
 	content = strings.TrimSpace(content)
-	content, passage.Links = parseLinks(content)
 
 	var segments []component.Segment
 	currentSegment := component.Segment{}
-	var currentCondition *component.Condition
+	var currentConditions []component.Condition
 	conditionStarted := false
 
 	for _, segment := range strings.Split(content, "\n") {
@@ -98,7 +97,7 @@ func parsePassage(titleLine, content string) component.RawPassage {
 				panic("Invalid [else] tag")
 			}
 
-			if currentCondition == nil {
+			if len(currentConditions) == 0 {
 				panic("Missing else condition")
 			}
 
@@ -106,9 +105,11 @@ func parsePassage(titleLine, content string) component.RawPassage {
 				segments = append(segments, currentSegment)
 			}
 			currentSegment = component.Segment{}
-			currentCondition.Positive = !currentCondition.Positive
-			currentSegment.Conditions = append(currentSegment.Conditions, *currentCondition)
-			currentCondition = nil
+			for _, cond := range currentConditions {
+				cond.Positive = !cond.Positive
+				currentSegment.Conditions = append(currentSegment.Conditions, cond)
+			}
+			currentConditions = nil
 			continue
 		}
 
@@ -122,13 +123,18 @@ func parsePassage(titleLine, content string) component.RawPassage {
 			}
 			currentSegment = component.Segment{}
 			conditionStarted = false
-			currentCondition = nil
+			currentConditions = nil
 			continue
 		}
 
-		if strings.HasPrefix(segment, "[") {
+		if strings.HasPrefix(segment, "[if") || strings.HasPrefix(segment, "[unless") {
 			if conditionStarted {
-				panic("Invalid tag inside condition: " + segment)
+				if currentSegment.Text != "" {
+					segments = append(segments, currentSegment)
+				}
+				currentSegment = component.Segment{}
+				conditionStarted = false
+				currentConditions = nil
 			}
 
 			if currentSegment.Text != "" {
@@ -137,10 +143,9 @@ func parsePassage(titleLine, content string) component.RawPassage {
 			currentSegment = component.Segment{}
 			conditionStarted = true
 
-			condition := parseCondition(segment)
-			currentCondition = &condition
+			currentConditions = parseConditions(segment)
 
-			currentSegment.Conditions = append(currentSegment.Conditions, condition)
+			currentSegment.Conditions = append(currentSegment.Conditions, currentConditions...)
 			continue
 		}
 
@@ -151,88 +156,120 @@ func parsePassage(titleLine, content string) component.RawPassage {
 		segments = append(segments, currentSegment)
 	}
 
-	passage.Segments = segments
+	passage.Segments, passage.Links = parseLinks(segments)
 
 	return passage
 }
 
-func parseCondition(str string) component.Condition {
-	parts := strings.SplitN(strings.Trim(str, "[]"), " ", 3)
+func parseConditions(str string) []component.Condition {
+	var conditions []component.Condition
+
+	str = strings.Trim(str, "[]")
+	firstWord := strings.Split(str, " ")[0]
 
 	var positive bool
-	if parts[0] == "if" {
+	if firstWord == "if" {
 		positive = true
-	} else if parts[0] != "unless" {
-		panic("Invalid tag condition: " + parts[0])
+	} else if firstWord != "unless" {
+		panic("Invalid tag condition: " + firstWord + " " + str)
 	}
 
-	return component.Condition{
-		Positive: positive,
-		Type:     component.ConditionType(parts[1]),
-		Value:    parts[2],
+	str = strings.Trim(str[len(firstWord):], " ")
+
+	for _, cond := range strings.Split(str, "&&") {
+		parts := strings.SplitN(strings.TrimSpace(cond), " ", 2)
+
+		condType := parts[0]
+
+		condPositive := positive
+		if strings.HasPrefix(condType, "!") {
+			condPositive = !condPositive
+			condType = condType[1:]
+		}
+
+		c := component.Condition{
+			Positive: condPositive,
+			Type:     parseConditionType(condType),
+			Value:    parts[1],
+		}
+		conditions = append(conditions, c)
+	}
+	return conditions
+}
+
+// Match both [[Target]] and [[Text->Target]] format links
+var linkRegex = regexp.MustCompile(`(?m)^(?:>\s+)?(\{.*?\} )?(\[.*?\] )*\[\[(.*?)\]\]`)
+
+func parseLinks(segments []component.Segment) ([]component.Segment, []component.RawLink) {
+	finalSegments := []component.Segment{}
+	links := []component.RawLink{}
+
+	for _, segment := range segments {
+		matches := linkRegex.FindAllStringSubmatch(segment.Text, -1)
+		segment.Text = strings.TrimSpace(linkRegex.ReplaceAllString(segment.Text, ""))
+
+		for _, match := range matches {
+			if len(match) < 4 {
+				continue
+			}
+
+			link := component.RawLink{
+				Conditions: segment.Conditions,
+			}
+
+			tagPattern := regexp.MustCompile(`\{(.*?)\}`)
+			tagMatches := tagPattern.FindAllStringSubmatch(match[1], -1)
+			for _, tm := range tagMatches {
+				link.Tags = strings.Fields(tm[1])
+			}
+
+			// Check if link has display text
+			parts := strings.Split(match[3], "->")
+			if len(parts) > 1 {
+				link.Text = strings.TrimSpace(parts[0])
+				link.Target = strings.TrimSpace(parts[1])
+			} else {
+				link.Text = strings.TrimSpace(parts[0])
+				link.Target = link.Text
+			}
+
+			links = append(links, link)
+		}
+
+		if segment.Text != "" {
+			finalSegments = append(finalSegments, segment)
+		}
+	}
+
+	return finalSegments, links
+}
+
+func parseMacroType(str string) component.MacroType {
+	switch str {
+	case "addItem":
+		return component.MacroTypeAddItem
+	case "takeItem":
+		return component.MacroTypeTakeItem
+	case "addMoney":
+		return component.MacroTypeAddMoney
+	case "takeMoney":
+		return component.MacroTypeTakeMoney
+	case "addFact":
+		return component.MacroTypeAddFact
+	default:
+		panic("Invalid macro type: " + str)
 	}
 }
 
-// parseLinks extracts links from passage content
-func parseLinks(content string) (string, []component.RawLink) {
-	links := []component.RawLink{}
-
-	// Match both [[Target]] and [[Text->Target]] format links
-	linkRegex := regexp.MustCompile(`(?m)^(?:> )?(\{.*?\} )?(\[.*?\] )*\[\[(.*?)\]\]`)
-	matches := linkRegex.FindAllStringSubmatch(content, -1)
-
-	content = linkRegex.ReplaceAllString(content, "")
-
-	for _, match := range matches {
-		if len(match) < 4 {
-			continue
-		}
-
-		link := component.RawLink{}
-
-		tagPattern := regexp.MustCompile(`\{(.*?)\}`)
-		tagMatches := tagPattern.FindAllStringSubmatch(match[1], -1)
-		for _, tm := range tagMatches {
-			link.Tags = strings.Fields(tm[1])
-		}
-
-		conditionPattern := regexp.MustCompile(`\[(.*?)\]`)
-		conditionMatches := conditionPattern.FindAllStringSubmatch(match[2], -1)
-		for _, cm := range conditionMatches {
-			parts := strings.SplitN(cm[1], " ", 3)
-
-			if len(parts) < 2 {
-				panic("Invalid tag format: " + cm[1])
-			}
-
-			var positive bool
-			if parts[0] == "if" {
-				positive = true
-			} else if parts[0] != "unless" {
-				panic("Invalid condition: " + parts[0])
-			}
-
-			cond := component.Condition{
-				Positive: positive,
-				Type:     component.ConditionType(parts[1]),
-				Value:    parts[2],
-			}
-
-			link.Conditions = append(link.Conditions, cond)
-		}
-
-		// Check if link has display text
-		parts := strings.Split(match[3], "->")
-		if len(parts) > 1 {
-			link.Text = strings.TrimSpace(parts[0])
-			link.Target = strings.TrimSpace(parts[1])
-		} else {
-			link.Text = strings.TrimSpace(parts[0])
-			link.Target = link.Text
-		}
-
-		links = append(links, link)
+func parseConditionType(str string) component.ConditionType {
+	switch str {
+	case "hasItem":
+		return component.ConditionTypeHasItem
+	case "hasMoney":
+		return component.ConditionTypeHasMoney
+	case "fact":
+		return component.ConditionTypeFact
+	default:
+		panic("Invalid condition type: " + str)
 	}
-
-	return content, links
 }

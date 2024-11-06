@@ -133,6 +133,20 @@ func (s *Story) AddItem(item string) {
 	s.publishInventoryUpdated()
 }
 
+func (s *Story) TakeItem(item string) {
+	for i, it := range s.Items {
+		if it.Name == item {
+			if it.Count == 1 {
+				s.Items = append(s.Items[:i], s.Items[i+1:]...)
+			} else {
+				s.Items[i].Count--
+			}
+			s.publishInventoryUpdated()
+			return
+		}
+	}
+}
+
 func (s *Story) publishInventoryUpdated() {
 	var eventItems []events.Item
 	for _, i := range s.Items {
@@ -221,6 +235,8 @@ func (p *Passage) Visit() {
 		switch m.Type {
 		case MacroTypeAddItem:
 			p.story.AddItem(m.Value)
+		case MacroTypeTakeItem:
+			p.story.TakeItem(m.Value)
 		case MacroTypeAddFact:
 			p.story.AddFact(m.Value)
 		case MacroTypeAddMoney:
@@ -343,6 +359,7 @@ type MacroType string
 
 const (
 	MacroTypeAddItem   MacroType = "addItem"
+	MacroTypeTakeItem  MacroType = "takeItem"
 	MacroTypeAddFact   MacroType = "addFact"
 	MacroTypeAddMoney  MacroType = "addMoney"
 	MacroTypeTakeMoney MacroType = "takeMoney"
