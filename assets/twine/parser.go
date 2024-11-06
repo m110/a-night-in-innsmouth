@@ -90,9 +90,29 @@ func parsePassage(titleLine, content string) component.RawPassage {
 
 	var segments []component.Segment
 	currentSegment := component.Segment{}
+	var currentCondition *component.Condition
 	conditionStarted := false
 
 	for _, segment := range strings.Split(content, "\n") {
+		if segment == "[else]" {
+			if !conditionStarted {
+				panic("Invalid [else] tag")
+			}
+
+			if currentCondition == nil {
+				panic("Missing else condition")
+			}
+
+			if currentSegment.Text != "" {
+				segments = append(segments, currentSegment)
+			}
+			currentSegment = component.Segment{}
+			currentCondition.Positive = !currentCondition.Positive
+			currentSegment.Conditions = append(currentSegment.Conditions, *currentCondition)
+			currentCondition = nil
+			continue
+		}
+
 		if segment == "[continue]" {
 			if !conditionStarted {
 				panic("Invalid [continue] tag")
@@ -103,6 +123,7 @@ func parsePassage(titleLine, content string) component.RawPassage {
 			}
 			currentSegment = component.Segment{}
 			conditionStarted = false
+			currentCondition = nil
 			continue
 		}
 
@@ -117,21 +138,8 @@ func parsePassage(titleLine, content string) component.RawPassage {
 			currentSegment = component.Segment{}
 			conditionStarted = true
 
-			parts := strings.SplitN(strings.Trim(segment, "[]"), " ", 3)
-
-			// TODO deduplicate
-			var positive bool
-			if parts[0] == "if" {
-				positive = true
-			} else if parts[0] != "unless" {
-				panic("Invalid tag condition: " + parts[0])
-			}
-
-			condition := component.Condition{
-				Positive: positive,
-				Type:     component.ConditionType(parts[1]),
-				Value:    parts[2],
-			}
+			condition := parseCondition(segment)
+			currentCondition = &condition
 
 			currentSegment.Conditions = append(currentSegment.Conditions, condition)
 			continue
@@ -147,6 +155,23 @@ func parsePassage(titleLine, content string) component.RawPassage {
 	passage.Segments = segments
 
 	return passage
+}
+
+func parseCondition(str string) component.Condition {
+	parts := strings.SplitN(strings.Trim(str, "[]"), " ", 3)
+
+	var positive bool
+	if parts[0] == "if" {
+		positive = true
+	} else if parts[0] != "unless" {
+		panic("Invalid tag condition: " + parts[0])
+	}
+
+	return component.Condition{
+		Positive: positive,
+		Type:     component.ConditionType(parts[1]),
+		Value:    parts[2],
+	}
 }
 
 // parseLinks extracts links from passage content

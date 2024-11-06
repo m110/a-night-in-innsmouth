@@ -12,32 +12,50 @@ story
     "aaa": "red",
     "once": "red"
   },
-  "zoom": 1
+  "zoom": 0.6
 }
 
 
-:: Any news about Innsmouth? {"position":"450,800","size":"100,100"}
+:: Agent {"position":"1550,700","size":"200,100"}
+The Agent looks like a person not born here.
+
+"Hello, young lad. Looking to get to Arkham?"
+
+> [["I'm tight on budget. Any cheaper options?"->Cheaper Options]]
+> [["Nevermind"->Train Station]]
+
+
+:: Any news about Innsmouth? {"position":"925,1750","size":"100,100"}
 The shopkeeper looks at your nervously. He clearly doesn't want to talk about it.
 
-*Why would you ask about it, young lad?*
+"Why would you ask about it, young lad?"
 
 > [[Just curious]]
 > {back} [[Nevermind->Newburyport Shopkeeper]]
 
 
-:: Approach a stranger in the lobby {"position":"975,600","size":"100,100"}
-A gray-skinned old man sits alone in the lobby. You have a sudden impression that he's dead but suddenly, he looks you in the eye.
+:: Arkham {"position":"2400,550","size":"200,200"}
+You arrive safely at Arkham.
 
-You don't feel like talking with this man.
-
-> {back} [[Exit the hotel->Newburyport]]
+You feel like you missed something, but you don't know what it is.
 
 
-:: Board the train to Arkham {"position":"1475,150","size":"100,100"}
-You arrive safely in Arkham.
+- THE END -
 
 
-:: Buy the local newspaper [once] {"position":"200,575","size":"100,100"}
+:: Board the train to Arkham {"position":"2000,775","size":"100,100"}
+You take the train. The travel doesn't take long.
+
+> [[...->Arkham]]
+
+
+:: Bus Station {"position":"1850,1300","size":"100,100"}
+You see the bus to Innsmouth.
+
+> [[Board the Bus->Innsmouth]]
+
+
+:: Buy the local newspaper [once] {"position":"725,1550","size":"100,100"}
 addItem: Arkham Daily Newspaper
 takeMoney: 3
 --
@@ -46,66 +64,79 @@ Here you go!
 > [[Put the newspaper away->Newburyport Shopkeeper]]
 
 
-:: Buy the ticket to Arkham ($5) {"position":"1450,0","size":"100,100"}
+:: Buy the ticket to Arkham ($5) {"position":"1850,1075","size":"100,100"}
 takeMoney: 500
 addItem: Train Ticket to Arkham
+addFact: hasWayOutOfNewburyport
 --
 
 You bough the ticket.
 
-> [[Go back to Newburyport->Newburyport]]
+> [[Fold it and hide in t he pocket->Train Station]]
 
 
-:: Check the last page {"position":"125,275","size":"100,100"}
-*A cult has been found in the hills near Arkham.*
+:: Cheaper Options {"position":"1600,525","size":"100,100"}
+addFact: learnedAboutInnsmouth
+addFact: hasWayOutOfNewburyport
+--
+"Well, there is the bus to Innsmouth..."
 
-> {back} [[Stop reading->Newburyport]]
+"It leaves tomorrow morning."
+
+> [[Thanks->Agent]]
 
 
-:: Check tickets to Arkham {"position":"1300,100","size":"100,100"}
-The ticket is quite expensive.
+:: Check the last page {"position":"700,1200","size":"100,100"}
+"A cult has been found in the hills near Arkham."
+
+> {back} [[Put it down->Newburyport]]
+
+
+:: Check tickets to Arkham {"position":"2075,975","size":"100,100"}
+The ticket is quite expensive. The train leaves tomorrow morning.
 
 > [[Buy the ticket to Arkham ($5)]]
-> [[On the other hand...->Train Station]]
+> [[Reconsider...->Train Station]]
 
 
-:: Drive to Innsmouth today {"position":"1025,375","size":"100,100"}
-You board the bus.
+:: Go to Sleep {"position":"1475,1625","size":"100,100"}
+addFact: day2
+--
+
+You wake up early in the morning.
+
+> [[Exit->Newburyport]]
 
 
-:: Go get a hotel room for the night {"position":"800,500","size":"100,100"}
-No rooms for tonight.
-
-[if fact askedAboutInnsmouth]
-You notice an old man sitting in the lobby.
-[continue]
+:: Innsmouth {"position":"2525,1550","size":"200,200"}
 
 
-> [if fact askedAboutInnsmouth] [[Approach a stranger in the lobby]]
-> {back} [[Go back->Newburyport]]
 
-
-:: Just curious {"position":"650,800","size":"100,100"}
+:: Just curious {"position":"1200,1775","size":"100,100"}
 addFact: askedAboutInnsmouth
 --
-*I don't know anything interesting, sir.*
+"I don't know anything interesting, sir."
 
 
 > {back} [[Sure thing->Newburyport Shopkeeper]]
 
 
-:: Newburyport {"position":"675,275","size":"100,100"}
-The sun is getting low. The wind is howling, and you see crows sitting on the shops around you.
+:: Newburyport {"position":"1150,1200","size":"200,200"}
+[if fact day2]
+It's early morning. The town is still quiet
+[else]
+The sun is getting low.
+[continue]
 
 > [[Go to the train station->Train Station]]
 > [[Talk with the Shopkeeper->Newburyport Shopkeeper]]
-> [[Go get a hotel room for the night]]
+> [unless fact day2] [[Visit your room at YMCA->YMCA]]
 > [if hasItem Arkham Daily Newspaper] [[Read the newspaper]]
-> [[Drive to Innsmouth today]]
+> [if fact day2] [[Go to Bus Station->Bus Station]]
 
 
-:: Newburyport Shopkeeper {"position":"500,525","size":"100,100"}
-Hello, mister.
+:: Newburyport Shopkeeper {"position":"1050,1550","size":"200,100"}
+"Hello, mister."
 
 
 > [[Any news about Innsmouth?]]
@@ -113,28 +144,36 @@ Hello, mister.
 > {back} [[I gotta go->Newburyport]]
 
 
-:: Read the newspaper {"position":"200,425","size":"100,100"}
-Nothing interesting in the paper.
-
+:: Read the newspaper {"position":"700,1350","size":"100,100"}
 You flip the pages and get bored soon.
 
 > [[Check the last page]]
 > {back} [[Go Back->Newburyport]]
 
 
-:: Start {"position":"675,100","size":"100,100"}
+:: Start {"position":"1125,925","size":"100,100"}
 You arrive in Newburyport, meaning to continue to Arkham.
+
+You heard that the steam train is your best option. Just need to keep in mind your budget.
 
 [[Explore the city->Newburyport]]
 
 
-:: Talk to the agent {"position":"1175,225","size":"100,100"}
-
-
-
-:: Train Station {"position":"1075,50","size":"100,100"}
+:: Train Station {"position":"1550,925","size":"100,100"}
+You arrive at the train station.
 
 > [unless hasItem Train Ticket to Arkham] [[Check tickets to Arkham]]
-> [if hasItem Train Ticket to Arkham] [[Board the train to Arkham]] 
-> [[Talk to the agent]]
+> [if hasItem Train Ticket to Arkham] [if fact day2] [[Board the train to Arkham]] 
+> [[Talk to the Agent->Agent]]
 > [[Exit->Newburyport]] 
+
+
+:: YMCA {"position":"1600,1475","size":"100,100"}
+[if fact hasWayOutOfNewburyport]
+You can go to sleep now.
+[else]
+You need a way to get our of Newburyport before you go to sleep.
+[continue]
+
+> [if fact hasWayOutOfNewburyport] [[Go to Sleep]]
+> {back} [[Go back->Newburyport]]
