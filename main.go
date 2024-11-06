@@ -12,9 +12,10 @@ import (
 func main() {
 	quickFlag := flag.Bool("quick", false, "quick mode")
 	flag.Parse()
+	_ = quickFlag
 
 	config := game.Config{
-		Quick:        *quickFlag,
+		Quick:        true,
 		ScreenWidth:  1024,
 		ScreenHeight: 768,
 	}
