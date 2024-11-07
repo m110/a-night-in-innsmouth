@@ -8,18 +8,7 @@ import (
 
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
-	"github.com/m110/secrets/engine"
 )
-
-func NewUIRoot(w donburi.World) *donburi.Entry {
-	return New(w).
-		With(component.UI).
-		Entry()
-}
-
-func MustFindUIRoot(w donburi.World) *donburi.Entry {
-	return engine.MustFindWithComponent(w, component.UI)
-}
 
 func MeasureTextHeight(entry *donburi.Entry) float64 {
 	txt := component.Text.Get(entry)

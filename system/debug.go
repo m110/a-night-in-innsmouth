@@ -12,7 +12,6 @@ import (
 	"github.com/yohamta/donburi/filter"
 	"golang.org/x/image/colornames"
 
-	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/component"
 )
 
@@ -102,9 +101,6 @@ func (d *Debug) Draw(w donburi.World, screen *ebiten.Image) {
 		}
 	})
 
-	camera := archetype.MustFindCamera(w)
-	cameraPos := transform.Transform.Get(camera).LocalPosition
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(-cameraPos.X, -cameraPos.Y)
 	screen.DrawImage(d.offscreen, op)
 }

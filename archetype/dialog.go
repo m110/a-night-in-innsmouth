@@ -25,7 +25,7 @@ const (
 	passageMargin = 32
 )
 
-func NewDialog(w donburi.World) *donburi.Entry {
+func NewDialog(w donburi.World, parent *donburi.Entry) *donburi.Entry {
 	game := component.MustFindGame(w)
 	pos := math.Vec2{
 		X: float64(game.Settings.ScreenWidth) - dialogWidth - 25,
@@ -38,7 +38,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 	backgroundImage.Fill(assets.UIBackgroundColor)
 
 	dialog := New(w).
-		WithParent(MustFindUIRoot(w)).
+		WithParent(parent).
 		WithPosition(pos).
 		WithLayer(component.SpriteUILayerUI).
 		With(component.Active).
@@ -49,7 +49,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 
 	New(w).
 		WithParent(dialog).
-		WithLayerInherit().
+		WithLayer(component.SpriteUILayerBackground).
 		WithSprite(component.SpriteData{
 			Image: backgroundImage,
 		})

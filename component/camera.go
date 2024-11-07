@@ -1,13 +1,18 @@
 package component
 
 import (
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
-
-	"github.com/m110/secrets/engine"
 )
 
 type CameraData struct {
-	Zoom engine.FloatRange
+	Viewport *ebiten.Image
+	Root     *donburi.Entry
+	Index    int
+}
+
+func (d CameraData) Order() int {
+	return d.Index
 }
 
 var Camera = donburi.NewComponentType[CameraData]()

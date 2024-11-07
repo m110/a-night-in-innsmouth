@@ -3,6 +3,8 @@ package scene
 import (
 	"fmt"
 
+	"github.com/m110/secrets/engine"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	donburievents "github.com/yohamta/donburi/features/events"
@@ -12,7 +14,6 @@ import (
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/domain"
-	"github.com/m110/secrets/engine"
 	"github.com/m110/secrets/events"
 	"github.com/m110/secrets/system"
 )
@@ -60,6 +61,7 @@ func (g *Game) loadLevel() {
 		system.NewVelocity(),
 		system.NewCollision(),
 		system.NewAnimation(),
+		system.NewHierarchyValidator(),
 		system.NewText(),
 		system.NewTimeToLive(),
 		system.NewDestroy(),
@@ -79,14 +81,6 @@ func (g *Game) loadLevel() {
 func (g *Game) createWorld() donburi.World {
 	world := donburi.NewWorld()
 
-	archetype.NewCamera(world, math.Vec2{
-		X: 0,
-		Y: 0,
-	}, engine.FloatRange{
-		Min: 1,
-		Max: 1,
-	})
-
 	story := domain.NewStory(world, assets.Story)
 
 	game := world.Entry(world.Create(component.Game))
@@ -100,16 +94,18 @@ func (g *Game) createWorld() donburi.World {
 
 	world.Create(component.Debug)
 
-	ui := archetype.NewUIRoot(world)
+	ui := archetype.New(world).
+		WithLayer(component.SpriteUILayerUI).
+		Entry()
 
-	archetype.NewDialog(world)
+	archetype.NewDialog(world, ui)
 	archetype.NewPassage(world, story.PassageByTitle("Start"))
 
 	g.createInventory(world, ui)
 
 	story.AddMoney(1000)
 
-	archetype.New(world).
+	board := archetype.New(world).
 		WithScale(math.Vec2{
 			X: 0.5,
 			Y: 0.5,
@@ -117,7 +113,11 @@ func (g *Game) createWorld() donburi.World {
 		WithLayer(component.SpriteLayerBackground).
 		WithSprite(component.SpriteData{
 			Image: assets.Background,
-		})
+		}).
+		Entry()
+
+	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, board)
+	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)
 
 	return world
 }
