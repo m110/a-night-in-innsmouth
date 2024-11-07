@@ -6,13 +6,14 @@ import (
 	"image"
 	_ "image/png"
 
+	"github.com/m110/secrets/domain"
+
 	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/m110/secrets/assets/twine"
-	"github.com/m110/secrets/component"
 )
 
 var (
@@ -25,7 +26,7 @@ var (
 	//go:embed story.twee
 	story []byte
 
-	Story component.RawStory
+	Story domain.RawStory
 
 	SmallFont  *text.GoTextFace
 	NormalFont *text.GoTextFace

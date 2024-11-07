@@ -4,12 +4,12 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/domain"
 )
 
 // ParseStory parses the complete story text
-func ParseStory(content string) (component.RawStory, error) {
-	story := component.RawStory{}
+func ParseStory(content string) (domain.RawStory, error) {
+	story := domain.RawStory{}
 	sections := strings.Split(content, "::")
 
 	for _, section := range sections {
@@ -44,8 +44,8 @@ func ParseStory(content string) (component.RawStory, error) {
 	return story, nil
 }
 
-func parsePassage(titleLine, content string) component.RawPassage {
-	passage := component.RawPassage{}
+func parsePassage(titleLine, content string) domain.RawPassage {
+	passage := domain.RawPassage{}
 
 	// Extract tags
 	tagRegex := regexp.MustCompile(`\[(.*?)\]`)
@@ -74,7 +74,7 @@ func parsePassage(titleLine, content string) component.RawPassage {
 				continue
 			}
 
-			macro := component.Macro{
+			macro := domain.Macro{
 				Type:  parseMacroType(strings.TrimSpace(parts[0])),
 				Value: strings.TrimSpace(parts[1]),
 			}
@@ -86,9 +86,9 @@ func parsePassage(titleLine, content string) component.RawPassage {
 	passage.Title = strings.TrimSpace(titleLine)
 	content = strings.TrimSpace(content)
 
-	var segments []component.Segment
-	currentSegment := component.Segment{}
-	var currentConditions []component.Condition
+	var segments []domain.Segment
+	currentSegment := domain.Segment{}
+	var currentConditions []domain.Condition
 	conditionStarted := false
 
 	for _, segment := range strings.Split(content, "\n") {
@@ -104,7 +104,7 @@ func parsePassage(titleLine, content string) component.RawPassage {
 			if currentSegment.Text != "" {
 				segments = append(segments, currentSegment)
 			}
-			currentSegment = component.Segment{}
+			currentSegment = domain.Segment{}
 			for _, cond := range currentConditions {
 				cond.Positive = !cond.Positive
 				currentSegment.Conditions = append(currentSegment.Conditions, cond)
@@ -121,7 +121,7 @@ func parsePassage(titleLine, content string) component.RawPassage {
 			if currentSegment.Text != "" {
 				segments = append(segments, currentSegment)
 			}
-			currentSegment = component.Segment{}
+			currentSegment = domain.Segment{}
 			conditionStarted = false
 			currentConditions = nil
 			continue
@@ -132,7 +132,7 @@ func parsePassage(titleLine, content string) component.RawPassage {
 				if currentSegment.Text != "" {
 					segments = append(segments, currentSegment)
 				}
-				currentSegment = component.Segment{}
+				currentSegment = domain.Segment{}
 				conditionStarted = false
 				currentConditions = nil
 			}
@@ -140,7 +140,7 @@ func parsePassage(titleLine, content string) component.RawPassage {
 			if currentSegment.Text != "" {
 				segments = append(segments, currentSegment)
 			}
-			currentSegment = component.Segment{}
+			currentSegment = domain.Segment{}
 			conditionStarted = true
 
 			currentConditions = parseConditions(segment)
@@ -161,8 +161,8 @@ func parsePassage(titleLine, content string) component.RawPassage {
 	return passage
 }
 
-func parseConditions(str string) []component.Condition {
-	var conditions []component.Condition
+func parseConditions(str string) []domain.Condition {
+	var conditions []domain.Condition
 
 	str = strings.Trim(str, "[]")
 	firstWord := strings.Split(str, " ")[0]
@@ -187,7 +187,7 @@ func parseConditions(str string) []component.Condition {
 			condType = condType[1:]
 		}
 
-		c := component.Condition{
+		c := domain.Condition{
 			Positive: condPositive,
 			Type:     parseConditionType(condType),
 			Value:    parts[1],
@@ -200,9 +200,9 @@ func parseConditions(str string) []component.Condition {
 // Match both [[Target]] and [[Text->Target]] format links
 var linkRegex = regexp.MustCompile(`(?m)^(?:>\s+)?(\{.*?\} )?(\[.*?\] )*\[\[(.*?)\]\]`)
 
-func parseLinks(segments []component.Segment) ([]component.Segment, []component.RawLink) {
-	finalSegments := []component.Segment{}
-	links := []component.RawLink{}
+func parseLinks(segments []domain.Segment) ([]domain.Segment, []domain.RawLink) {
+	finalSegments := []domain.Segment{}
+	links := []domain.RawLink{}
 
 	for _, segment := range segments {
 		matches := linkRegex.FindAllStringSubmatch(segment.Text, -1)
@@ -213,7 +213,7 @@ func parseLinks(segments []component.Segment) ([]component.Segment, []component.
 				continue
 			}
 
-			link := component.RawLink{
+			link := domain.RawLink{
 				Conditions: segment.Conditions,
 			}
 
@@ -244,31 +244,31 @@ func parseLinks(segments []component.Segment) ([]component.Segment, []component.
 	return finalSegments, links
 }
 
-func parseMacroType(str string) component.MacroType {
+func parseMacroType(str string) domain.MacroType {
 	switch str {
 	case "addItem":
-		return component.MacroTypeAddItem
+		return domain.MacroTypeAddItem
 	case "takeItem":
-		return component.MacroTypeTakeItem
+		return domain.MacroTypeTakeItem
 	case "addMoney":
-		return component.MacroTypeAddMoney
+		return domain.MacroTypeAddMoney
 	case "takeMoney":
-		return component.MacroTypeTakeMoney
+		return domain.MacroTypeTakeMoney
 	case "addFact":
-		return component.MacroTypeAddFact
+		return domain.MacroTypeAddFact
 	default:
 		panic("Invalid macro type: " + str)
 	}
 }
 
-func parseConditionType(str string) component.ConditionType {
+func parseConditionType(str string) domain.ConditionType {
 	switch str {
 	case "hasItem":
-		return component.ConditionTypeHasItem
+		return domain.ConditionTypeHasItem
 	case "hasMoney":
-		return component.ConditionTypeHasMoney
+		return domain.ConditionTypeHasMoney
 	case "fact":
-		return component.ConditionTypeFact
+		return domain.ConditionTypeFact
 	default:
 		panic("Invalid condition type: " + str)
 	}

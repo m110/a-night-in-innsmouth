@@ -3,6 +3,8 @@ package scene
 import (
 	"fmt"
 
+	"github.com/m110/secrets/domain"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	donburievents "github.com/yohamta/donburi/features/events"
@@ -85,7 +87,7 @@ func (g *Game) createWorld() donburi.World {
 		Max: 1,
 	})
 
-	story := component.NewStory(world, assets.Story)
+	story := domain.NewStory(world, assets.Story)
 
 	game := world.Entry(world.Create(component.Game))
 	component.Game.SetValue(game, component.GameData{
@@ -100,10 +102,8 @@ func (g *Game) createWorld() donburi.World {
 
 	ui := archetype.NewUIRoot(world)
 
-	archetype.NewDialog(
-		world,
-		story.PassageByTitle("Start"),
-	)
+	archetype.NewDialog(world)
+	archetype.NewPassage(world, story.PassageByTitle("Start"))
 
 	g.createInventory(world, ui)
 

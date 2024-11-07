@@ -25,6 +25,35 @@ func MustFindChildWithComponent(parent *donburi.Entry, componentType component.I
 	return entry
 }
 
+func MustFindGrandchildWithComponent(parent *donburi.Entry, componentType component.IComponentType) *donburi.Entry {
+	child := mustFindGrandchildWithComponent(parent, componentType)
+	if child == nil {
+		panic(fmt.Sprintf("grandchild not found with component %T", componentType))
+	}
+
+	return child
+}
+
+func mustFindGrandchildWithComponent(parent *donburi.Entry, componentType component.IComponentType) *donburi.Entry {
+	children, ok := transform.GetChildren(parent)
+	if !ok {
+		return nil
+	}
+
+	for _, child := range children {
+		if child.HasComponent(componentType) {
+			return child
+		}
+
+		grandchild := mustFindGrandchildWithComponent(child, componentType)
+		if grandchild != nil {
+			return grandchild
+		}
+	}
+
+	return nil
+}
+
 func FindWithComponent(w donburi.World, componentType component.IComponentType) (*donburi.Entry, bool) {
 	return donburi.NewQuery(filter.Contains(componentType)).First(w)
 }

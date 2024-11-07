@@ -3,11 +3,13 @@ package component
 import (
 	"github.com/yohamta/donburi"
 
+	"github.com/m110/secrets/domain"
+
 	"github.com/m110/secrets/engine"
 )
 
 type GameData struct {
-	Story    *Story
+	Story    *domain.Story
 	Settings Settings
 }
 

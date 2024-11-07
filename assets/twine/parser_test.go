@@ -3,9 +3,9 @@ package twine
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/m110/secrets/domain"
 
-	"github.com/m110/secrets/component"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParsePassage(t *testing.T) {
@@ -51,19 +51,19 @@ Only if not 200 money.
 
 	parsed := parsePassage("This is title [tag1 tag2]", passage)
 
-	expectedPassage := component.RawPassage{
+	expectedPassage := domain.RawPassage{
 		Title: "This is title",
 		Tags:  []string{"tag1", "tag2"},
-		Segments: []component.Segment{
+		Segments: []domain.Segment{
 			{
 				Text: "First line.\n\nSecond line.\nAnd third line.",
 			},
 			{
 				Text: "Only if has key.",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: true,
-						Type:     component.ConditionTypeHasItem,
+						Type:     domain.ConditionTypeHasItem,
 						Value:    "key",
 					},
 				},
@@ -73,68 +73,68 @@ Only if not 200 money.
 			},
 			{
 				Text: "Only if has key.",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: true,
-						Type:     component.ConditionTypeHasItem,
+						Type:     domain.ConditionTypeHasItem,
 						Value:    "key",
 					},
 				},
 			},
 			{
 				Text: "Only if no key.",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: false,
-						Type:     component.ConditionTypeHasItem,
+						Type:     domain.ConditionTypeHasItem,
 						Value:    "key",
 					},
 				},
 			},
 			{
 				Text: "Only if has key and not 100 money.",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: true,
-						Type:     component.ConditionTypeHasItem,
+						Type:     domain.ConditionTypeHasItem,
 						Value:    "key",
 					},
 					{
 						Positive: false,
-						Type:     component.ConditionTypeHasMoney,
+						Type:     domain.ConditionTypeHasMoney,
 						Value:    "100",
 					},
 				},
 			},
 			{
 				Text: "Only if not 200 money.",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: false,
-						Type:     component.ConditionTypeHasMoney,
+						Type:     domain.ConditionTypeHasMoney,
 						Value:    "200",
 					},
 				},
 			},
 		},
-		Macros: []component.Macro{
+		Macros: []domain.Macro{
 			{
-				Type:  component.MacroTypeAddItem,
+				Type:  domain.MacroTypeAddItem,
 				Value: "key",
 			},
 			{
-				Type:  component.MacroTypeTakeMoney,
+				Type:  domain.MacroTypeTakeMoney,
 				Value: "100",
 			},
 		},
-		Links: []component.RawLink{
+		Links: []domain.RawLink{
 			{
 				Text:   "Poor man",
 				Target: "Poor man",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: false,
-						Type:     component.ConditionTypeHasMoney,
+						Type:     domain.ConditionTypeHasMoney,
 						Value:    "100",
 					},
 				},
@@ -142,10 +142,10 @@ Only if not 200 money.
 			{
 				Text:   "Rich man",
 				Target: "Rich man",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: true,
-						Type:     component.ConditionTypeHasMoney,
+						Type:     domain.ConditionTypeHasMoney,
 						Value:    "100",
 					},
 				},
@@ -153,10 +153,10 @@ Only if not 200 money.
 			{
 				Text:   "Leave Key",
 				Target: "No Key",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: true,
-						Type:     component.ConditionTypeHasItem,
+						Type:     domain.ConditionTypeHasItem,
 						Value:    "key",
 					},
 				},
@@ -203,32 +203,32 @@ The sun is getting low.
 
 	parsed := parsePassage("This is title [tag1 tag2]", passage)
 
-	expectedPassage := component.RawPassage{
+	expectedPassage := domain.RawPassage{
 		Title: "This is title",
 		Tags:  []string{"tag1", "tag2"},
-		Segments: []component.Segment{
+		Segments: []domain.Segment{
 			{
 				Text: "It's early morning. The town is still quiet",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: true,
-						Type:     component.ConditionTypeFact,
+						Type:     domain.ConditionTypeFact,
 						Value:    "day2",
 					},
 				},
 			},
 			{
 				Text: "The sun is getting low.",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: false,
-						Type:     component.ConditionTypeFact,
+						Type:     domain.ConditionTypeFact,
 						Value:    "day2",
 					},
 				},
 			},
 		},
-		Links: []component.RawLink{
+		Links: []domain.RawLink{
 			{
 				Text:   "Go to the train station",
 				Target: "Train Station",
@@ -240,10 +240,10 @@ The sun is getting low.
 			{
 				Text:   "Read the newspaper",
 				Target: "Read the newspaper",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: true,
-						Type:     component.ConditionTypeHasItem,
+						Type:     domain.ConditionTypeHasItem,
 						Value:    "Arkham Daily Newspaper",
 					},
 				},
@@ -251,10 +251,10 @@ The sun is getting low.
 			{
 				Text:   "Go to Bus Station",
 				Target: "Bus Station",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: true,
-						Type:     component.ConditionTypeFact,
+						Type:     domain.ConditionTypeFact,
 						Value:    "day2",
 					},
 				},
@@ -262,10 +262,10 @@ The sun is getting low.
 			{
 				Text:   "Visit your room at YMCA",
 				Target: "YMCA",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: false,
-						Type:     component.ConditionTypeFact,
+						Type:     domain.ConditionTypeFact,
 						Value:    "day2",
 					},
 				},
@@ -293,21 +293,21 @@ func TestParsePassage_Story2(t *testing.T) {
 
 	parsed := parsePassage("Train Station", passage)
 
-	expectedPassage := component.RawPassage{
+	expectedPassage := domain.RawPassage{
 		Title: "Train Station",
-		Segments: []component.Segment{
+		Segments: []domain.Segment{
 			{
 				Text: "You arrive at the train station.",
 			},
 		},
-		Links: []component.RawLink{
+		Links: []domain.RawLink{
 			{
 				Text:   "Check tickets to Arkham",
 				Target: "Check tickets to Arkham",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: false,
-						Type:     component.ConditionTypeHasItem,
+						Type:     domain.ConditionTypeHasItem,
 						Value:    "Train Ticket to Arkham",
 					},
 				},
@@ -315,15 +315,15 @@ func TestParsePassage_Story2(t *testing.T) {
 			{
 				Text:   "Board the train to Arkham",
 				Target: "Board the train to Arkham",
-				Conditions: []component.Condition{
+				Conditions: []domain.Condition{
 					{
 						Positive: true,
-						Type:     component.ConditionTypeHasItem,
+						Type:     domain.ConditionTypeHasItem,
 						Value:    "Train Ticket to Arkham",
 					},
 					{
 						Positive: true,
-						Type:     component.ConditionTypeFact,
+						Type:     domain.ConditionTypeFact,
 						Value:    "day2",
 					},
 				},

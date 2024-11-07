@@ -15,8 +15,9 @@ const (
 )
 
 const (
-	SpriteUILayerBackground = 200 + iota*10
-	SpriteUILayerUI
+	SpriteUILayerUI = 200 + iota*10
+	SpriteUILayerBackground
+	SpriteUILayerText
 	SpriteUILayerButtons
 	SpriteUILayerTop
 )

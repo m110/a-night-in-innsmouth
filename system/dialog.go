@@ -19,7 +19,7 @@ type Dialog struct {
 
 func NewDialog() *Dialog {
 	return &Dialog{
-		query: donburi.NewQuery(filter.Contains(component.Dialog)),
+		query: donburi.NewQuery(filter.Contains(component.Passage)),
 		buttonsQuery: donburi.NewQuery(
 			filter.Contains(
 				component.Collider,
@@ -35,65 +35,104 @@ func (d *Dialog) Update(w donburi.World) {
 		return
 	}
 
-	dialog := component.Dialog.Get(entry)
+	if !isActive(entry) {
+		return
+	}
+
+	passage := component.Passage.Get(entry)
+	stack := engine.MustGetParent(entry)
+	stackedView := component.StackedView.Get(stack)
 
 	// Game over?
-	if len(dialog.Passage.Links()) == 0 {
+	if len(passage.Passage.Links()) == 0 {
 		return
 	}
 
 	var updated bool
 	if inpututil.IsKeyJustPressed(ebiten.KeyDown) || inpututil.IsKeyJustPressed(ebiten.KeyS) {
-		dialog.ActiveOption++
+		passage.ActiveOption++
 		updated = true
 	} else if inpututil.IsKeyJustPressed(ebiten.KeyUp) || inpututil.IsKeyJustPressed(ebiten.KeyW) {
-		dialog.ActiveOption--
+		passage.ActiveOption--
 		updated = true
 	}
 
-	x, y := ebiten.CursorPosition()
-
-	touchIDs := inpututil.AppendJustPressedTouchIDs(nil)
-	touched := len(touchIDs) > 0
-	if touched {
-		x, y = ebiten.TouchPosition(touchIDs[0])
+	_, wy := ebiten.Wheel()
+	var scroll int
+	if ebiten.IsKeyPressed(ebiten.KeyPageUp) {
+		scroll = 10
+	} else if ebiten.IsKeyPressed(ebiten.KeyPageDown) {
+		scroll = -10
+	} else if wy < 0 {
+		scroll = -25
+	} else if wy > 0 {
+		scroll = 25
 	}
 
-	clickRect := engine.NewRect(float64(x), float64(y), 1, 1)
+	var touched bool
+	if scroll == 0 {
+		x, y := ebiten.CursorPosition()
 
-	d.buttonsQuery.Each(w, func(entry *donburi.Entry) {
-		pos := transform.WorldPosition(entry)
-		collider := component.Collider.Get(entry)
-		colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
-		if colliderRect.Intersects(clickRect) {
-			dialog.ActiveOption = component.DialogOption.Get(entry).Index
-			updated = true
+		touchIDs := inpututil.AppendJustPressedTouchIDs(nil)
+		touched = len(touchIDs) > 0
+		if touched {
+			x, y = ebiten.TouchPosition(touchIDs[0])
 		}
-	})
+		clickRect := engine.NewRect(float64(x), float64(y), 1, 1)
+
+		d.buttonsQuery.Each(w, func(entry *donburi.Entry) {
+			pos := transform.WorldPosition(entry)
+			collider := component.Collider.Get(entry)
+			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
+			if colliderRect.Intersects(clickRect) {
+				passage.ActiveOption = component.DialogOption.Get(entry).Index
+				updated = true
+			}
+		})
+	}
 
 	if updated {
-		if dialog.ActiveOption < 0 {
-			dialog.ActiveOption = len(dialog.Passage.Links()) - 1
+		if passage.ActiveOption < 0 {
+			passage.ActiveOption = len(passage.Passage.Links()) - 1
 		}
 
-		if dialog.ActiveOption >= len(dialog.Passage.Links()) {
-			dialog.ActiveOption = 0
+		if passage.ActiveOption >= len(passage.Passage.Links()) {
+			passage.ActiveOption = 0
 		}
 
 		indicator := engine.MustFindWithComponent(w, component.ActiveOptionIndicator)
 		dialogOptions := engine.FindChildrenWithComponent(entry, component.DialogOption)
 
-		transform.ChangeParent(indicator, dialogOptions[dialog.ActiveOption], false)
+		transform.ChangeParent(indicator, dialogOptions[passage.ActiveOption], false)
 	}
 
+	var next bool
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) ||
 		(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && updated) ||
 		(touched && updated) {
-		link := dialog.Passage.Links()[dialog.ActiveOption]
+		next = true
+	}
 
-		link.Visit()
+	if next && !stackedView.Scrolled {
+		archetype.NextPassage(w)
+	}
 
-		transform.RemoveRecursive(entry)
-		archetype.NewDialog(w, link.Target)
+	stackTransform := transform.GetTransform(stack)
+
+	if updated || next {
+		stackTransform.LocalPosition.Y = -stackedView.CurrentY
+		stackedView.Scrolled = false
+	} else if scroll != 0 {
+		stackedView.Scrolled = true
+		stackTransform.LocalPosition.Y += float64(scroll)
+
+		if stackTransform.LocalPosition.Y > 0 {
+			stackTransform.LocalPosition.Y = 0
+		}
+
+		if stackTransform.LocalPosition.Y <= -stackedView.CurrentY {
+			stackTransform.LocalPosition.Y = -stackedView.CurrentY
+			stackedView.Scrolled = false
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package component
+package domain
 
 import (
 	"strconv"

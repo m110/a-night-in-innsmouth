@@ -14,6 +14,7 @@ import (
 
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )
 
@@ -21,10 +22,7 @@ const (
 	dialogWidth = 500
 )
 
-func NewDialog(
-	w donburi.World,
-	passage *component.Passage,
-) *donburi.Entry {
+func NewDialog(w donburi.World) *donburi.Entry {
 	game := component.MustFindGame(w)
 	pos := math.Vec2{
 		X: float64(game.Settings.ScreenWidth) - dialogWidth - 25,
@@ -40,41 +38,121 @@ func NewDialog(
 		WithParent(MustFindUIRoot(w)).
 		WithPosition(pos).
 		WithLayer(component.SpriteUILayerUI).
+		With(component.Active).
 		With(component.Dialog).
-		WithSprite(component.SpriteData{
-			Image: backgroundImage,
-		}).
 		Entry()
 
-	component.Dialog.SetValue(dialog, component.DialogData{
-		Passage:      passage,
-		ActiveOption: 0,
-	})
+	component.Active.Get(dialog).Active = true
 
 	New(w).
 		WithParent(dialog).
 		WithLayerInherit().
+		WithSprite(component.SpriteData{
+			Image: backgroundImage,
+		})
+
+	stackOffset := New(w).
+		WithParent(dialog).
+		WithLayerInherit().
+		WithPosition(math.Vec2{
+			X: 0,
+			Y: 150,
+		}).entry
+
+	New(w).
+		WithParent(stackOffset).
+		WithLayerInherit().
+		With(component.StackedView).
+		Entry()
+
+	return dialog
+}
+
+func NextPassage(w donburi.World) *donburi.Entry {
+	activePassage := engine.MustFindWithComponent(w, component.Passage)
+	passage := component.Passage.Get(activePassage)
+
+	link := passage.Passage.Links()[passage.ActiveOption]
+	link.Visit()
+
+	activePassage.RemoveComponent(component.Passage)
+
+	dialog := engine.MustFindWithComponent(w, component.Dialog)
+	stack := engine.MustFindGrandchildWithComponent(dialog, component.StackedView)
+	stackedView := component.StackedView.Get(stack)
+
+	height := passage.Height
+
+	options := engine.FindChildrenWithComponent(activePassage, component.DialogOption)
+	for _, option := range options {
+		component.Destroy(option)
+
+		opt := component.DialogOption.Get(option)
+		if passage.ActiveOption == opt.Index {
+			txt := engine.MustFindChildWithComponent(option, component.Text)
+			transform.ChangeParent(txt, activePassage, false)
+			transform.GetTransform(txt).LocalPosition.Y = height
+			height += float64(opt.Lines * passageLineHeight)
+		}
+	}
+
+	for _, txt := range engine.FindChildrenWithComponent(activePassage, component.Text) {
+		component.Text.Get(txt).Color = assets.TextDarkColor
+	}
+
+	stackedView.CurrentY += height
+	stackTransform := transform.GetTransform(stack)
+	stackTransform.LocalPosition.Y = -stackedView.CurrentY
+
+	return NewPassage(w, link.Target)
+}
+
+const (
+	passageMarginLeft = 20
+	passageMarginTop  = 20
+
+	passageLineHeight = 36
+)
+
+func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
+	dialog := engine.MustFindWithComponent(w, component.Dialog)
+	stack := engine.MustFindGrandchildWithComponent(dialog, component.StackedView)
+	stackedView := component.StackedView.Get(stack)
+
+	passage := New(w).
+		WithParent(stack).
+		WithLayerInherit().
+		WithPosition(math.Vec2{
+			X: passageMarginLeft,
+			Y: stackedView.CurrentY + passageMarginTop,
+		}).
+		With(component.Passage).
+		Entry()
+
+	New(w).
+		WithParent(passage).
+		WithLayer(component.SpriteUILayerText).
 		WithPosition(math.Vec2{
 			X: 220,
 			Y: 20,
 		}).
 		WithText(component.TextData{
-			Text:  passage.Title,
+			Text:  domainPassage.Title,
 			Align: text.AlignCenter,
 		})
 
 	textBg := New(w).
-		WithParent(dialog).
-		WithLayerInherit().
+		WithParent(passage).
+		WithLayer(component.SpriteUILayerText).
 		WithPosition(math.Vec2{
-			X: 50,
-			Y: 50,
+			X: 20,
+			Y: 30,
 		}).
 		Entry()
 
 	txt := New(w).
 		WithText(component.TextData{
-			Text:           passage.Content(),
+			Text:           domainPassage.Content(),
 			Streaming:      true,
 			StreamingTimer: engine.NewTimer(500 * time.Millisecond),
 		}).
@@ -82,10 +160,13 @@ func NewDialog(
 		WithLayerInherit().
 		WithPosition(math.Vec2{
 			X: 10,
-			Y: 50,
+			Y: 20,
 		})
 
-	AdjustTextWidth(txt.Entry(), 380)
+	passageLines := 1
+
+	adjusted := AdjustTextWidth(txt.Entry(), 380)
+	passageLines += strings.Count(adjusted, "\n") + 1
 
 	optionColor := color.RGBA{
 		R: 50,
@@ -100,18 +181,14 @@ func NewDialog(
 	heightPerLine := 28
 	paddingPerLine := 4
 
-	for i, link := range passage.Links() {
+	for i, link := range domainPassage.Links() {
 		op := New(w).
-			WithParent(dialog).
-			WithLayerInherit().
+			WithParent(passage).
+			WithLayer(component.SpriteUILayerButtons).
 			WithSprite(component.SpriteData{}).
 			With(component.Collider).
 			With(component.DialogOption).
 			Entry()
-
-		component.DialogOption.SetValue(op, component.DialogOptionData{
-			Index: i,
-		})
 
 		if i == 0 {
 			indicatorImg := ebiten.NewImage(10, heightPerLine+paddingPerLine)
@@ -151,6 +228,11 @@ func NewDialog(
 		newText := AdjustTextWidth(opText, optionWidth)
 		lines := strings.Count(newText, "\n") + 1
 
+		component.DialogOption.SetValue(op, component.DialogOptionData{
+			Index: i,
+			Lines: lines,
+		})
+
 		lineHeight := heightPerLine*lines + paddingPerLine
 		optionImg := ebiten.NewImage(optionImageWidth, lineHeight)
 		optionImg.Fill(optionColor)
@@ -169,5 +251,11 @@ func NewDialog(
 		currentY += lineHeight + 24
 	}
 
-	return dialog
+	component.Passage.SetValue(passage, component.PassageData{
+		Passage:      domainPassage,
+		ActiveOption: 0,
+		Height:       float64(passageLines * passageLineHeight),
+	})
+
+	return passage
 }
