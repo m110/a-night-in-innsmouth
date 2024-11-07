@@ -150,10 +150,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 }
 
-const inventoryWidth = 250
+const (
+	inventoryWidth  = 250
+	inventoryHeight = 50
+)
 
 func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
-	inventoryButtonImg := ebiten.NewImage(inventoryWidth, 50)
+	inventoryButtonImg := ebiten.NewImage(inventoryWidth, inventoryHeight)
 	inventoryButtonImg.Fill(assets.UIBackgroundColor)
 
 	inventoryButton := archetype.New(w).
@@ -163,9 +166,16 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 		WithSprite(component.SpriteData{
 			Image: inventoryButtonImg,
 		}).
+		With(component.Collider).
 		With(component.Inventory).
 		Entry()
 	component.Active.Get(inventoryButton).Active = true
+
+	component.Collider.SetValue(inventoryButton, component.ColliderData{
+		Width:  float64(inventoryWidth),
+		Height: float64(inventoryHeight),
+		Layer:  component.CollisionLayerButton,
+	})
 
 	archetype.New(w).
 		WithParent(inventoryButton).
@@ -188,8 +198,15 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 		WithSprite(component.SpriteData{
 			Image: inventoryImg,
 		}).
+		With(component.Collider).
 		With(component.Inventory).
 		Entry()
+
+	component.Collider.SetValue(inventory, component.ColliderData{
+		Width:  float64(inventoryWidth),
+		Height: float64(g.screenHeight),
+		Layer:  component.CollisionLayerButton,
+	})
 
 	inventoryText := archetype.New(w).
 		WithParent(inventory).

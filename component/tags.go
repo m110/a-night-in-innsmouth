@@ -7,7 +7,6 @@ var (
 	// Other UI elements should be children of this entity.
 	UI = donburi.NewTag()
 
-	DialogOption          = donburi.NewTag()
 	ActiveOptionIndicator = donburi.NewTag()
 
 	Inventory = donburi.NewTag()

@@ -105,8 +105,13 @@ func NewDialog(
 			WithParent(dialog).
 			WithLayerInherit().
 			WithSprite(component.SpriteData{}).
+			With(component.Collider).
 			With(component.DialogOption).
 			Entry()
+
+		component.DialogOption.SetValue(op, component.DialogOptionData{
+			Index: i,
+		})
 
 		if i == 0 {
 			indicatorImg := ebiten.NewImage(10, heightPerLine+paddingPerLine)
@@ -155,6 +160,11 @@ func NewDialog(
 			Y: float64(currentY),
 		}
 		component.Sprite.Get(op).Image = optionImg
+		component.Collider.SetValue(op, component.ColliderData{
+			Width:  float64(optionImageWidth),
+			Height: float64(lineHeight),
+			Layer:  component.CollisionLayerButton,
+		})
 
 		currentY += lineHeight + 24
 	}

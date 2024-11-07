@@ -4,7 +4,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/yohamta/donburi"
+	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
+
+	"github.com/m110/secrets/engine"
 
 	"github.com/m110/secrets/component"
 )
@@ -24,7 +27,27 @@ func NewInventory() *Inventory {
 }
 
 func (i *Inventory) Update(w donburi.World) {
-	if inpututil.IsKeyJustPressed(ebiten.KeyE) {
+	var inventoryClicked bool
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		x, y := ebiten.CursorPosition()
+		mouseRect := engine.NewRect(float64(x), float64(y), 1, 1)
+
+		i.query.Each(w, func(entry *donburi.Entry) {
+			if !component.Active.Get(entry).Active {
+				return
+			}
+
+			collider := component.Collider.Get(entry)
+			pos := transform.WorldPosition(entry)
+			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
+
+			if colliderRect.Intersects(mouseRect) {
+				inventoryClicked = true
+			}
+		})
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyE) || inventoryClicked {
 		i.query.Each(w, func(entry *donburi.Entry) {
 			component.Active.Get(entry).Toggle()
 		})

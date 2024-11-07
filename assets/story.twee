@@ -44,6 +44,8 @@ You feel like you missed something, but you don't know what it is.
 
 
 :: Board the train to Arkham {"position":"2000,775","size":"100,100"}
+takeItem: Train Ticket to Arkham
+--
 You take the train. The travel doesn't take long.
 
 > [[...->Arkham]]
