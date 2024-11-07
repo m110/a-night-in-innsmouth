@@ -52,13 +52,20 @@ func (d *Dialog) Update(w donburi.World) {
 	}
 
 	x, y := ebiten.CursorPosition()
-	mouseRect := engine.NewRect(float64(x), float64(y), 1, 1)
+
+	touchIDs := inpututil.AppendJustPressedTouchIDs(nil)
+	touched := len(touchIDs) > 0
+	if touched {
+		x, y = ebiten.TouchPosition(touchIDs[0])
+	}
+
+	clickRect := engine.NewRect(float64(x), float64(y), 1, 1)
 
 	d.buttonsQuery.Each(w, func(entry *donburi.Entry) {
 		pos := transform.WorldPosition(entry)
 		collider := component.Collider.Get(entry)
 		colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
-		if colliderRect.Intersects(mouseRect) {
+		if colliderRect.Intersects(clickRect) {
 			dialog.ActiveOption = component.DialogOption.Get(entry).Index
 			updated = true
 		}
@@ -80,7 +87,8 @@ func (d *Dialog) Update(w donburi.World) {
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) ||
-		(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && updated) {
+		(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && updated) ||
+		(touched && updated) {
 		link := dialog.Passage.Links()[dialog.ActiveOption]
 
 		link.Visit()

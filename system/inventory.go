@@ -27,10 +27,23 @@ func NewInventory() *Inventory {
 }
 
 func (i *Inventory) Update(w donburi.World) {
-	var inventoryClicked bool
+	var clicked bool
+	x, y := 0, 0
+
+	touchIDs := inpututil.AppendJustPressedTouchIDs(nil)
+	if len(touchIDs) > 0 {
+		x, y = ebiten.TouchPosition(touchIDs[0])
+		clicked = true
+	}
+
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		x, y := ebiten.CursorPosition()
-		mouseRect := engine.NewRect(float64(x), float64(y), 1, 1)
+		x, y = ebiten.CursorPosition()
+		clicked = true
+	}
+
+	var inventoryClicked bool
+	if clicked {
+		clickRect := engine.NewRect(float64(x), float64(y), 1, 1)
 
 		i.query.Each(w, func(entry *donburi.Entry) {
 			if !component.Active.Get(entry).Active {
@@ -41,7 +54,7 @@ func (i *Inventory) Update(w donburi.World) {
 			pos := transform.WorldPosition(entry)
 			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
 
-			if colliderRect.Intersects(mouseRect) {
+			if colliderRect.Intersects(clickRect) {
 				inventoryClicked = true
 			}
 		})
