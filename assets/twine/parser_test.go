@@ -11,6 +11,7 @@ import (
 func TestParsePassage(t *testing.T) {
 	passage := `addItem: key
 takeMoney: 100
+setTitle: Actual title
 --
 First line.
 
@@ -52,8 +53,9 @@ Only if not 200 money.
 	parsed := parsePassage("This is title [tag1 tag2]", passage)
 
 	expectedPassage := domain.RawPassage{
-		Title: "This is title",
-		Tags:  []string{"tag1", "tag2"},
+		Title:  "This is title",
+		Header: "Actual title",
+		Tags:   []string{"tag1", "tag2"},
 		Segments: []domain.Segment{
 			{
 				Text: "First line.\n\nSecond line.\nAnd third line.",

@@ -16,25 +16,36 @@ story
 }
 
 
+:: "Any news about Innsmouth?" {"position":"925,1750","size":"100,100"}
+The shopkeeper looks at your nervously. He clearly doesn't want to talk about it.
+
+"Why would you ask about it, young lad?"
+
+> [["Just curious"]]
+> {back} [[Nevermind->Newburyport Grocery Store]]
+
+
+:: "Just curious" {"position":"1200,1775","size":"100,100"}
+addFact: askedAboutInnsmouth
+--
+"I don't know anything interesting, sir."
+
+
+> {back} [["Sure thing"->Newburyport Grocery Store]]
+
+
 :: Agent {"position":"1550,700","size":"200,100"}
 The Agent looks like a person not born here.
 
 "Hello, young lad. Looking to get to Arkham?"
 
 > [["I'm tight on budget. Any cheaper options?"->Cheaper Options]]
-> [["Nevermind"->Train Station]]
-
-
-:: Any news about Innsmouth? {"position":"925,1750","size":"100,100"}
-The shopkeeper looks at your nervously. He clearly doesn't want to talk about it.
-
-"Why would you ask about it, young lad?"
-
-> [[Just curious]]
-> {back} [[Nevermind->Newburyport Shopkeeper]]
+> [["Nevermind."->Train Station]]
 
 
 :: Arkham {"position":"2400,550","size":"200,200"}
+setTitle: Arkham
+--
 You arrive safely at Arkham.
 
 You feel like you missed something, but you don't know what it is.
@@ -44,6 +55,7 @@ You feel like you missed something, but you don't know what it is.
 
 
 :: Board the train to Arkham {"position":"2000,775","size":"100,100"}
+setTitle: Train to Arkham
 takeItem: Train Ticket to Arkham
 --
 You take the train. The travel doesn't take long.
@@ -52,6 +64,8 @@ You take the train. The travel doesn't take long.
 
 
 :: Bus Station {"position":"1850,1300","size":"100,100"}
+setTitle: Bus Station
+--
 You see the bus to Innsmouth.
 
 > [[Board the Bus->Innsmouth]]
@@ -61,9 +75,9 @@ You see the bus to Innsmouth.
 addItem: Arkham Daily Newspaper
 takeMoney: 3
 --
-Here you go!
+"Here you go!"
 
-> [[Put the newspaper away->Newburyport Shopkeeper]]
+> [[Put the newspaper away->Newburyport Grocery Store]]
 
 
 :: Buy the ticket to Arkham ($5) {"position":"1850,1075","size":"100,100"}
@@ -74,7 +88,7 @@ addFact: hasWayOutOfNewburyport
 
 You bough the ticket.
 
-> [[Fold it and hide in t he pocket->Train Station]]
+> [[Fold it and hide in the pocket->Train Station]]
 
 
 :: Cheaper Options {"position":"1600,525","size":"100,100"}
@@ -85,7 +99,7 @@ addFact: hasWayOutOfNewburyport
 
 "It leaves tomorrow morning."
 
-> [[Thanks->Agent]]
+> [["Thanks."->Agent]]
 
 
 :: Check the last page {"position":"700,1200","size":"100,100"}
@@ -111,19 +125,15 @@ You wake up early in the morning.
 
 
 :: Innsmouth {"position":"2700,1600","size":"200,200"}
-
-
-
-:: Just curious {"position":"1200,1775","size":"100,100"}
-addFact: askedAboutInnsmouth
+setTitle: Innsmouth
 --
-"I don't know anything interesting, sir."
 
-
-> {back} [[Sure thing->Newburyport Shopkeeper]]
+You arrive at Innsmouth.
 
 
 :: Newburyport {"position":"1150,1200","size":"200,200"}
+setTitle: Newburyport
+--
 [if fact day2]
 It's early morning. The town is still quiet
 
@@ -133,7 +143,7 @@ The sun is getting low.
 [continue]
 
 > [[Go to the train station->Train Station]]
-> [[Talk with the Shopkeeper->Newburyport Shopkeeper]]
+> [[Visit the Grocery Store->Newburyport Grocery Store]]
 
 [if hasItem Arkham Daily Newspaper]
 
@@ -152,13 +162,17 @@ The sun is getting low.
 [continue]
 
 
-:: Newburyport Shopkeeper {"position":"1050,1550","size":"200,100"}
+:: Newburyport Grocery Store {"position":"1050,1550","size":"200,100"}
+setTitle: Grocery Store
+--
+The shopkeeper welcomes you.
+
 "Hello, mister."
 
 
-> [[Any news about Innsmouth?]]
+> [["Any news about Innsmouth?"]]
 > [[Buy the local newspaper (3 cents)->Buy the local newspaper]]
-> {back} [[I gotta go->Newburyport]]
+> {back} [["I gotta go"->Newburyport]]
 
 
 :: Read the newspaper {"position":"700,1350","size":"100,100"}
@@ -177,6 +191,8 @@ You heard that the steam train is your best option. Just need to keep in mind yo
 
 
 :: Train Station {"position":"1550,925","size":"100,100"}
+setTitle: Train Station
+--
 You arrive at the train station.
 
 [unless hasItem Train Ticket to Arkham]
@@ -192,6 +208,8 @@ You arrive at the train station.
 
 
 :: YMCA {"position":"1600,1475","size":"100,100"}
+setTitle: YMCA
+--
 [if fact hasWayOutOfNewburyport]
 You can go to sleep now.
 

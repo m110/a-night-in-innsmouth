@@ -15,6 +15,7 @@ type RawStory struct {
 
 type RawPassage struct {
 	Title    string
+	Header   string
 	Tags     []string
 	Segments []Segment
 	Macros   []Macro
@@ -68,6 +69,7 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 		passage := &Passage{
 			story:     story,
 			Title:     p.Title,
+			Header:    p.Header,
 			Segments:  p.Segments,
 			Macros:    p.Macros,
 			IsOneTime: isOneTime,
@@ -198,6 +200,7 @@ type Passage struct {
 	story *Story
 
 	Title    string
+	Header   string
 	Segments []Segment
 	Macros   []Macro
 	AllLinks []*Link

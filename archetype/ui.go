@@ -21,6 +21,14 @@ func MustFindUIRoot(w donburi.World) *donburi.Entry {
 	return engine.MustFindWithComponent(w, component.UI)
 }
 
+func MeasureTextHeight(entry *donburi.Entry) float64 {
+	txt := component.Text.Get(entry)
+	font := FontFromSize(txt.Size)
+	// TODO Hardcoded here and in render system
+	_, h := text.Measure(txt.Text, font, 24)
+	return h
+}
+
 func AdjustTextWidth(entry *donburi.Entry, width int) string {
 	txt := component.Text.Get(entry)
 	font := FontFromSize(txt.Size)
@@ -60,7 +68,7 @@ func AdjustTextWidth(entry *donburi.Entry, width int) string {
 		}
 	}
 
-	txt.Text = newText.String()
+	txt.Text = strings.TrimSpace(newText.String())
 	return txt.Text
 }
 

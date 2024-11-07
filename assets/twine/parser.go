@@ -71,12 +71,20 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 		for _, macro := range macros {
 			parts := strings.Split(macro, ":")
 			if len(parts) < 2 {
+				panic("Invalid macro: " + macro)
+			}
+
+			macroType := strings.TrimSpace(parts[0])
+			macroValue := strings.TrimSpace(parts[1])
+
+			if macroType == "setTitle" {
+				passage.Header = macroValue
 				continue
 			}
 
 			macro := domain.Macro{
-				Type:  parseMacroType(strings.TrimSpace(parts[0])),
-				Value: strings.TrimSpace(parts[1]),
+				Type:  parseMacroType(macroType),
+				Value: macroValue,
 			}
 			passage.Macros = append(passage.Macros, macro)
 		}

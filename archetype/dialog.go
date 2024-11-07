@@ -1,6 +1,7 @@
 package archetype
 
 import (
+	"fmt"
 	"image/color"
 	"strings"
 	"time"
@@ -20,6 +21,8 @@ import (
 
 const (
 	dialogWidth = 500
+
+	passageMargin = 32
 )
 
 func NewDialog(w donburi.World) *donburi.Entry {
@@ -88,6 +91,10 @@ func NextPassage(w donburi.World) *donburi.Entry {
 
 	height := passage.Height
 
+	for _, txt := range engine.FindChildrenWithComponent(activePassage, component.Text) {
+		component.Text.Get(txt).Color = assets.TextDarkColor
+	}
+
 	options := engine.FindChildrenWithComponent(activePassage, component.DialogOption)
 	for _, option := range options {
 		component.Destroy(option)
@@ -96,13 +103,14 @@ func NextPassage(w donburi.World) *donburi.Entry {
 		if passage.ActiveOption == opt.Index {
 			txt := engine.MustFindChildWithComponent(option, component.Text)
 			transform.ChangeParent(txt, activePassage, false)
-			transform.GetTransform(txt).LocalPosition.Y = height
-			height += float64(opt.Lines * passageLineHeight)
+			transform.GetTransform(txt).LocalPosition = math.Vec2{
+				X: 2,
+				Y: height,
+			}
+			t := component.Text.Get(txt)
+			t.Text = fmt.Sprintf("-> %s", t.Text)
+			height += MeasureTextHeight(txt)
 		}
-	}
-
-	for _, txt := range engine.FindChildrenWithComponent(activePassage, component.Text) {
-		component.Text.Get(txt).Color = assets.TextDarkColor
 	}
 
 	stackedView.CurrentY += height
@@ -124,8 +132,6 @@ func NextPassage(w donburi.World) *donburi.Entry {
 const (
 	passageMarginLeft = 20
 	passageMarginTop  = 20
-
-	passageLineHeight = 36
 )
 
 func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
@@ -143,26 +149,26 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 		With(component.Passage).
 		Entry()
 
-	New(w).
-		WithParent(passage).
-		WithLayer(component.SpriteUILayerText).
-		WithPosition(math.Vec2{
-			X: 220,
-			Y: 20,
-		}).
-		WithText(component.TextData{
-			Text:  domainPassage.Title,
-			Align: text.AlignCenter,
-		})
+	textY := float64(passageMargin)
+	passageHeight := textY
 
-	textBg := New(w).
-		WithParent(passage).
-		WithLayer(component.SpriteUILayerText).
-		WithPosition(math.Vec2{
-			X: 20,
-			Y: 30,
-		}).
-		Entry()
+	if domainPassage.Header != "" {
+		header := New(w).
+			WithParent(passage).
+			WithLayer(component.SpriteUILayerText).
+			WithPosition(math.Vec2{
+				X: 220,
+				Y: 20,
+			}).
+			WithText(component.TextData{
+				Text:  domainPassage.Header,
+				Align: text.AlignCenter,
+			}).
+			Entry()
+
+		textY += 20.0
+		passageHeight += MeasureTextHeight(header) + 20.0
+	}
 
 	txt := New(w).
 		WithText(component.TextData{
@@ -170,17 +176,16 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 			Streaming:      true,
 			StreamingTimer: engine.NewTimer(500 * time.Millisecond),
 		}).
-		WithParent(textBg).
-		WithLayerInherit().
+		WithParent(passage).
+		WithLayer(component.SpriteUILayerText).
 		WithPosition(math.Vec2{
 			X: 10,
-			Y: 20,
-		})
+			Y: textY,
+		}).
+		Entry()
 
-	passageLines := 1
-
-	adjusted := AdjustTextWidth(txt.Entry(), 380)
-	passageLines += strings.Count(adjusted, "\n") + 1
+	AdjustTextWidth(txt, 380)
+	passageHeight += MeasureTextHeight(txt)
 
 	optionColor := color.RGBA{
 		R: 50,
@@ -252,7 +257,7 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 		optionImg.Fill(optionColor)
 
 		transform.GetTransform(op).LocalPosition = math.Vec2{
-			X: 50,
+			X: 24,
 			Y: float64(currentY),
 		}
 		component.Sprite.Get(op).Image = optionImg
@@ -268,7 +273,7 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 	component.Passage.SetValue(passage, component.PassageData{
 		Passage:      domainPassage,
 		ActiveOption: 0,
-		Height:       float64(passageLines * passageLineHeight),
+		Height:       passageHeight,
 	})
 
 	return passage
