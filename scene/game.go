@@ -3,8 +3,6 @@ package scene
 import (
 	"fmt"
 
-	"github.com/m110/secrets/domain"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	donburievents "github.com/yohamta/donburi/features/events"
@@ -13,6 +11,7 @@ import (
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 	"github.com/m110/secrets/events"
 	"github.com/m110/secrets/system"
@@ -60,6 +59,7 @@ func (g *Game) loadLevel() {
 		system.NewInventory(),
 		system.NewVelocity(),
 		system.NewCollision(),
+		system.NewAnimation(),
 		system.NewText(),
 		system.NewTimeToLive(),
 		system.NewDestroy(),

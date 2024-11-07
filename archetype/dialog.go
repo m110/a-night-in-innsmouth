@@ -59,11 +59,16 @@ func NewDialog(w donburi.World) *donburi.Entry {
 			Y: 150,
 		}).entry
 
-	New(w).
+	stack := New(w).
 		WithParent(stackOffset).
 		WithLayerInherit().
 		With(component.StackedView).
+		With(component.Animation).
 		Entry()
+
+	component.Animation.SetValue(stack, component.AnimationData{
+		Timer: engine.NewTimer(500 * time.Millisecond),
+	})
 
 	return dialog
 }
@@ -102,7 +107,16 @@ func NextPassage(w donburi.World) *donburi.Entry {
 
 	stackedView.CurrentY += height
 	stackTransform := transform.GetTransform(stack)
-	stackTransform.LocalPosition.Y = -stackedView.CurrentY
+	startY := stackTransform.LocalPosition.Y
+
+	anim := component.Animation.Get(stack)
+	anim.Update = func(e *donburi.Entry) {
+		stackTransform.LocalPosition.Y = startY - height*anim.Timer.PercentDone()
+		if anim.Timer.IsReady() {
+			anim.Stop()
+		}
+	}
+	anim.Start()
 
 	return NewPassage(w, link.Target)
 }
