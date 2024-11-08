@@ -11,6 +11,7 @@ import (
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
+	"github.com/yohamta/donburi/filter"
 	"golang.org/x/image/colornames"
 
 	"github.com/m110/secrets/assets"
@@ -37,7 +38,7 @@ func NewDialog(w donburi.World, parent *donburi.Entry) *donburi.Entry {
 	backgroundImage := ebiten.NewImage(dialogWidth, height)
 	backgroundImage.Fill(assets.UIBackgroundColor)
 
-	dialog := New(w).
+	dialog := NewTagged(w, "Dialog").
 		WithParent(parent).
 		WithPosition(pos).
 		WithLayer(component.SpriteUILayerUI).
@@ -47,33 +48,46 @@ func NewDialog(w donburi.World, parent *donburi.Entry) *donburi.Entry {
 
 	component.Active.Get(dialog).Active = true
 
-	New(w).
+	NewTagged(w, "Dialog Background").
 		WithParent(dialog).
 		WithLayer(component.SpriteUILayerBackground).
 		WithSprite(component.SpriteData{
 			Image: backgroundImage,
 		})
 
-	stackOffset := New(w).
-		WithParent(dialog).
-		WithLayerInherit().
-		WithPosition(math.Vec2{
-			X: 0,
-			Y: 150,
-		}).entry
+	return dialog
+}
 
-	stack := New(w).
-		WithParent(stackOffset).
-		WithLayerInherit().
+func NewDialogLog(w donburi.World) *donburi.Entry {
+	game := component.MustFindGame(w)
+	// TODO deduplicate
+	pos := math.Vec2{
+		X: float64(game.Settings.ScreenWidth) - dialogWidth - 25,
+		Y: 0,
+	}
+
+	height := game.Settings.ScreenHeight
+	log := NewTagged(w, "Log").
+		WithLayer(component.SpriteUILayerUI).
+		With(component.DialogLog).
 		With(component.StackedView).
 		With(component.Animation).
 		Entry()
 
-	component.Animation.SetValue(stack, component.AnimationData{
+	// TODO not sure if best place for this
+	NewCamera(
+		w,
+		pos,
+		engine.Size{Width: dialogWidth, Height: height - 400},
+		2,
+		log,
+	)
+
+	component.Animation.SetValue(log, component.AnimationData{
 		Timer: engine.NewTimer(500 * time.Millisecond),
 	})
 
-	return dialog
+	return log
 }
 
 func NextPassage(w donburi.World) *donburi.Entry {
@@ -85,9 +99,8 @@ func NextPassage(w donburi.World) *donburi.Entry {
 
 	activePassage.RemoveComponent(component.Passage)
 
-	dialog := engine.MustFindWithComponent(w, component.Dialog)
-	stack := engine.MustFindGrandchildWithComponent(dialog, component.StackedView)
-	stackedView := component.StackedView.Get(stack)
+	dialogLog := engine.MustFindWithComponent(w, component.DialogLog)
+	stackedView := component.StackedView.Get(dialogLog)
 
 	height := passage.Height
 
@@ -95,29 +108,41 @@ func NextPassage(w donburi.World) *donburi.Entry {
 		component.Text.Get(txt).Color = assets.TextDarkColor
 	}
 
-	options := engine.FindChildrenWithComponent(activePassage, component.DialogOption)
-	for _, option := range options {
-		component.Destroy(option)
-
-		opt := component.DialogOption.Get(option)
-		if passage.ActiveOption == opt.Index {
-			txt := engine.MustFindChildWithComponent(option, component.Text)
-			transform.ChangeParent(txt, activePassage, false)
-			transform.GetTransform(txt).LocalPosition = math.Vec2{
-				X: 2,
-				Y: height,
-			}
-			t := component.Text.Get(txt)
-			t.Text = fmt.Sprintf("-> %s", t.Text)
-			height += MeasureTextHeight(txt)
+	q := donburi.NewQuery(filter.And(filter.Contains(component.DialogOption)))
+	q.Each(w, func(e *donburi.Entry) {
+		// TODO How is this possible? Should be long destroyed at this point
+		if e.HasComponent(component.Destroyed) {
+			return
 		}
-	}
+		opt := component.DialogOption.Get(e)
+		if passage.ActiveOption == opt.Index {
+			txt := engine.MustFindChildWithComponent(e, component.Text)
+
+			t := component.Text.Get(txt)
+
+			newOption := NewTagged(w, "Option Selected").
+				WithParent(activePassage).
+				WithLayerInherit().
+				WithPosition(math.Vec2{
+					X: 2,
+					Y: height,
+				}).
+				WithText(component.TextData{
+					Text: fmt.Sprintf("-> %s", t.Text),
+				}).
+				Entry()
+
+			height += MeasureTextHeight(newOption)
+		}
+
+		component.Destroy(e)
+	})
 
 	stackedView.CurrentY += height
-	stackTransform := transform.GetTransform(stack)
+	stackTransform := transform.GetTransform(dialogLog)
 	startY := stackTransform.LocalPosition.Y
 
-	anim := component.Animation.Get(stack)
+	anim := component.Animation.Get(dialogLog)
 	anim.Update = func(e *donburi.Entry) {
 		stackTransform.LocalPosition.Y = startY - height*anim.Timer.PercentDone()
 		if anim.Timer.IsReady() {
@@ -126,22 +151,22 @@ func NextPassage(w donburi.World) *donburi.Entry {
 	}
 	anim.Start()
 
-	return NewPassage(w, link.Target)
+	p := NewPassage(w, link.Target)
+	return p
 }
 
 const (
 	passageMarginLeft = 20
-	passageMarginTop  = 20
+	passageMarginTop  = 170
 )
 
 func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
-	dialog := engine.MustFindWithComponent(w, component.Dialog)
-	stack := engine.MustFindGrandchildWithComponent(dialog, component.StackedView)
-	stackedView := component.StackedView.Get(stack)
+	log := engine.MustFindWithComponent(w, component.DialogLog)
+	stackedView := component.StackedView.Get(log)
 
-	passage := New(w).
-		WithParent(stack).
-		WithLayerInherit().
+	passage := NewTagged(w, "Passage").
+		WithParent(log).
+		WithLayer(component.SpriteUILayerText).
 		WithPosition(math.Vec2{
 			X: passageMarginLeft,
 			Y: stackedView.CurrentY + passageMarginTop,
@@ -153,9 +178,9 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 	passageHeight := textY
 
 	if domainPassage.Header != "" {
-		header := New(w).
+		header := NewTagged(w, "Header").
 			WithParent(passage).
-			WithLayer(component.SpriteUILayerText).
+			WithLayerInherit().
 			WithPosition(math.Vec2{
 				X: 220,
 				Y: 20,
@@ -170,14 +195,14 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 		passageHeight += MeasureTextHeight(header) + 20.0
 	}
 
-	txt := New(w).
+	txt := NewTagged(w, "Passage Text").
 		WithText(component.TextData{
 			Text:           domainPassage.Content(),
 			Streaming:      true,
 			StreamingTimer: engine.NewTimer(500 * time.Millisecond),
 		}).
 		WithParent(passage).
-		WithLayer(component.SpriteUILayerText).
+		WithLayerInherit().
 		WithPosition(math.Vec2{
 			X: 10,
 			Y: textY,
@@ -196,13 +221,15 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 
 	optionImageWidth := 400
 	optionWidth := 380
-	currentY := 300
+	currentY := 400
 	heightPerLine := 28
 	paddingPerLine := 4
 
+	dialog := engine.MustFindWithComponent(w, component.Dialog)
+
 	for i, link := range domainPassage.Links() {
-		op := New(w).
-			WithParent(passage).
+		op := NewTagged(w, "Option").
+			WithParent(dialog).
 			WithLayer(component.SpriteUILayerButtons).
 			WithSprite(component.SpriteData{}).
 			With(component.Collider).
@@ -213,7 +240,7 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 			indicatorImg := ebiten.NewImage(10, heightPerLine+paddingPerLine)
 			indicatorImg.Fill(colornames.Lightyellow)
 
-			New(w).
+			NewTagged(w, "Indicator").
 				WithParent(op).
 				WithLayerInherit().
 				WithPosition(math.Vec2{
@@ -231,7 +258,7 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 			color = assets.TextDarkColor
 		}
 
-		opText := New(w).
+		opText := NewTagged(w, "Option Text").
 			WithParent(op).
 			WithLayerInherit().
 			WithPosition(math.Vec2{

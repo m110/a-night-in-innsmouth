@@ -20,6 +20,11 @@ func New(w donburi.World) EntryBuilder {
 	}
 }
 
+func NewTagged(w donburi.World, tag string) EntryBuilder {
+	e := New(w).WithTag(tag)
+	return e
+}
+
 func (b EntryBuilder) With(c donburicomponent.IComponentType) EntryBuilder {
 	if !b.entry.HasComponent(c) {
 		b.entry.AddComponent(c)
@@ -77,6 +82,16 @@ func (b EntryBuilder) WithText(text component.TextData) EntryBuilder {
 	}
 	b.With(component.Text)
 	component.Text.SetValue(b.entry, text)
+	return b
+}
+
+func (b EntryBuilder) WithTag(tag string) EntryBuilder {
+	if !b.entry.HasComponent(component.Tag) {
+		b.With(component.Tag)
+	}
+	component.Tag.SetValue(b.entry, component.TagData{
+		Tag: tag,
+	})
 	return b
 }
 

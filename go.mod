@@ -24,3 +24,5 @@ require (
 	golang.org/x/sys v0.26.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/yohamta/donburi => github.com/m110/donburi v0.0.0-20241108153554-7643ffb21f8b

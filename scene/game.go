@@ -3,8 +3,6 @@ package scene
 import (
 	"fmt"
 
-	"github.com/m110/secrets/engine"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	donburievents "github.com/yohamta/donburi/features/events"
@@ -14,6 +12,7 @@ import (
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/domain"
+	"github.com/m110/secrets/engine"
 	"github.com/m110/secrets/events"
 	"github.com/m110/secrets/system"
 )
@@ -94,18 +93,19 @@ func (g *Game) createWorld() donburi.World {
 
 	world.Create(component.Debug)
 
-	ui := archetype.New(world).
+	ui := archetype.NewTagged(world, "UI").
 		WithLayer(component.SpriteUILayerUI).
 		Entry()
 
 	archetype.NewDialog(world, ui)
+	archetype.NewDialogLog(world)
 	archetype.NewPassage(world, story.PassageByTitle("Start"))
 
 	g.createInventory(world, ui)
 
 	story.AddMoney(1000)
 
-	board := archetype.New(world).
+	board := archetype.NewTagged(world, "Board").
 		WithScale(math.Vec2{
 			X: 0.5,
 			Y: 0.5,
@@ -159,7 +159,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 	inventoryButtonImg := ebiten.NewImage(inventoryWidth, inventoryHeight)
 	inventoryButtonImg.Fill(assets.UIBackgroundColor)
 
-	inventoryButton := archetype.New(w).
+	inventoryButton := archetype.NewTagged(w, "Inventory Button").
 		WithParent(ui).
 		WithLayer(component.SpriteUILayerUI).
 		With(component.Active).
@@ -177,7 +177,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 		Layer:  component.CollisionLayerButton,
 	})
 
-	archetype.New(w).
+	archetype.NewTagged(w, "Inventory Button Text").
 		WithParent(inventoryButton).
 		WithLayerInherit().
 		WithText(component.TextData{
@@ -191,7 +191,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 	inventoryImg := ebiten.NewImage(inventoryWidth, g.screenHeight)
 	inventoryImg.Fill(assets.UIBackgroundColor)
 
-	inventory := archetype.New(w).
+	inventory := archetype.NewTagged(w, "Inventory").
 		WithParent(ui).
 		WithLayer(component.SpriteUILayerUI).
 		With(component.Active).
@@ -208,7 +208,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 		Layer:  component.CollisionLayerButton,
 	})
 
-	inventoryText := archetype.New(w).
+	inventoryText := archetype.NewTagged(w, "Inventory Text").
 		WithParent(inventory).
 		WithLayerInherit().
 		WithPosition(math.Vec2{

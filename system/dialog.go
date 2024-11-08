@@ -101,9 +101,11 @@ func (d *Dialog) Update(w donburi.World) {
 		}
 
 		indicator := engine.MustFindWithComponent(w, component.ActiveOptionIndicator)
-		dialogOptions := engine.FindChildrenWithComponent(entry, component.DialogOption)
-
-		transform.ChangeParent(indicator, dialogOptions[passage.ActiveOption], false)
+		d.buttonsQuery.Each(w, func(entry *donburi.Entry) {
+			if component.DialogOption.Get(entry).Index == passage.ActiveOption {
+				transform.ChangeParent(indicator, entry, false)
+			}
+		})
 	}
 
 	var next bool

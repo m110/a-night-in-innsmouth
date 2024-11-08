@@ -93,7 +93,7 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 		cameraPos := transform.WorldPosition(entry)
 
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(-cameraPos.X, -cameraPos.Y)
+		op.GeoM.Translate(cameraPos.X, cameraPos.Y)
 
 		r.offscreen.DrawImage(camera.Viewport, op)
 	})

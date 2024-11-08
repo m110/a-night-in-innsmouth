@@ -16,7 +16,7 @@ func NewCamera(
 	index int,
 	root *donburi.Entry,
 ) *donburi.Entry {
-	camera := New(w).
+	camera := NewTagged(w, "Camera").
 		WithPosition(startPosition).
 		With(component.Camera).
 		Entry()

@@ -7,4 +7,8 @@ type DialogOptionData struct {
 	Lines int
 }
 
+func (d DialogOptionData) Order() int {
+	return d.Index
+}
+
 var DialogOption = donburi.NewComponentType[DialogOptionData]()

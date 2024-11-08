@@ -2,6 +2,7 @@ package system
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -48,6 +49,12 @@ func (d *Debug) Update(w donburi.World) {
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		d.debug.Enabled = !d.debug.Enabled
+	}
+
+	if d.debug.Enabled {
+		if inpututil.IsKeyJustPressed(ebiten.KeyP) {
+			PrintHierarchy(w)
+		}
 	}
 }
 
@@ -103,4 +110,66 @@ func (d *Debug) Draw(w donburi.World, screen *ebiten.Image) {
 
 	op := &ebiten.DrawImageOptions{}
 	screen.DrawImage(d.offscreen, op)
+}
+
+func PrintHierarchy(w donburi.World) {
+	fmt.Println("\n=== Full Entity Hierarchy ===")
+
+	// Find all entities with Transform
+	roots := make([]*donburi.Entry, 0)
+	donburi.NewQuery(filter.Contains(transform.Transform)).Each(w, func(entry *donburi.Entry) {
+		if entry.HasComponent(transform.Transform) {
+			// Only include entities without parents as roots
+			if parent, ok := transform.GetParent(entry); !ok || !parent.Valid() {
+				roots = append(roots, entry)
+			}
+		}
+	})
+
+	// Recursive print function
+	var printEntry func(entry *donburi.Entry, depth int)
+	printEntry = func(entry *donburi.Entry, depth int) {
+		indent := strings.Repeat("  ", depth)
+
+		if !entry.Valid() {
+			fmt.Printf("%sEntity %v (invalid)\n", entry.Entity(), indent)
+			return
+		}
+		// Print entity info
+		tag := "no tag"
+		if entry.HasComponent(component.Tag) {
+			tag = component.Tag.Get(entry).Tag
+		}
+
+		// List relevant components
+		components := []string{}
+		if entry.HasComponent(component.Passage) {
+			components = append(components, "Passage")
+		}
+		if entry.HasComponent(component.StackedView) {
+			components = append(components, "StackedView")
+		}
+		if entry.HasComponent(component.DialogOption) {
+			components = append(components, "DialogOption")
+		}
+
+		componentStr := ""
+		if len(components) > 0 {
+			componentStr = fmt.Sprintf(" [%s]", strings.Join(components, ", "))
+		}
+
+		fmt.Printf("%sEntity %v (%s)%s\n", indent, entry.Entity(), tag, componentStr)
+
+		// Print children recursively
+		if children, ok := transform.GetChildren(entry); ok && len(children) > 0 {
+			for _, child := range children {
+				printEntry(child, depth+1)
+			}
+		}
+	}
+
+	// Print each root
+	for _, root := range roots {
+		printEntry(root, 0)
+	}
 }
