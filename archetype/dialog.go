@@ -109,11 +109,12 @@ func NextPassage(w donburi.World) *donburi.Entry {
 	}
 
 	q := donburi.NewQuery(filter.And(filter.Contains(component.DialogOption)))
+	var options []*donburi.Entry
 	q.Each(w, func(e *donburi.Entry) {
-		// TODO How is this possible? Should be long destroyed at this point
-		if e.HasComponent(component.Destroyed) {
-			return
-		}
+		options = append(options, e)
+	})
+
+	for _, e := range options {
 		opt := component.DialogOption.Get(e)
 		if passage.ActiveOption == opt.Index {
 			txt := engine.MustFindChildWithComponent(e, component.Text)
@@ -136,7 +137,7 @@ func NextPassage(w donburi.World) *donburi.Entry {
 		}
 
 		component.Destroy(e)
-	})
+	}
 
 	stackedView.CurrentY += height
 	stackTransform := transform.GetTransform(dialogLog)
