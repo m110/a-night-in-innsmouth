@@ -90,11 +90,16 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 			}
 		}
 
+		if camera.Mask != nil {
+			op := &ebiten.DrawImageOptions{}
+			op.Blend = ebiten.BlendDestinationIn
+			camera.Viewport.DrawImage(camera.Mask, op)
+		}
+
 		cameraPos := transform.WorldPosition(entry)
 
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(cameraPos.X, cameraPos.Y)
-
 		r.offscreen.DrawImage(camera.Viewport, op)
 	})
 

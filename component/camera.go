@@ -9,6 +9,7 @@ type CameraData struct {
 	Viewport *ebiten.Image
 	Root     *donburi.Entry
 	Index    int
+	Mask     *ebiten.Image
 }
 
 func (d CameraData) Order() int {

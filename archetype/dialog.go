@@ -75,7 +75,7 @@ func NewDialogLog(w donburi.World) *donburi.Entry {
 		Entry()
 
 	// TODO not sure if best place for this
-	NewCamera(
+	cam := NewCamera(
 		w,
 		pos,
 		engine.Size{Width: dialogWidth, Height: height - 400},
@@ -83,11 +83,36 @@ func NewDialogLog(w donburi.World) *donburi.Entry {
 		log,
 	)
 
+	component.Camera.Get(cam).Mask = CreateScrollMask(dialogWidth, height-400)
+
 	component.Animation.SetValue(log, component.AnimationData{
 		Timer: engine.NewTimer(500 * time.Millisecond),
 	})
 
 	return log
+}
+
+func CreateScrollMask(width, height int) *ebiten.Image {
+	img := ebiten.NewImage(width, height)
+
+	fadeHeight := 50
+
+	for y := 0; y < height; y++ {
+		var alpha uint8 = 255
+
+		if y < fadeHeight {
+			alpha = uint8(float64(y) / float64(fadeHeight) * 255)
+		} else if y > height-fadeHeight {
+			distFromBottom := height - y
+			alpha = uint8(float64(distFromBottom) / float64(fadeHeight) * 255)
+		}
+
+		for x := 0; x < width; x++ {
+			img.Set(x, y, color.RGBA{A: alpha})
+		}
+	}
+
+	return img
 }
 
 func NextPassage(w donburi.World) *donburi.Entry {
@@ -129,7 +154,8 @@ func NextPassage(w donburi.World) *donburi.Entry {
 					Y: height,
 				}).
 				WithText(component.TextData{
-					Text: fmt.Sprintf("-> %s", t.Text),
+					Text:  fmt.Sprintf("-> %s", t.Text),
+					Color: assets.TextBlueColor,
 				}).
 				Entry()
 

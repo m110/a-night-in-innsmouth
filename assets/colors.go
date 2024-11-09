@@ -15,6 +15,12 @@ var (
 		B: 100,
 		A: 255,
 	}
+	TextBlueColor = color.RGBA{
+		R: 199,
+		G: 239,
+		B: 247,
+		A: 255,
+	}
 
 	UIBackgroundColor = color.RGBA{
 		R: 25,

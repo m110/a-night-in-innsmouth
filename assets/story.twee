@@ -51,7 +51,7 @@ You arrive safely at Arkham.
 You feel like you missed something, but you don't know what it is.
 
 
-- THE END -
+THE END
 
 
 :: Board the train to Arkham {"position":"2000,775","size":"100,100"}
@@ -124,11 +124,18 @@ You wake up early in the morning.
 > [[Exit->Newburyport]]
 
 
+:: Hotel {"position":"3150,1600","size":"100,100"}
+
+
+
 :: Innsmouth {"position":"2700,1600","size":"200,200"}
 setTitle: Innsmouth
 --
 
 You arrive at Innsmouth.
+
+> [[Hotel]]
+> [[Restaurant]]
 
 
 :: Newburyport {"position":"1150,1200","size":"200,200"}
@@ -180,6 +187,10 @@ You flip the pages and get bored soon.
 
 > [[Check the last page]]
 > {back} [[Go Back->Newburyport]]
+
+
+:: Restaurant {"position":"3000,2025","size":"100,100"}
+
 
 
 :: Start {"position":"1125,925","size":"100,100"}
