@@ -74,16 +74,17 @@ func NewDialogLog(w donburi.World) *donburi.Entry {
 		With(component.Animation).
 		Entry()
 
+	cameraHeight := height - 300
 	// TODO not sure if best place for this
 	cam := NewCamera(
 		w,
 		pos,
-		engine.Size{Width: dialogWidth, Height: height - 400},
+		engine.Size{Width: dialogWidth, Height: cameraHeight},
 		2,
 		log,
 	)
 
-	component.Camera.Get(cam).Mask = CreateScrollMask(dialogWidth, height-400)
+	component.Camera.Get(cam).Mask = CreateScrollMask(dialogWidth, cameraHeight)
 
 	component.Animation.SetValue(log, component.AnimationData{
 		Timer: engine.NewTimer(500 * time.Millisecond),
@@ -151,15 +152,23 @@ func NextPassage(w donburi.World) *donburi.Entry {
 				WithLayerInherit().
 				WithPosition(math.Vec2{
 					X: 2,
-					Y: height,
+					Y: height + passageMargin,
 				}).
 				WithText(component.TextData{
 					Text:  fmt.Sprintf("-> %s", t.Text),
 					Color: assets.TextBlueColor,
 				}).
+				With(component.Bounds).
 				Entry()
 
-			height += MeasureTextHeight(newOption)
+			AdjustTextWidth(newOption, passageTextWidth)
+
+			textHeight := MeasureTextHeight(newOption)
+			height += passageMargin + textHeight
+			component.Bounds.SetValue(newOption, component.BoundsData{
+				Width:  passageTextWidth,
+				Height: textHeight,
+			})
 		}
 
 		component.Destroy(e)
@@ -178,13 +187,14 @@ func NextPassage(w donburi.World) *donburi.Entry {
 	}
 	anim.Start()
 
-	p := NewPassage(w, link.Target)
-	return p
+	return NewPassage(w, link.Target)
 }
 
 const (
 	passageMarginLeft = 20
-	passageMarginTop  = 170
+	passageMarginTop  = 250
+
+	passageTextWidth = 380
 )
 
 func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
@@ -216,10 +226,20 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 				Text:  domainPassage.Header,
 				Align: text.AlignCenter,
 			}).
+			With(component.Bounds).
 			Entry()
 
-		textY += 20.0
-		passageHeight += MeasureTextHeight(header) + 20.0
+		textHeight := MeasureTextHeight(header)
+
+		component.Bounds.SetValue(header, component.BoundsData{
+			Width:  passageTextWidth,
+			Height: textHeight,
+		})
+
+		headerMargin := 20.0
+
+		textY += textHeight + headerMargin
+		passageHeight += textHeight + headerMargin
 	}
 
 	txt := NewTagged(w, "Passage Text").
@@ -234,10 +254,17 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 			X: 10,
 			Y: textY,
 		}).
+		With(component.Bounds).
 		Entry()
 
-	AdjustTextWidth(txt, 380)
-	passageHeight += MeasureTextHeight(txt)
+	AdjustTextWidth(txt, passageTextWidth)
+	textHeight := MeasureTextHeight(txt)
+	passageHeight += textHeight
+
+	component.Bounds.SetValue(txt, component.BoundsData{
+		Width:  passageTextWidth,
+		Height: textHeight,
+	})
 
 	optionColor := color.RGBA{
 		R: 50,
@@ -248,7 +275,7 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 
 	optionImageWidth := 400
 	optionWidth := 380
-	currentY := 400
+	currentY := 500
 	heightPerLine := 28
 	paddingPerLine := 4
 
@@ -280,7 +307,7 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 				With(component.ActiveOptionIndicator)
 		}
 
-		color := assets.TextColor
+		color := assets.TextBlueColor
 		if link.AllVisited() {
 			color = assets.TextDarkColor
 		}
@@ -311,7 +338,7 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 		optionImg.Fill(optionColor)
 
 		transform.GetTransform(op).LocalPosition = math.Vec2{
-			X: 24,
+			X: 30,
 			Y: float64(currentY),
 		}
 		component.Sprite.Get(op).Image = optionImg

@@ -160,6 +160,7 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 		currentSegment.Text += segment + "\n"
 	}
 
+	currentSegment.Text = strings.TrimSpace(currentSegment.Text)
 	if currentSegment.Text != "" {
 		segments = append(segments, currentSegment)
 	}

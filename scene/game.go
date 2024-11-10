@@ -51,8 +51,6 @@ func NewGame(screenWidth int, screenHeight int) *Game {
 }
 
 func (g *Game) loadLevel() {
-	debug := system.NewDebug(g.loadLevel)
-
 	g.systems = []System{
 		system.NewDialog(),
 		system.NewControls(),
@@ -64,12 +62,11 @@ func (g *Game) loadLevel() {
 		system.NewText(),
 		system.NewTimeToLive(),
 		system.NewDestroy(),
-		debug,
+		system.NewDebug(g.loadLevel),
 	}
 
 	g.drawables = []Drawable{
 		system.NewRender(),
-		debug,
 	}
 
 	g.world = g.createWorld()

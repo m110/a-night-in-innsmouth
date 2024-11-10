@@ -10,9 +10,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
+	"golang.org/x/image/colornames"
 
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/assets"
@@ -87,6 +89,16 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 				if child.entry.HasComponent(component.Text) {
 					renderText(child.entry, camera.Viewport)
 				}
+
+				if r.debug.Enabled {
+					if child.entry.HasComponent(component.Bounds) {
+						renderBounds(child.entry, camera.Viewport)
+					}
+
+					if child.entry.HasComponent(component.Collider) {
+						renderCollider(child.entry, camera.Viewport)
+					}
+				}
 			}
 		}
 
@@ -106,11 +118,24 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 	screen.DrawImage(r.offscreen, nil)
 
 	if r.debug.Enabled {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("FPS: %v", int(ebiten.ActualFPS())), 10, 10)
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("TPS: %v", int(ebiten.ActualTPS())), 10, 30)
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Rendered entities: %v", count), 10, 150)
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("World entities: %v", w.Len()), 10, 130)
+		debugX := 280
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("FPS: %v", int(ebiten.ActualFPS())), debugX, 20)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("TPS: %v", int(ebiten.ActualTPS())), debugX, 40)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("World entities: %v", w.Len()), debugX, 80)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Rendered entities: %v", count), debugX, 100)
 	}
+}
+
+func renderBounds(entry *donburi.Entry, offscreen *ebiten.Image) {
+	bounds := component.Bounds.Get(entry)
+	pos := transform.WorldPosition(entry)
+	vector.StrokeRect(offscreen, float32(pos.X), float32(pos.Y), float32(bounds.Width), float32(bounds.Height), 1, colornames.Yellow, false)
+}
+
+func renderCollider(entry *donburi.Entry, offscreen *ebiten.Image) {
+	collider := component.Collider.Get(entry)
+	pos := transform.WorldPosition(entry)
+	vector.StrokeRect(offscreen, float32(pos.X), float32(pos.Y), float32(collider.Width), float32(collider.Height), 1, colornames.Lime, false)
 }
 
 func getAllChildren(entry *donburi.Entry, rootLayer component.LayerID) []entryWithLayer {
