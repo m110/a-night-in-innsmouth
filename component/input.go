@@ -8,9 +8,7 @@ import (
 type InputData struct {
 	Disabled bool
 
-	MoveUpKey    ebiten.Key
 	MoveRightKey ebiten.Key
-	MoveDownKey  ebiten.Key
 	MoveLeftKey  ebiten.Key
 	MoveSpeed    float64
 

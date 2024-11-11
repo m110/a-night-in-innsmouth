@@ -10,4 +10,6 @@ var (
 	DialogCamera = donburi.NewTag()
 
 	Inventory = donburi.NewTag()
+
+	POIIndicator = donburi.NewTag()
 )

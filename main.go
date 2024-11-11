@@ -16,7 +16,7 @@ func main() {
 
 	config := game.Config{
 		Quick:        true,
-		ScreenWidth:  1300,
+		ScreenWidth:  1024,
 		ScreenHeight: 768,
 	}
 

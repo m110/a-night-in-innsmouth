@@ -55,6 +55,12 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 
 	count := 0
 	r.camerasQuery.EachOrdered(w, component.Camera, func(entry *donburi.Entry) {
+		if entry.HasComponent(component.Active) {
+			if !component.Active.Get(entry).Active {
+				return
+			}
+		}
+
 		camera := component.Camera.Get(entry)
 
 		if !camera.Root.HasComponent(component.Layer) {
@@ -140,7 +146,7 @@ func renderCameraDebug(entry *donburi.Entry, offscreen *ebiten.Image) {
 func renderBoundsDebug(entry *donburi.Entry, camera *component.CameraData) {
 	bounds := component.Bounds.Get(entry)
 	pos := camera.WorldPositionToViewportPosition(entry)
-	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(bounds.Width), float32(bounds.Height), 1, colornames.Yellow, false)
+	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(bounds.Width), float32(bounds.Height), 1, colornames.Magenta, false)
 }
 
 func renderColliderDebug(entry *donburi.Entry, camera *component.CameraData) {
@@ -216,6 +222,12 @@ func renderSprite(entry *donburi.Entry, camera *component.CameraData) {
 	op.GeoM.Translate(-halfW, -halfH)
 	op.GeoM.Rotate(float64(int(transform.WorldRotation(entry)-sprite.OriginalRotation)%360) * 2 * stdmath.Pi / 360)
 	op.GeoM.Translate(halfW, halfH)
+
+	if sprite.FlipY {
+		op.GeoM.Translate(-halfW, 0)
+		op.GeoM.Scale(-1, 1)
+		op.GeoM.Translate(halfW, 0)
+	}
 
 	position := camera.WorldPositionToViewportPosition(entry)
 	x := position.X

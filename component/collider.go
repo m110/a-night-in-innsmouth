@@ -5,8 +5,10 @@ import (
 )
 
 const (
-	CollisionLayerNone   ColliderLayer = iota
-	CollisionLayerButton ColliderLayer = iota
+	CollisionLayerNone      ColliderLayer = iota
+	CollisionLayerButton    ColliderLayer = iota
+	CollisionLayerCharacter ColliderLayer = iota
+	CollisionLayerPOI       ColliderLayer = iota
 )
 
 type ColliderLayer int

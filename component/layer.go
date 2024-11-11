@@ -10,6 +10,8 @@ const SpriteLayerInherit LayerID = 0
 
 const (
 	SpriteLayerBackground LayerID = 100 + iota*10
+	SpriteLayerPOI
+	SpriteLayerCharacter
 	SpriteLayerForeground
 	SpriteLayerIndicator
 )

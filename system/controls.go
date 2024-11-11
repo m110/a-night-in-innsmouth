@@ -18,7 +18,9 @@ func NewControls() *Controls {
 		query: donburi.NewQuery(
 			filter.Contains(
 				component.Input,
+				component.Sprite,
 				component.Velocity,
+				component.Animation,
 			),
 		),
 		dialogQuery: donburi.NewQuery(
@@ -33,27 +35,37 @@ func (i *Controls) Update(w donburi.World) {
 	i.query.Each(w, func(entry *donburi.Entry) {
 		in := component.Input.Get(entry)
 
+		var stop bool
 		if in.Disabled {
-			return
+			stop = true
 		}
 
-		if i.dialogQuery.Count(w) > 0 {
-			return
+		dialog, ok := i.dialogQuery.First(w)
+		if ok && component.Active.Get(dialog).Active {
+			stop = true
 		}
 
 		velocity := component.Velocity.Get(entry)
+		sprite := component.Sprite.Get(entry)
+		anim := component.Animation.Get(entry)
 
-		if ebiten.IsKeyPressed(in.MoveUpKey) {
-			velocity.Velocity.Y = -in.MoveSpeed
-		} else if ebiten.IsKeyPressed(in.MoveDownKey) {
-			velocity.Velocity.Y = in.MoveSpeed
+		if !stop {
+			if ebiten.IsKeyPressed(in.MoveRightKey) {
+				velocity.Velocity.X = in.MoveSpeed
+				sprite.FlipY = false
+				anim.Start(entry)
+			} else if ebiten.IsKeyPressed(in.MoveLeftKey) {
+				velocity.Velocity.X = -in.MoveSpeed
+				sprite.FlipY = true
+				anim.Start(entry)
+			} else {
+				stop = true
+			}
 		}
 
-		if ebiten.IsKeyPressed(in.MoveRightKey) {
-			velocity.Velocity.X = in.MoveSpeed
-		}
-		if ebiten.IsKeyPressed(in.MoveLeftKey) {
-			velocity.Velocity.X = -in.MoveSpeed
+		if stop {
+			velocity.Velocity.X = 0
+			anim.Stop(entry)
 		}
 	})
 }

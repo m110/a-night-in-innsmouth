@@ -56,6 +56,7 @@ func (g *Game) loadLevel() {
 		system.NewControls(),
 		system.NewInventory(),
 		system.NewVelocity(),
+		system.NewCameraFollow(),
 		system.NewCollision(),
 		system.NewAnimation(),
 		system.NewHierarchyValidator(),
@@ -96,25 +97,25 @@ func (g *Game) createWorld() donburi.World {
 
 	archetype.NewDialog(world, ui)
 	archetype.NewDialogLog(world)
-	archetype.NewPassage(world, story.PassageByTitle("Start"))
 
 	g.createInventory(world, ui)
 
 	story.AddMoney(1000)
 
-	board := archetype.NewTagged(world, "Board").
-		WithScale(math.Vec2{
-			X: 0.5,
-			Y: 0.5,
-		}).
-		WithLayer(component.SpriteLayerBackground).
-		WithSprite(component.SpriteData{
-			Image: assets.Background,
-		}).
-		Entry()
+	level := archetype.NewLevel(world, assets.LevelInnsmouth)
+	character := archetype.NewCharacter(level)
 
-	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, board)
+	archetype.NewPOI(level, math.Vec2{X: 470, Y: 370}, engine.Size{Width: 150, Height: 75}, "Train Station")
+
+	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, level)
 	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)
+
+	component.Camera.Get(levelCam).ViewportTarget = character
+	component.Camera.Get(levelCam).ViewportBounds = &engine.Rect{
+		X: float64(-g.screenWidth / 2.0),
+		// TODO not scaled
+		Width: float64(assets.LevelInnsmouth.Bounds().Dx() + g.screenWidth),
+	}
 
 	return world
 }

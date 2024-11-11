@@ -5,12 +5,16 @@ import (
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
+
+	"github.com/m110/secrets/engine"
 )
 
 type CameraData struct {
 	Viewport         *ebiten.Image
 	ViewportPosition math.Vec2
 	ViewportZoom     float64
+	ViewportTarget   *donburi.Entry
+	ViewportBounds   *engine.Rect
 
 	Root  *donburi.Entry
 	Index int

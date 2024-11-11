@@ -20,6 +20,8 @@ type SpriteData struct {
 	// "Facing right" is considered 0 degrees
 	OriginalRotation float64
 
+	FlipY bool
+
 	Hidden bool
 
 	ColorOverride *ColorOverride

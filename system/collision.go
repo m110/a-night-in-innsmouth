@@ -1,11 +1,11 @@
 package system
 
 import (
-	"fmt"
-
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
+
+	"github.com/m110/secrets/archetype"
 
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/engine"
@@ -23,7 +23,32 @@ func NewCollision() *Collision {
 
 type collisionEffect func(w donburi.World, entry *donburi.Entry, other *donburi.Entry)
 
-var collisionEffects = map[component.ColliderLayer]map[component.ColliderLayer]collisionEffect{}
+var collisionEffects = map[component.ColliderLayer]map[component.ColliderLayer]collisionEffect{
+	component.CollisionLayerCharacter: {
+		component.CollisionLayerPOI: func(w donburi.World, entry *donburi.Entry, other *donburi.Entry) {
+			indicatorsQuery := donburi.NewQuery(filter.Contains(
+				component.POIIndicator,
+			))
+
+			indicatorsQuery.Each(w, func(entry *donburi.Entry) {
+				component.Active.Get(entry).Active = false
+			})
+
+			dialog := engine.MustFindWithComponent(w, component.Dialog)
+			if component.Active.Get(dialog).Active {
+				return
+			}
+
+			game := component.MustFindGame(w)
+
+			poi := component.POI.Get(other)
+			archetype.ShowPassage(w, game.Story.PassageByTitle(poi.Passage))
+
+			//poiIndicator := engine.MustFindChildWithComponent(other, component.POIIndicator)
+			//component.Active.Get(poiIndicator).Active = true
+		},
+	},
+}
 
 func (c *Collision) Update(w donburi.World) {
 	var entries []*donburi.Entry
@@ -55,9 +80,6 @@ func (c *Collision) Update(w donburi.World) {
 				continue
 			}
 
-			if !entry.HasComponent(transform.Transform) {
-				panic(fmt.Sprintf("%#v missing position\n", entry.Entity().Id()))
-			}
 			pos := transform.Transform.Get(entry).LocalPosition
 			otherPos := transform.Transform.Get(other).LocalPosition
 

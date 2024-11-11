@@ -46,8 +46,6 @@ func NewDialog(w donburi.World, parent *donburi.Entry) *donburi.Entry {
 		With(component.Dialog).
 		Entry()
 
-	component.Active.Get(dialog).Active = true
-
 	NewTagged(w, "Dialog Background").
 		WithParent(dialog).
 		WithLayer(component.SpriteUILayerBackground).
@@ -85,6 +83,7 @@ func NewDialogLog(w donburi.World) *donburi.Entry {
 
 	cam.AddComponent(component.DialogCamera)
 	cam.AddComponent(component.Animation)
+	cam.AddComponent(component.Active)
 
 	component.Camera.Get(cam).Mask = CreateScrollMask(dialogWidth, cameraHeight)
 
@@ -185,12 +184,12 @@ func NextPassage(w donburi.World) *donburi.Entry {
 	anim.Update = func(e *donburi.Entry) {
 		cam.ViewportPosition.Y = startY + height*anim.Timer.PercentDone()
 		if anim.Timer.IsReady() {
-			anim.Stop()
+			anim.Stop(cameraEntry)
 		}
 	}
-	anim.Start()
+	anim.Start(cameraEntry)
 
-	return NewPassage(w, link.Target)
+	return ShowPassage(w, link.Target)
 }
 
 const (
@@ -200,7 +199,13 @@ const (
 	passageTextWidth = 380
 )
 
-func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
+func ShowPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
+	dialog := engine.MustFindWithComponent(w, component.Dialog)
+	dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
+
+	component.Active.Get(dialog).Active = true
+	component.Active.Get(dialogCamera).Active = true
+
 	log := engine.MustFindWithComponent(w, component.DialogLog)
 	stackedView := component.StackedView.Get(log)
 
@@ -281,8 +286,6 @@ func NewPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
 	currentY := 500
 	heightPerLine := 28
 	paddingPerLine := 4
-
-	dialog := engine.MustFindWithComponent(w, component.Dialog)
 
 	for i, link := range domainPassage.Links() {
 		op := NewTagged(w, "Option").

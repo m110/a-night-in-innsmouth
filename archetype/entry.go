@@ -57,6 +57,35 @@ func (b EntryBuilder) WithSprite(sprite component.SpriteData) EntryBuilder {
 	return b
 }
 
+func (b EntryBuilder) WithSpriteBounds() EntryBuilder {
+	b.With(component.Bounds)
+
+	sprite := component.Sprite.Get(b.entry)
+	imageBounds := sprite.Image.Bounds()
+	scale := transform.WorldScale(b.entry)
+
+	component.Bounds.SetValue(b.entry, component.BoundsData{
+		Width:  float64(imageBounds.Dx()) * scale.X,
+		Height: float64(imageBounds.Dy()) * scale.Y,
+	})
+
+	return b
+}
+
+func (b EntryBuilder) WithBoundsAsCollider(layer component.ColliderLayer) EntryBuilder {
+	b.With(component.Collider)
+
+	bounds := component.Bounds.Get(b.entry)
+
+	component.Collider.SetValue(b.entry, component.ColliderData{
+		Width:  bounds.Width,
+		Height: bounds.Height,
+		Layer:  layer,
+	})
+
+	return b
+}
+
 func (b EntryBuilder) WithLayer(layer component.LayerID) EntryBuilder {
 	b.With(component.Layer)
 	component.Layer.Get(b.entry).Layer = layer
