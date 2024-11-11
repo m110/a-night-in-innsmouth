@@ -119,21 +119,22 @@ func (d *Dialog) Update(w donburi.World) {
 		archetype.NextPassage(w)
 	}
 
-	stackTransform := transform.GetTransform(stack)
+	camera := component.Camera.Get(engine.MustFindWithComponent(w, component.DialogCamera))
 
 	if updated || next {
-		stackTransform.LocalPosition.Y = -stackedView.CurrentY
+		camera.ViewportPosition.Y = stackedView.CurrentY
 		stackedView.Scrolled = false
 	} else if scroll != 0 {
 		stackedView.Scrolled = true
-		stackTransform.LocalPosition.Y += float64(scroll)
+		camera.ViewportPosition.Y -= float64(scroll)
 
-		if stackTransform.LocalPosition.Y > 0 {
-			stackTransform.LocalPosition.Y = 0
+		// TODO Could use a "boundary" on Camera to prevent going out of bounds
+		if camera.ViewportPosition.Y < 0 {
+			camera.ViewportPosition.Y = 0
 		}
 
-		if stackTransform.LocalPosition.Y <= -stackedView.CurrentY {
-			stackTransform.LocalPosition.Y = -stackedView.CurrentY
+		if camera.ViewportPosition.Y >= stackedView.CurrentY {
+			camera.ViewportPosition.Y = stackedView.CurrentY
 			stackedView.Scrolled = false
 		}
 	}

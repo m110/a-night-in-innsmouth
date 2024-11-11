@@ -71,7 +71,6 @@ func NewDialogLog(w donburi.World) *donburi.Entry {
 		WithLayer(component.SpriteUILayerUI).
 		With(component.DialogLog).
 		With(component.StackedView).
-		With(component.Animation).
 		Entry()
 
 	cameraHeight := height - 300
@@ -84,9 +83,12 @@ func NewDialogLog(w donburi.World) *donburi.Entry {
 		log,
 	)
 
+	cam.AddComponent(component.DialogCamera)
+	cam.AddComponent(component.Animation)
+
 	component.Camera.Get(cam).Mask = CreateScrollMask(dialogWidth, cameraHeight)
 
-	component.Animation.SetValue(log, component.AnimationData{
+	component.Animation.SetValue(cam, component.AnimationData{
 		Timer: engine.NewTimer(500 * time.Millisecond),
 	})
 
@@ -175,12 +177,13 @@ func NextPassage(w donburi.World) *donburi.Entry {
 	}
 
 	stackedView.CurrentY += height
-	stackTransform := transform.GetTransform(dialogLog)
-	startY := stackTransform.LocalPosition.Y
 
-	anim := component.Animation.Get(dialogLog)
+	cameraEntry := engine.MustFindWithComponent(w, component.DialogCamera)
+	cam := component.Camera.Get(cameraEntry)
+	startY := cam.ViewportPosition.Y
+	anim := component.Animation.Get(cameraEntry)
 	anim.Update = func(e *donburi.Entry) {
-		stackTransform.LocalPosition.Y = startY - height*anim.Timer.PercentDone()
+		cam.ViewportPosition.Y = startY + height*anim.Timer.PercentDone()
 		if anim.Timer.IsReady() {
 			anim.Stop()
 		}
