@@ -24,9 +24,11 @@ func NewCamera(
 	viewport := ebiten.NewImage(dimensions.Width, dimensions.Height)
 
 	component.Camera.SetValue(camera, component.CameraData{
-		Viewport: viewport,
-		Root:     root,
-		Index:    index,
+		Viewport:         viewport,
+		ViewportPosition: math.Vec2{},
+		ViewportZoom:     1.0,
+		Root:             root,
+		Index:            index,
 	})
 
 	return camera

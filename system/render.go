@@ -83,20 +83,20 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 				count++
 
 				if child.entry.HasComponent(component.Sprite) {
-					renderSprite(child.entry, camera.Viewport)
+					renderSprite(child.entry, camera)
 				}
 
 				if child.entry.HasComponent(component.Text) {
-					renderText(child.entry, camera.Viewport)
+					renderText(child.entry, camera)
 				}
 
 				if r.debug.Enabled {
 					if child.entry.HasComponent(component.Bounds) {
-						renderBounds(child.entry, camera.Viewport)
+						renderBoundsDebug(child.entry, camera)
 					}
 
 					if child.entry.HasComponent(component.Collider) {
-						renderCollider(child.entry, camera.Viewport)
+						renderColliderDebug(child.entry, camera)
 					}
 				}
 			}
@@ -113,6 +113,10 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(cameraPos.X, cameraPos.Y)
 		r.offscreen.DrawImage(camera.Viewport, op)
+
+		if r.debug.Enabled {
+			renderCameraDebug(entry, r.offscreen)
+		}
 	})
 
 	screen.DrawImage(r.offscreen, nil)
@@ -126,16 +130,23 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 	}
 }
 
-func renderBounds(entry *donburi.Entry, offscreen *ebiten.Image) {
-	bounds := component.Bounds.Get(entry)
+func renderCameraDebug(entry *donburi.Entry, offscreen *ebiten.Image) {
 	pos := transform.WorldPosition(entry)
-	vector.StrokeRect(offscreen, float32(pos.X), float32(pos.Y), float32(bounds.Width), float32(bounds.Height), 1, colornames.Yellow, false)
+	camera := component.Camera.Get(entry)
+	bounds := camera.Viewport.Bounds()
+	vector.StrokeRect(offscreen, float32(pos.X), float32(pos.Y), float32(bounds.Dx()), float32(bounds.Dy()), 1, colornames.Red, false)
 }
 
-func renderCollider(entry *donburi.Entry, offscreen *ebiten.Image) {
+func renderBoundsDebug(entry *donburi.Entry, camera *component.CameraData) {
+	bounds := component.Bounds.Get(entry)
+	pos := camera.WorldPositionToViewportPosition(entry)
+	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(bounds.Width), float32(bounds.Height), 1, colornames.Yellow, false)
+}
+
+func renderColliderDebug(entry *donburi.Entry, camera *component.CameraData) {
 	collider := component.Collider.Get(entry)
-	pos := transform.WorldPosition(entry)
-	vector.StrokeRect(offscreen, float32(pos.X), float32(pos.Y), float32(collider.Width), float32(collider.Height), 1, colornames.Lime, false)
+	pos := camera.WorldPositionToViewportPosition(entry)
+	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(collider.Width), float32(collider.Height), 1, colornames.Lime, false)
 }
 
 func getAllChildren(entry *donburi.Entry, rootLayer component.LayerID) []entryWithLayer {
@@ -186,7 +197,7 @@ func getEntryWithLayer(entry *donburi.Entry, rootLayer component.LayerID) entryW
 	}
 }
 
-func renderSprite(entry *donburi.Entry, offscreen *ebiten.Image) {
+func renderSprite(entry *donburi.Entry, camera *component.CameraData) {
 	sprite := component.Sprite.Get(entry)
 
 	if sprite.Image == nil {
@@ -206,7 +217,7 @@ func renderSprite(entry *donburi.Entry, offscreen *ebiten.Image) {
 	op.GeoM.Rotate(float64(int(transform.WorldRotation(entry)-sprite.OriginalRotation)%360) * 2 * stdmath.Pi / 360)
 	op.GeoM.Translate(halfW, halfH)
 
-	position := transform.WorldPosition(entry)
+	position := camera.WorldPositionToViewportPosition(entry)
 	x := position.X
 	y := position.Y
 
@@ -229,10 +240,10 @@ func renderSprite(entry *donburi.Entry, offscreen *ebiten.Image) {
 
 	op.GeoM.Translate(x, y)
 
-	offscreen.DrawImage(sprite.Image, op)
+	camera.Viewport.DrawImage(sprite.Image, op)
 }
 
-func renderText(entry *donburi.Entry, offscreen *ebiten.Image) {
+func renderText(entry *donburi.Entry, camera *component.CameraData) {
 	t := component.Text.Get(entry)
 
 	if t.Hidden {
@@ -241,7 +252,7 @@ func renderText(entry *donburi.Entry, offscreen *ebiten.Image) {
 
 	font := archetype.FontFromSize(t.Size)
 
-	pos := transform.WorldPosition(entry)
+	pos := camera.WorldPositionToViewportPosition(entry)
 
 	var col color.Color = assets.TextColor
 	if t.Color != nil {
@@ -258,10 +269,11 @@ func renderText(entry *donburi.Entry, offscreen *ebiten.Image) {
 	op := &text.DrawOptions{}
 	op.LineSpacing = 24
 	op.PrimaryAlign = t.Align
+	op.GeoM.Scale(camera.ViewportZoom, camera.ViewportZoom)
 	op.GeoM.Translate(pos.X, pos.Y)
 	op.ColorScale.ScaleWithColor(col)
 
-	text.Draw(offscreen, textToDraw, font, op)
+	text.Draw(camera.Viewport, textToDraw, font, op)
 }
 
 func isActive(entry *donburi.Entry) bool {

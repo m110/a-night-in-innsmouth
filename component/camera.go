@@ -3,17 +3,29 @@ package component
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
+	"github.com/yohamta/donburi/features/math"
+	"github.com/yohamta/donburi/features/transform"
 )
 
 type CameraData struct {
-	Viewport *ebiten.Image
-	Root     *donburi.Entry
-	Index    int
-	Mask     *ebiten.Image
+	Viewport         *ebiten.Image
+	ViewportPosition math.Vec2
+	ViewportZoom     float64
+
+	Root  *donburi.Entry
+	Index int
+	Mask  *ebiten.Image
 }
 
 func (d CameraData) Order() int {
 	return d.Index
+}
+
+func (d CameraData) WorldPositionToViewportPosition(e *donburi.Entry) math.Vec2 {
+	pos := transform.WorldPosition(e)
+	pos = pos.Sub(d.ViewportPosition)
+	pos = pos.MulScalar(d.ViewportZoom)
+	return pos
 }
 
 var Camera = donburi.NewComponentType[CameraData]()
