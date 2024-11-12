@@ -1,19 +1,23 @@
 package archetype
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/domain"
 )
 
-func NewLevel(w donburi.World, image *ebiten.Image) *donburi.Entry {
-	level := NewTagged(w, "Level").
+func NewLevel(w donburi.World, level domain.Level) *donburi.Entry {
+	entry := NewTagged(w, "Level").
 		WithLayer(component.SpriteLayerBackground).
 		WithSprite(component.SpriteData{
-			Image: image,
+			Image: level.Background,
 		}).
 		Entry()
 
-	return level
+	for _, poi := range level.POIs {
+		NewPOI(entry, poi)
+	}
+
+	return entry
 }

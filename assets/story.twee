@@ -60,6 +60,12 @@ You feel like you missed something, but you don't know what it is.
 THE END
 
 
+:: Barnacles {"position":"3150,2325","size":"100,100"}
+This... Looks odd.
+
+> {exit} [[Look away.]]
+
+
 :: Board the train to Arkham {"position":"2000,775","size":"100,100"}
 setTitle: Train to Arkham
 takeItem: Train Ticket to Arkham
@@ -162,6 +168,10 @@ You arrive at Innsmouth.
 
 
 :: Leave it be {"position":"2350,2350","size":"100,100"}
+
+
+
+:: Look away. {"position":"3150,2450","size":"100,100"}
 
 
 

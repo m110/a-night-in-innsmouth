@@ -16,6 +16,8 @@ github.com/hajimehoshi/ebiten/v2 v2.8.3 h1:AKHqj3QbQMzNEhK33MMJeRwXm9UzftrUUo6AW
 github.com/hajimehoshi/ebiten/v2 v2.8.3/go.mod h1:SXx/whkvpfsavGo6lvZykprerakl+8Uo1X8d2U5aAnA=
 github.com/jezek/xgb v1.1.1 h1:bE/r8ZZtSv7l9gk6nU0mYx51aXrvnyb44892TwSaqS4=
 github.com/jezek/xgb v1.1.1/go.mod h1:nrhwO0FX/enq75I7Y7G8iN1ubpSGZEiA3v9e9GyRFlk=
+github.com/lafriks/go-tiled v0.13.0 h1:xZE2rEKCNJPya+g92FCIjzEH4fZLQcZVqvpw174P2MY=
+github.com/lafriks/go-tiled v0.13.0/go.mod h1:FRhv/27R9S9IOmDl7+XrSUjFrV0uCUCu23rTCHRuj5c=
 github.com/m110/donburi v0.0.0-20241108153554-7643ffb21f8b h1:YGToE+NybEDfQxJYmjQCMzY+E+BRD5pkJvc5VyxmLQI=
 github.com/m110/donburi v0.0.0-20241108153554-7643ffb21f8b/go.mod h1:FdjU9hpwAsAs1qRvqsSTJimPJ0dipvdnr9hMJXYc1Rk=
 github.com/pierrec/lz4/v4 v4.1.21 h1:yOVMLb6qSIDP67pl/5F7RepeKYu/VmTyEXvuMI5d9mQ=

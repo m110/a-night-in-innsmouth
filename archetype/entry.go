@@ -6,6 +6,8 @@ import (
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 
+	"github.com/m110/secrets/engine"
+
 	"github.com/m110/secrets/component"
 )
 
@@ -54,6 +56,17 @@ func (b EntryBuilder) WithSprite(sprite component.SpriteData) EntryBuilder {
 	}
 	b.With(component.Sprite)
 	component.Sprite.SetValue(b.entry, sprite)
+	return b
+}
+
+func (b EntryBuilder) WithBounds(size engine.Size) EntryBuilder {
+	b.With(component.Bounds)
+
+	component.Bounds.SetValue(b.entry, component.BoundsData{
+		Width:  float64(size.Width),
+		Height: float64(size.Height),
+	})
+
 	return b
 }
 

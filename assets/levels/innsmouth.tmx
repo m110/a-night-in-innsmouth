@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="10">
+ <imagelayer id="2" name="Background">
+  <image source="innsmouth.jpeg" width="3072" height="1728"/>
+ </imagelayer>
+ <objectgroup id="3" name="Objects">
+  <object id="1" name="Door" class="poi" x="1136" y="840" width="248" height="240">
+   <properties>
+    <property name="passage" value="Vacant House"/>
+   </properties>
+  </object>
+  <object id="5" name="Barnacles" class="poi" x="664" y="1192" width="128" height="184">
+   <properties>
+    <property name="passage" value="Barnacles"/>
+   </properties>
+  </object>
+  <object id="8" name="Fish" class="poi" x="2096" y="1328" width="256" height="208">
+   <properties>
+    <property name="passage" value="Dead Fish"/>
+   </properties>
+  </object>
+  <object id="9" name="Exit" class="transition" x="2808" y="960" width="176" height="616">
+   <properties>
+    <property name="level" value="hotel"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

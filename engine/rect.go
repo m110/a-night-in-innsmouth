@@ -1,6 +1,10 @@
 package engine
 
-import "image"
+import (
+	"image"
+
+	"github.com/yohamta/donburi/features/math"
+)
 
 type Rect struct {
 	X      float64
@@ -15,6 +19,20 @@ func NewRect(x, y, width, height float64) Rect {
 		Y:      y,
 		Width:  width,
 		Height: height,
+	}
+}
+
+func (r Rect) Position() math.Vec2 {
+	return math.Vec2{
+		X: r.X,
+		Y: r.Y,
+	}
+}
+
+func (r Rect) Size() Size {
+	return Size{
+		Width:  int(r.Width),
+		Height: int(r.Height),
 	}
 }
 

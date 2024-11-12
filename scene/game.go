@@ -101,11 +101,9 @@ func (g *Game) createWorld() donburi.World {
 
 	story.AddMoney(1000)
 
-	level := archetype.NewLevel(world, assets.LevelInnsmouth)
+	level := archetype.NewLevel(world, assets.Levels["innsmouth"])
+	// TODO Character position from level
 	character := archetype.NewCharacter(level)
-
-	archetype.NewPOI(level, math.Vec2{X: 1200, Y: 900}, engine.Size{Width: 150, Height: 150}, "Vacant House")
-	archetype.NewPOI(level, math.Vec2{X: 2100, Y: 1400}, engine.Size{Width: 150, Height: 150}, "Dead Fish")
 
 	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, level)
 	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)
@@ -113,14 +111,17 @@ func (g *Game) createWorld() donburi.World {
 	levelCamCam := component.Camera.Get(levelCam)
 
 	levelCamCam.ViewportTarget = character
+	// TODO Should this be hardcoded?
 	levelCamCam.ViewportPosition = math.Vec2{
 		X: 0,
 		Y: -80,
 	}
 	levelCamCam.ViewportZoom = 0.4
+
 	levelCamCam.ViewportBounds = &engine.Rect{
-		X:     float64(-g.screenWidth / 2.0),
-		Width: float64(assets.LevelInnsmouth.Bounds().Dx() + g.screenWidth),
+		X: float64(-g.screenWidth / 2.0),
+		// TODO Dynamic based on width on the level
+		Width: 3000,
 	}
 
 	return world

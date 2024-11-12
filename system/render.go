@@ -68,7 +68,7 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 		}
 
 		rootLayer := component.Layer.Get(camera.Root).Layer
-		children := getAllChildren(camera.Root, rootLayer)
+		children := r.getAllChildren(camera.Root, rootLayer)
 
 		byLayer := map[int][]entryWithLayer{}
 		for _, child := range children {
@@ -162,7 +162,7 @@ func renderColliderDebug(entry *donburi.Entry, camera *component.CameraData) {
 	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(w), float32(h), 1, colornames.Lime, false)
 }
 
-func getAllChildren(entry *donburi.Entry, rootLayer component.LayerID) []entryWithLayer {
+func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer component.LayerID) []entryWithLayer {
 	if !entry.Valid() || !isActive(entry) {
 		return nil
 	}
@@ -184,6 +184,12 @@ func getAllChildren(entry *donburi.Entry, rootLayer component.LayerID) []entryWi
 
 		if e.HasComponent(component.Sprite) || e.HasComponent(component.Text) {
 			result = append(result, getEntryWithLayer(e, rootLayer))
+		}
+
+		if r.debug.Enabled {
+			if e.HasComponent(component.Collider) || e.HasComponent(component.Bounds) {
+				result = append(result, getEntryWithLayer(e, rootLayer))
+			}
 		}
 
 		children, ok := transform.GetChildren(e)
