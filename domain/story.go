@@ -132,6 +132,7 @@ func (s *Story) AddItem(item string) {
 		Count: 1,
 	})
 
+	// TODO domain should not import events?
 	s.publishInventoryUpdated()
 }
 
@@ -300,13 +301,27 @@ func (l *Link) Visit() {
 	l.Target.Visit()
 }
 
+func (l *Link) IsExit() bool {
+	for _, t := range l.Tags {
+		if t == "exit" {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (l *Link) AllVisited() bool {
 	if !l.Visited {
 		return false
 	}
 
+	if l.IsExit() {
+		return false
+	}
+
 	for _, link := range deepChildLinks(l, l.passage) {
-		if !link.Visited && !link.HasTag("exit") {
+		if !link.Visited && !l.IsExit() {
 			return false
 		}
 	}

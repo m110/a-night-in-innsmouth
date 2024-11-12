@@ -10,7 +10,9 @@ type InputData struct {
 
 	MoveRightKey ebiten.Key
 	MoveLeftKey  ebiten.Key
-	MoveSpeed    float64
+	ActionKey    ebiten.Key
+
+	MoveSpeed float64
 
 	ShootKey ebiten.Key
 }

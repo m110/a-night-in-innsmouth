@@ -16,7 +16,13 @@ story
 }
 
 
-:: "Any news about Innsmouth?" {"position":"925,1750","size":"100,100"}
+:: \ Bus to Innsmouth 2 {"position":"2375,1500","size":"100,100"}
+
+
+> [[...->Innsmouth]]
+
+
+:: "Any news about Innsmouth?" {"position":"925,1775","size":"100,100"}
 The shopkeeper looks at your nervously. He clearly doesn't want to talk about it.
 
 "Why would you ask about it, young lad?"
@@ -25,7 +31,7 @@ The shopkeeper looks at your nervously. He clearly doesn't want to talk about it
 > {back} [[Nevermind->Newburyport Grocery Store]]
 
 
-:: "Just curious" {"position":"1200,1775","size":"100,100"}
+:: "Just curious" {"position":"1200,1800","size":"100,100"}
 addFact: askedAboutInnsmouth
 --
 "I don't know anything interesting, sir."
@@ -63,12 +69,18 @@ You take the train. The travel doesn't take long.
 > [[...->Arkham]]
 
 
-:: Bus Station {"position":"1850,1300","size":"100,100"}
+:: Bus Station {"position":"1775,1300","size":"100,100"}
 setTitle: Bus Station
 --
 You see the bus to Innsmouth.
 
-> [[Board the Bus->Innsmouth]]
+> [[Board the Bus->Bus to Innsmouth]]
+
+
+:: Bus to Innsmouth {"position":"2100,1375","size":"100,100"}
+
+
+> [[...-> Bus to Innsmouth 2]]
 
 
 :: Buy the local newspaper [once] {"position":"725,1550","size":"100,100"}
@@ -115,6 +127,17 @@ The ticket is quite expensive. The train leaves tomorrow morning.
 > [[Reconsider...->Train Station]]
 
 
+:: Dead Fish {"position":"2875,2300","size":"100,100"}
+A fish carcass rots on the ground. The smell makes your eyes watery.
+
+> {exit} [[Move away.]]
+
+
+:: Go inside {"position":"2600,2450","size":"100,100"}
+
+> {back} [[Nothing to do here->Vacant House]]
+
+
 :: Go to Sleep {"position":"1475,1625","size":"100,100"}
 addFact: day2
 --
@@ -136,6 +159,14 @@ You arrive at Innsmouth.
 
 > [[Hotel]]
 > [[Restaurant]]
+
+
+:: Leave it be {"position":"2350,2350","size":"100,100"}
+
+
+
+:: Move away. {"position":"2875,2475","size":"100,100"}
+
 
 
 :: Newburyport {"position":"1150,1200","size":"200,200"}
@@ -193,7 +224,7 @@ You flip the pages and get bored soon.
 
 
 
-:: Start {"position":"1125,925","size":"100,100"}
+:: Start {"position":"1075,800","size":"100,100"}
 You arrive in Newburyport, meaning to continue to Arkham.
 
 You heard that the steam train is your best option. Just need to keep in mind your budget.
@@ -216,6 +247,13 @@ You arrive at the train station.
 
 > [[Talk to the Agent->Agent]]
 > [[Exit->Newburyport]] 
+
+
+:: Vacant House {"position":"2525,2225","size":"100,100"}
+The house is in ruin.
+
+> [[Go inside]]
+> {exit} [[Leave it be]]
 
 
 :: YMCA {"position":"1600,1475","size":"100,100"}

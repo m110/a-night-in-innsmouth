@@ -5,10 +5,9 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
-	"github.com/m110/secrets/archetype"
-
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/engine"
+	"github.com/m110/secrets/events"
 )
 
 type Collision struct {
@@ -21,46 +20,71 @@ func NewCollision() *Collision {
 	}
 }
 
-type collisionEffect func(w donburi.World, entry *donburi.Entry, other *donburi.Entry)
+func (c *Collision) Init(w donburi.World) {
+	events.JustCollidedEvent.Subscribe(w, func(w donburi.World, event events.JustCollided) {
+		// TODO remove casting
+		if event.Layer == int(component.CollisionLayerCharacter) && event.OtherLayer == int(component.CollisionLayerPOI) {
+			hidePOIs(w)
 
-var collisionEffects = map[component.ColliderLayer]map[component.ColliderLayer]collisionEffect{
+			event.Other.AddComponent(component.ActivePOI)
+
+			poiIndicator := engine.MustFindChildWithComponent(event.Other, component.POIIndicator)
+			component.Active.Get(poiIndicator).Active = true
+		}
+	})
+
+	events.JustOutOfCollisionEvent.Subscribe(w, func(w donburi.World, event events.JustOutOfCollision) {
+		if event.Layer == int(component.CollisionLayerCharacter) && event.OtherLayer == int(component.CollisionLayerPOI) {
+			hidePOIs(w)
+		}
+	})
+}
+
+func hidePOIs(w donburi.World) {
+	activePOI, ok := donburi.NewQuery(
+		filter.Contains(
+			component.ActivePOI,
+		),
+	).First(w)
+	if ok {
+		activePOI.RemoveComponent(component.ActivePOI)
+	}
+	indicatorsQuery := donburi.NewQuery(filter.Contains(
+		component.POIIndicator,
+	))
+
+	indicatorsQuery.Each(w, func(entry *donburi.Entry) {
+		component.Active.Get(entry).Active = false
+	})
+}
+
+var collisions = map[component.ColliderLayer]map[component.ColliderLayer]struct{}{
 	component.CollisionLayerCharacter: {
-		component.CollisionLayerPOI: func(w donburi.World, entry *donburi.Entry, other *donburi.Entry) {
-			indicatorsQuery := donburi.NewQuery(filter.Contains(
-				component.POIIndicator,
-			))
-
-			indicatorsQuery.Each(w, func(entry *donburi.Entry) {
-				component.Active.Get(entry).Active = false
-			})
-
-			dialog := engine.MustFindWithComponent(w, component.Dialog)
-			if component.Active.Get(dialog).Active {
-				return
-			}
-
-			game := component.MustFindGame(w)
-
-			poi := component.POI.Get(other)
-			archetype.ShowPassage(w, game.Story.PassageByTitle(poi.Passage))
-
-			//poiIndicator := engine.MustFindChildWithComponent(other, component.POIIndicator)
-			//component.Active.Get(poiIndicator).Active = true
-		},
+		component.CollisionLayerPOI: {},
 	},
 }
 
 func (c *Collision) Update(w donburi.World) {
 	var entries []*donburi.Entry
 	c.query.Each(w, func(entry *donburi.Entry) {
+		if !entry.Valid() {
+			return
+		}
+
 		entries = append(entries, entry)
 	})
 
 	for _, entry := range entries {
-		if !entry.Valid() {
-			continue
+		collider := component.Collider.Get(entry)
+		for i, c := range collider.CollidesWith {
+			c.Detected = false
+			collider.CollidesWith[i] = c
 		}
+		collider.JustCollidedWith = nil
+		collider.JustOutOfCollisionWith = nil
+	}
 
+	for _, entry := range entries {
 		collider := component.Collider.Get(entry)
 
 		for _, other := range entries {
@@ -70,12 +94,7 @@ func (c *Collision) Update(w donburi.World) {
 
 			otherCollider := component.Collider.Get(other)
 
-			effects, ok := collisionEffects[collider.Layer]
-			if !ok {
-				continue
-			}
-
-			effect, ok := effects[otherCollider.Layer]
+			_, ok := collisions[collider.Layer][otherCollider.Layer]
 			if !ok {
 				continue
 			}
@@ -89,7 +108,59 @@ func (c *Collision) Update(w donburi.World) {
 			otherRect := engine.NewRect(otherPos.X, otherPos.Y, otherCollider.Width, otherCollider.Height)
 
 			if rect.Intersects(otherRect) {
-				effect(w, entry, other)
+				key := component.CollisionKey{
+					Layer: otherCollider.Layer,
+					Other: other.Entity(),
+				}
+
+				currentCollision, ok := collider.CollidesWith[key]
+				if !ok {
+					if collider.JustCollidedWith == nil {
+						collider.JustCollidedWith = map[component.CollisionKey]struct{}{}
+					}
+
+					collider.JustCollidedWith[key] = struct{}{}
+
+					event := events.JustCollided{
+						Entry:      entry,
+						Layer:      int(collider.Layer),
+						Other:      other,
+						OtherLayer: int(otherCollider.Layer),
+					}
+					events.JustCollidedEvent.Publish(w, event)
+				}
+
+				currentCollision.Detected = true
+				currentCollision.TimesSeen++
+
+				if collider.CollidesWith == nil {
+					collider.CollidesWith = map[component.CollisionKey]component.Collision{}
+				}
+
+				collider.CollidesWith[key] = currentCollision
+			}
+		}
+	}
+
+	for _, entry := range entries {
+		collider := component.Collider.Get(entry)
+
+		for key, collision := range collider.CollidesWith {
+			if !collision.Detected {
+				if collider.JustOutOfCollisionWith == nil {
+					collider.JustOutOfCollisionWith = map[component.CollisionKey]struct{}{}
+				}
+
+				collider.JustOutOfCollisionWith[key] = struct{}{}
+				delete(collider.CollidesWith, key)
+
+				event := events.JustOutOfCollision{
+					Entry:      entry,
+					Layer:      int(collider.Layer),
+					Other:      w.Entry(key.Other),
+					OtherLayer: int(key.Layer),
+				}
+				events.JustOutOfCollisionEvent.Publish(w, event)
 			}
 		}
 	}

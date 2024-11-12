@@ -2,15 +2,23 @@ package system
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/yohamta/donburi"
+	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
+	"github.com/m110/secrets/engine"
+
+	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/component"
 )
 
 type Controls struct {
-	query       *donburi.Query
-	dialogQuery *donburi.Query
+	query          *donburi.Query
+	dialogQuery    *donburi.Query
+	activePOIQuery *donburi.Query
+	passageQuery   *donburi.Query
+	buttonsQuery   *donburi.Query
 }
 
 func NewControls() *Controls {
@@ -28,44 +36,175 @@ func NewControls() *Controls {
 				component.Dialog,
 			),
 		),
+		activePOIQuery: donburi.NewQuery(
+			filter.Contains(
+				component.ActivePOI,
+			),
+		),
+		passageQuery: donburi.NewQuery(filter.Contains(component.Passage)),
+		buttonsQuery: donburi.NewQuery(
+			filter.Contains(
+				component.Collider,
+				component.DialogOption,
+			),
+		),
 	}
 }
 
-func (i *Controls) Update(w donburi.World) {
-	i.query.Each(w, func(entry *donburi.Entry) {
+func (c *Controls) Update(w donburi.World) {
+	c.query.Each(w, func(entry *donburi.Entry) {
 		in := component.Input.Get(entry)
 
-		var stop bool
 		if in.Disabled {
-			stop = true
+			return
 		}
 
-		dialog, ok := i.dialogQuery.First(w)
+		dialog, ok := c.dialogQuery.First(w)
 		if ok && component.Active.Get(dialog).Active {
-			stop = true
+			c.UpdateDialog(w)
+			return
 		}
 
 		velocity := component.Velocity.Get(entry)
 		sprite := component.Sprite.Get(entry)
 		anim := component.Animation.Get(entry)
 
-		if !stop {
-			if ebiten.IsKeyPressed(in.MoveRightKey) {
-				velocity.Velocity.X = in.MoveSpeed
-				sprite.FlipY = false
-				anim.Start(entry)
-			} else if ebiten.IsKeyPressed(in.MoveLeftKey) {
-				velocity.Velocity.X = -in.MoveSpeed
-				sprite.FlipY = true
-				anim.Start(entry)
-			} else {
-				stop = true
-			}
+		var moving bool
+		if ebiten.IsKeyPressed(in.MoveRightKey) {
+			velocity.Velocity.X = in.MoveSpeed
+			sprite.FlipY = false
+			anim.Start(entry)
+			moving = true
+		} else if ebiten.IsKeyPressed(in.MoveLeftKey) {
+			velocity.Velocity.X = -in.MoveSpeed
+			sprite.FlipY = true
+			anim.Start(entry)
+			moving = true
 		}
 
-		if stop {
+		if !moving {
 			velocity.Velocity.X = 0
 			anim.Stop(entry)
 		}
+
+		if inpututil.IsKeyJustPressed(in.ActionKey) {
+			activePOI, ok := c.activePOIQuery.First(w)
+			if ok {
+				game := component.MustFindGame(w)
+				poi := component.POI.Get(activePOI)
+				archetype.ShowPassage(w, game.Story.PassageByTitle(poi.Passage))
+			}
+		}
 	})
+}
+
+func (c *Controls) UpdateDialog(w donburi.World) {
+	entry, ok := c.passageQuery.First(w)
+	if !ok {
+		return
+	}
+
+	if !isActive(entry) {
+		return
+	}
+
+	passage := component.Passage.Get(entry)
+	stack := engine.MustGetParent(entry)
+	stackedView := component.StackedView.Get(stack)
+
+	// Game over?
+	if len(passage.Passage.Links()) == 0 {
+		return
+	}
+
+	var updated bool
+	if inpututil.IsKeyJustPressed(ebiten.KeyDown) || inpututil.IsKeyJustPressed(ebiten.KeyS) {
+		passage.ActiveOption++
+		updated = true
+	} else if inpututil.IsKeyJustPressed(ebiten.KeyUp) || inpututil.IsKeyJustPressed(ebiten.KeyW) {
+		passage.ActiveOption--
+		updated = true
+	}
+
+	_, wy := ebiten.Wheel()
+	var scroll int
+	if ebiten.IsKeyPressed(ebiten.KeyPageUp) {
+		scroll = 10
+	} else if ebiten.IsKeyPressed(ebiten.KeyPageDown) {
+		scroll = -10
+	} else if wy < 0 {
+		scroll = -25
+	} else if wy > 0 {
+		scroll = 25
+	}
+
+	var touched bool
+	if scroll == 0 {
+		x, y := ebiten.CursorPosition()
+
+		touchIDs := inpututil.AppendJustPressedTouchIDs(nil)
+		touched = len(touchIDs) > 0
+		if touched {
+			x, y = ebiten.TouchPosition(touchIDs[0])
+		}
+		clickRect := engine.NewRect(float64(x), float64(y), 1, 1)
+
+		c.buttonsQuery.Each(w, func(entry *donburi.Entry) {
+			pos := transform.WorldPosition(entry)
+			collider := component.Collider.Get(entry)
+			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
+			if colliderRect.Intersects(clickRect) {
+				passage.ActiveOption = component.DialogOption.Get(entry).Index
+				updated = true
+			}
+		})
+	}
+
+	if updated {
+		if passage.ActiveOption < 0 {
+			passage.ActiveOption = len(passage.Passage.Links()) - 1
+		}
+
+		if passage.ActiveOption >= len(passage.Passage.Links()) {
+			passage.ActiveOption = 0
+		}
+
+		indicator := engine.MustFindWithComponent(w, component.ActiveOptionIndicator)
+		c.buttonsQuery.Each(w, func(entry *donburi.Entry) {
+			if component.DialogOption.Get(entry).Index == passage.ActiveOption {
+				transform.ChangeParent(indicator, entry, false)
+			}
+		})
+	}
+
+	var next bool
+	if inpututil.IsKeyJustPressed(ebiten.KeySpace) ||
+		(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && updated) ||
+		(touched && updated) {
+		next = true
+	}
+
+	if next && !stackedView.Scrolled {
+		archetype.NextPassage(w)
+	}
+
+	camera := component.Camera.Get(engine.MustFindWithComponent(w, component.DialogCamera))
+
+	if updated || next {
+		camera.ViewportPosition.Y = stackedView.CurrentY
+		stackedView.Scrolled = false
+	} else if scroll != 0 {
+		stackedView.Scrolled = true
+		camera.ViewportPosition.Y -= float64(scroll)
+
+		// TODO Could use a "boundary" on Camera to prevent going out of bounds
+		if camera.ViewportPosition.Y < 0 {
+			camera.ViewportPosition.Y = 0
+		}
+
+		if camera.ViewportPosition.Y >= stackedView.CurrentY {
+			camera.ViewportPosition.Y = stackedView.CurrentY
+			stackedView.Scrolled = false
+		}
+	}
 }

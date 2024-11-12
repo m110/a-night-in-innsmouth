@@ -38,16 +38,19 @@ func NewPOI(
 		Passage: passage,
 	})
 
-	indicatorImg := ebiten.NewImage(64, 64)
-	vector.DrawFilledCircle(indicatorImg, 32, 32, 16, colornames.Indianred, true)
+	indicatorImg := ebiten.NewImage(size.Width, size.Height)
+	color := colornames.Indianred
+	color.A = 100
+	vector.DrawFilledCircle(indicatorImg, float32(size.Width/2.0), float32(size.Height/2.0), float32(size.Width/2.0), color, true)
 
 	NewTagged(w, "POIIndicator").
 		WithParent(poi).
 		WithPosition(math.Vec2{
-			X: 24,
-			Y: -48,
+			X: 0,
+			Y: 0,
 		}).
 		With(component.Active).
+		With(component.POIIndicator).
 		WithLayerInherit().
 		WithSprite(component.SpriteData{
 			Image: indicatorImg,

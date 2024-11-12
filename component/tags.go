@@ -11,5 +11,6 @@ var (
 
 	Inventory = donburi.NewTag()
 
+	ActivePOI    = donburi.NewTag()
 	POIIndicator = donburi.NewTag()
 )

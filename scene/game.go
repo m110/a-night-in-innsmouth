@@ -52,7 +52,6 @@ func NewGame(screenWidth int, screenHeight int) *Game {
 
 func (g *Game) loadLevel() {
 	g.systems = []System{
-		system.NewDialog(),
 		system.NewControls(),
 		system.NewInventory(),
 		system.NewVelocity(),
@@ -105,7 +104,8 @@ func (g *Game) createWorld() donburi.World {
 	level := archetype.NewLevel(world, assets.LevelInnsmouth)
 	character := archetype.NewCharacter(level)
 
-	archetype.NewPOI(level, math.Vec2{X: 1200, Y: 900}, engine.Size{Width: 150, Height: 150}, "Train Station")
+	archetype.NewPOI(level, math.Vec2{X: 1200, Y: 900}, engine.Size{Width: 150, Height: 150}, "Vacant House")
+	archetype.NewPOI(level, math.Vec2{X: 2100, Y: 1400}, engine.Size{Width: 150, Height: 150}, "Dead Fish")
 
 	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, level)
 	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)

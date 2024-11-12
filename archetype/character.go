@@ -39,6 +39,7 @@ func NewCharacter(parent *donburi.Entry) *donburi.Entry {
 		Disabled:     false,
 		MoveRightKey: ebiten.KeyD,
 		MoveLeftKey:  ebiten.KeyA,
+		ActionKey:    ebiten.KeySpace,
 		MoveSpeed:    6,
 	})
 

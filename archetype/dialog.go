@@ -117,7 +117,7 @@ func CreateScrollMask(width, height int) *ebiten.Image {
 	return img
 }
 
-func NextPassage(w donburi.World) *donburi.Entry {
+func NextPassage(w donburi.World) {
 	activePassage := engine.MustFindWithComponent(w, component.Passage)
 	passage := component.Passage.Get(activePassage)
 
@@ -189,7 +189,17 @@ func NextPassage(w donburi.World) *donburi.Entry {
 	}
 	anim.Start(cameraEntry)
 
-	return ShowPassage(w, link.Target)
+	if link.IsExit() {
+		dialog := engine.MustFindWithComponent(w, component.Dialog)
+		dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
+
+		component.Active.Get(dialog).Active = false
+		component.Active.Get(dialogCamera).Active = false
+
+		return
+	}
+
+	ShowPassage(w, link.Target)
 }
 
 const (
