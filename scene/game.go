@@ -101,12 +101,14 @@ func (g *Game) createWorld() donburi.World {
 
 	story.AddMoney(1000)
 
-	level := archetype.NewLevel(world, assets.Levels["innsmouth"])
+	level := archetype.NewLevel(world, "innsmouth")
 	// TODO Character position from level
 	character := archetype.NewCharacter(level)
 
 	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, level)
 	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)
+
+	levelCam.AddComponent(component.LevelCamera)
 
 	levelCamCam := component.Camera.Get(levelCam)
 

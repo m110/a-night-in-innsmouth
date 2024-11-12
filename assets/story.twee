@@ -40,6 +40,10 @@ addFact: askedAboutInnsmouth
 > {back} [["Sure thing"->Newburyport Grocery Store]]
 
 
+:: ... {"position":"3725,1975","size":"100,100"}
+
+
+
 :: Agent {"position":"1550,700","size":"200,100"}
 The Agent looks like a person not born here.
 
@@ -240,6 +244,12 @@ You arrive in Newburyport, meaning to continue to Arkham.
 You heard that the steam train is your best option. Just need to keep in mind your budget.
 
 [[Explore the city->Newburyport]]
+
+
+:: TBA {"position":"3725,1800","size":"100,100"}
+...
+
+> {exit} [[...]]
 
 
 :: Train Station {"position":"1550,925","size":"100,100"}

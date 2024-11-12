@@ -59,15 +59,18 @@ func (c *Controls) Update(w donburi.World) {
 			return
 		}
 
+		velocity := component.Velocity.Get(entry)
+		anim := component.Animation.Get(entry)
+
 		dialog, ok := c.dialogQuery.First(w)
 		if ok && component.Active.Get(dialog).Active {
+			velocity.Velocity.X = 0
+			anim.Stop(entry)
 			c.UpdateDialog(w)
 			return
 		}
 
-		velocity := component.Velocity.Get(entry)
 		sprite := component.Sprite.Get(entry)
-		anim := component.Animation.Get(entry)
 
 		var moving bool
 		if ebiten.IsKeyPressed(in.MoveRightKey) {
@@ -92,7 +95,20 @@ func (c *Controls) Update(w donburi.World) {
 			if ok {
 				game := component.MustFindGame(w)
 				poi := component.POI.Get(activePOI)
-				archetype.ShowPassage(w, game.Story.PassageByTitle(poi.Passage))
+
+				if poi.POI.Passage != "" {
+					archetype.ShowPassage(w, game.Story.PassageByTitle(poi.POI.Passage))
+				} else if poi.POI.Level != "" {
+					currentLevel := engine.MustFindWithComponent(w, component.Level)
+					component.Destroy(currentLevel)
+					newLevel := archetype.NewLevel(w, poi.POI.Level)
+
+					levelCam := engine.MustFindWithComponent(w, component.LevelCamera)
+					component.Camera.Get(levelCam).Root = newLevel
+
+					character := engine.MustFindWithComponent(w, component.Character)
+					transform.ChangeParent(character, newLevel, false)
+				}
 			}
 		}
 	})

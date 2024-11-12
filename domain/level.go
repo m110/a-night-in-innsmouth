@@ -14,4 +14,5 @@ type Level struct {
 type POI struct {
 	Rect    engine.Rect
 	Passage string
+	Level   string
 }

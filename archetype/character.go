@@ -33,6 +33,7 @@ func NewCharacter(parent *donburi.Entry) *donburi.Entry {
 		WithSpriteBounds().
 		WithBoundsAsCollider(component.CollisionLayerCharacter).
 		With(component.Animation).
+		With(component.Character).
 		Entry()
 
 	component.Input.SetValue(character, component.InputData{

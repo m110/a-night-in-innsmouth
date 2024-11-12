@@ -27,7 +27,7 @@ func NewPOI(
 		Entry()
 
 	component.POI.SetValue(entry, component.POIData{
-		Passage: poi.Passage,
+		POI: poi,
 	})
 
 	width := poi.Rect.Size().Width

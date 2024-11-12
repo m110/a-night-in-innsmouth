@@ -1,9 +1,13 @@
 package component
 
-import "github.com/yohamta/donburi"
+import (
+	"github.com/yohamta/donburi"
+
+	"github.com/m110/secrets/domain"
+)
 
 type POIData struct {
-	Passage string
+	POI domain.POI
 }
 
 var POI = donburi.NewComponentType[POIData]()

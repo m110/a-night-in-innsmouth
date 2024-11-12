@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="11">
+ <imagelayer id="3" name="Background">
+  <image source="hotel.jpeg" width="3072" height="1728"/>
+ </imagelayer>
+ <objectgroup id="2" name="Objects">
+  <object id="1" name="Fish" class="poi" x="1392" y="344" width="232" height="192">
+   <properties>
+    <property name="passage" value="TBA"/>
+   </properties>
+  </object>
+  <object id="3" name="Hotel Clerk" class="poi" x="1616" y="800" width="184" height="208">
+   <properties>
+    <property name="passage" value="TBA"/>
+   </properties>
+  </object>
+  <object id="4" name="Keys" class="poi" x="1528" y="1040" width="176" height="152">
+   <properties>
+    <property name="passage" value="TBA"/>
+   </properties>
+  </object>
+  <object id="5" name="Suitcase" class="poi" x="1896" y="1200" width="360" height="360">
+   <properties>
+    <property name="passage" value="TBA"/>
+   </properties>
+  </object>
+  <object id="7" name="Hat" class="poi" x="200" y="672" width="248" height="272">
+   <properties>
+    <property name="passage" value="TBA"/>
+   </properties>
+  </object>
+  <object id="9" name="Paper" class="poi" x="672" y="1032" width="360" height="328">
+   <properties>
+    <property name="passage" value="TBA"/>
+   </properties>
+  </object>
+  <object id="10" name="Stairs" class="poi" x="2712" y="1200" width="336" height="296">
+   <properties>
+    <property name="passage" value="TBA"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

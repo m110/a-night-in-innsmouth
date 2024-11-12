@@ -39,7 +39,8 @@ var (
 
 	Character []*ebiten.Image
 
-	Levels = map[string]domain.Level{}
+	levelNames = map[string]struct{}{}
+	Levels     = map[string]domain.Level{}
 )
 
 func MustLoadAssets() {
@@ -61,6 +62,11 @@ func MustLoadAssets() {
 	levelPaths, err := fs.Glob(assetsFS, "levels/*.tmx")
 	if err != nil {
 		panic(err)
+	}
+
+	for _, p := range levelPaths {
+		name := strings.TrimSuffix(path.Base(p), ".tmx")
+		levelNames[name] = struct{}{}
 	}
 
 	for _, p := range levelPaths {
@@ -90,13 +96,23 @@ func mustLoadLevel(path string) domain.Level {
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
 			if obj.Class == "poi" {
-				passage := obj.Properties.GetString("passage")
-				assertPassageExists(passage)
+				poi := domain.POI{
+					Rect: engine.NewRect(obj.X, obj.Y, obj.Width, obj.Height),
+				}
 
-				pois = append(pois, domain.POI{
-					Rect:    engine.NewRect(obj.X, obj.Y, obj.Width, obj.Height),
-					Passage: passage,
-				})
+				passage := obj.Properties.GetString("passage")
+				if passage != "" {
+					assertPassageExists(passage)
+					poi.Passage = passage
+				}
+
+				level := obj.Properties.GetString("level")
+				if level != "" {
+					assertLevelExists(level)
+					poi.Level = level
+				}
+
+				pois = append(pois, poi)
 			}
 		}
 	}
@@ -115,6 +131,12 @@ func assertPassageExists(name string) {
 	}
 
 	panic(fmt.Sprintf("passage not found: %v", name))
+}
+
+func assertLevelExists(name string) {
+	if _, ok := levelNames[name]; !ok {
+		panic(fmt.Sprintf("level not found: %v", name))
+	}
 }
 
 func mustLoadFont(data []byte, size int) *text.GoTextFace {
