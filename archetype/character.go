@@ -16,8 +16,8 @@ func NewCharacter(parent *donburi.Entry) *donburi.Entry {
 	w := parent.World
 	character := NewTagged(w, "Character").
 		WithPosition(math.Vec2{
-			X: 150,
-			Y: 380,
+			X: 450,
+			Y: 1000,
 		}).
 		WithScale(math.Vec2{
 			X: 0.4,
@@ -39,7 +39,7 @@ func NewCharacter(parent *donburi.Entry) *donburi.Entry {
 		Disabled:     false,
 		MoveRightKey: ebiten.KeyD,
 		MoveLeftKey:  ebiten.KeyA,
-		MoveSpeed:    3,
+		MoveSpeed:    6,
 	})
 
 	sprite := component.Sprite.Get(character)
@@ -55,7 +55,7 @@ func NewCharacter(parent *donburi.Entry) *donburi.Entry {
 	anim := component.Animation.Get(character)
 
 	component.Animation.SetValue(character, component.AnimationData{
-		Timer: engine.NewTimer(300 * time.Millisecond),
+		Timer: engine.NewTimer(200 * time.Millisecond),
 		Update: func(e *donburi.Entry) {
 			if anim.Timer.IsReady() {
 				currentFrame++

@@ -146,13 +146,20 @@ func renderCameraDebug(entry *donburi.Entry, offscreen *ebiten.Image) {
 func renderBoundsDebug(entry *donburi.Entry, camera *component.CameraData) {
 	bounds := component.Bounds.Get(entry)
 	pos := camera.WorldPositionToViewportPosition(entry)
-	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(bounds.Width), float32(bounds.Height), 1, colornames.Magenta, false)
+	zoom := camera.ViewportZoom
+	w := bounds.Width * zoom
+	h := bounds.Height * zoom
+	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(w), float32(h), 1, colornames.Magenta, false)
 }
 
 func renderColliderDebug(entry *donburi.Entry, camera *component.CameraData) {
 	collider := component.Collider.Get(entry)
 	pos := camera.WorldPositionToViewportPosition(entry)
-	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(collider.Width), float32(collider.Height), 1, colornames.Lime, false)
+	zoom := camera.ViewportZoom
+	w := collider.Width * zoom
+	h := collider.Height * zoom
+
+	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(w), float32(h), 1, colornames.Lime, false)
 }
 
 func getAllChildren(entry *donburi.Entry, rootLayer component.LayerID) []entryWithLayer {
@@ -250,6 +257,7 @@ func renderSprite(entry *donburi.Entry, camera *component.CameraData) {
 		op.ColorM.Translate(sprite.ColorOverride.R, sprite.ColorOverride.G, sprite.ColorOverride.B, 0)
 	}
 
+	op.GeoM.Scale(camera.ViewportZoom, camera.ViewportZoom)
 	op.GeoM.Translate(x, y)
 
 	camera.Viewport.DrawImage(sprite.Image, op)

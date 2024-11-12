@@ -105,15 +105,21 @@ func (g *Game) createWorld() donburi.World {
 	level := archetype.NewLevel(world, assets.LevelInnsmouth)
 	character := archetype.NewCharacter(level)
 
-	archetype.NewPOI(level, math.Vec2{X: 470, Y: 370}, engine.Size{Width: 150, Height: 75}, "Train Station")
+	archetype.NewPOI(level, math.Vec2{X: 1200, Y: 900}, engine.Size{Width: 150, Height: 150}, "Train Station")
 
 	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, level)
 	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)
 
-	component.Camera.Get(levelCam).ViewportTarget = character
-	component.Camera.Get(levelCam).ViewportBounds = &engine.Rect{
-		X: float64(-g.screenWidth / 2.0),
-		// TODO not scaled
+	levelCamCam := component.Camera.Get(levelCam)
+
+	levelCamCam.ViewportTarget = character
+	levelCamCam.ViewportPosition = math.Vec2{
+		X: 0,
+		Y: -80,
+	}
+	levelCamCam.ViewportZoom = 0.4
+	levelCamCam.ViewportBounds = &engine.Rect{
+		X:     float64(-g.screenWidth / 2.0),
 		Width: float64(assets.LevelInnsmouth.Bounds().Dx() + g.screenWidth),
 	}
 
