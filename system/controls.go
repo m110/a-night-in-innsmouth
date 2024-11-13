@@ -4,6 +4,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/yohamta/donburi"
+	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
@@ -15,6 +16,7 @@ import (
 type Controls struct {
 	characterQuery *donburi.Query
 	dialogQuery    *donburi.Query
+	poiQuery       *donburi.Query
 	activePOIQuery *donburi.Query
 	passageQuery   *donburi.Query
 	buttonsQuery   *donburi.Query
@@ -32,6 +34,11 @@ func NewControls() *Controls {
 		dialogQuery: donburi.NewQuery(
 			filter.Contains(
 				component.Dialog,
+			),
+		),
+		poiQuery: donburi.NewQuery(
+			filter.Contains(
+				component.POI,
 			),
 		),
 		activePOIQuery: donburi.NewQuery(
@@ -67,6 +74,41 @@ func (c *Controls) Update(w donburi.World) {
 		return
 	}
 
+	var clicked bool
+	var x, y int
+
+	touchIDs := inpututil.AppendJustPressedTouchIDs(nil)
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		clicked = true
+		x, y = ebiten.CursorPosition()
+	} else if len(touchIDs) > 0 {
+		clicked = true
+		x, y = ebiten.TouchPosition(touchIDs[0])
+	}
+
+	if clicked {
+		levelCam := engine.MustFindWithComponent(w, component.LevelCamera)
+		cam := component.Camera.Get(levelCam)
+
+		clickPos := math.Vec2{
+			X: float64(x),
+			Y: float64(y),
+		}
+		worldClickPos := clickPos.DivScalar(cam.ViewportZoom).Add(cam.ViewportPosition)
+		clickRect := engine.NewRect(worldClickPos.X, worldClickPos.Y, 1, 1)
+
+		for entry := range c.poiQuery.Iter(w) {
+			pos := transform.WorldPosition(entry)
+			collider := component.Collider.Get(entry)
+			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
+
+			if colliderRect.Intersects(clickRect) {
+				selectPOI(entry)
+				return
+			}
+		}
+	}
+
 	if !characterFound {
 		return
 	}
@@ -100,15 +142,18 @@ func (c *Controls) Update(w donburi.World) {
 	if inpututil.IsKeyJustPressed(in.ActionKey) {
 		activePOI, ok := c.activePOIQuery.First(w)
 		if ok {
-			game := component.MustFindGame(w)
-			poi := component.POI.Get(activePOI)
-
-			if poi.POI.Passage != "" {
-				archetype.ShowPassage(w, game.Story.PassageByTitle(poi.POI.Passage))
-			} else if poi.POI.Level != nil {
-				archetype.ChangeLevel(w, *poi.POI.Level)
-			}
+			selectPOI(activePOI)
 		}
+	}
+}
+
+func selectPOI(entry *donburi.Entry) {
+	poi := component.POI.Get(entry)
+	game := component.MustFindGame(entry.World)
+	if poi.POI.Passage != "" {
+		archetype.ShowPassage(entry.World, game.Story.PassageByTitle(poi.POI.Passage))
+	} else if poi.POI.Level != nil {
+		archetype.ChangeLevel(entry.World, *poi.POI.Level)
 	}
 }
 
@@ -138,13 +183,13 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 		return
 	}
 
-	var updated bool
+	var optionUpdated bool
 	if inpututil.IsKeyJustPressed(ebiten.KeyDown) || inpututil.IsKeyJustPressed(ebiten.KeyS) {
 		passage.ActiveOption++
-		updated = true
+		optionUpdated = true
 	} else if inpututil.IsKeyJustPressed(ebiten.KeyUp) || inpututil.IsKeyJustPressed(ebiten.KeyW) {
 		passage.ActiveOption--
-		updated = true
+		optionUpdated = true
 	}
 
 	_, wy := ebiten.Wheel()
@@ -176,12 +221,12 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
 			if colliderRect.Intersects(clickRect) {
 				passage.ActiveOption = component.DialogOption.Get(entry).Index
-				updated = true
+				optionUpdated = true
 			}
 		})
 	}
 
-	if updated {
+	if optionUpdated {
 		if passage.ActiveOption < 0 {
 			passage.ActiveOption = len(passage.Passage.Links()) - 1
 		}
@@ -200,8 +245,8 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 
 	var next bool
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) ||
-		(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && updated) ||
-		(touched && updated) {
+		(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && optionUpdated) ||
+		(touched && optionUpdated) {
 		next = true
 	}
 
@@ -211,7 +256,7 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 
 	camera := component.Camera.Get(engine.MustFindWithComponent(w, component.DialogCamera))
 
-	if updated || next {
+	if optionUpdated || next {
 		camera.ViewportPosition.Y = stackedView.CurrentY
 		stackedView.Scrolled = false
 	} else if scroll != 0 {

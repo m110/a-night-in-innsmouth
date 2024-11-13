@@ -53,23 +53,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="4" name="Triggers">
-  <object id="12" name="For Fish" class="trigger" x="1200" y="1080" width="192" height="456">
-   <properties>
-    <property name="poi" type="object" value="1"/>
-   </properties>
-  </object>
-  <object id="15" name="For Painting" class="trigger" x="2344" y="1128" width="184" height="400">
-   <properties>
-    <property name="poi" type="object" value="11"/>
-   </properties>
-  </object>
-  <object id="17" name="For Hat" class="trigger" x="544" y="1000" width="200" height="440">
-   <properties>
-    <property name="poi" type="object" value="7"/>
-   </properties>
-  </object>
- </objectgroup>
+ <objectgroup id="4" name="Triggers"/>
  <objectgroup id="5" name="Entrypoints">
   <object id="18" name="Entry Point 0" class="entrypoint" gid="1" x="224" y="936" width="234" height="775.056">
    <properties>
