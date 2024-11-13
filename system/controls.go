@@ -79,13 +79,13 @@ func (c *Controls) Update(w donburi.World) {
 	pos := transform.WorldPosition(character)
 
 	var moving bool
-	if pos.X <= movementBounds.MaxX && ebiten.IsKeyPressed(in.MoveRightKey) {
+	if pos.X <= movementBounds.Range.Max && ebiten.IsKeyPressed(in.MoveRightKey) {
 		velocity.Velocity.X = in.MoveSpeed
 		sprite.FlipY = false
 		anim.Start(character)
 		moving = true
 	}
-	if pos.X >= movementBounds.MinX && ebiten.IsKeyPressed(in.MoveLeftKey) {
+	if pos.X >= movementBounds.Range.Min && ebiten.IsKeyPressed(in.MoveLeftKey) {
 		velocity.Velocity.X = -in.MoveSpeed
 		sprite.FlipY = true
 		anim.Start(character)

@@ -29,16 +29,23 @@ func (s *CameraFollow) Update(w donburi.World) {
 			return
 		}
 
+		// TODO Should this be multiplied by CameraZoom?
 		pos := transform.WorldPosition(cam.ViewportTarget)
 
-		cam.ViewportPosition.X = pos.X - float64(cam.Viewport.Bounds().Dx())/2
+		viewportWorldWidth := float64(cam.Viewport.Bounds().Dx()) / cam.ViewportZoom
+
+		targetCameraX := pos.X - viewportWorldWidth/2.0
 
 		if cam.ViewportBounds != nil {
-			if cam.ViewportPosition.X < cam.ViewportBounds.X {
-				cam.ViewportPosition.X = cam.ViewportBounds.X
-			} else if cam.ViewportPosition.X+float64(cam.Viewport.Bounds().Dx()) > cam.ViewportBounds.X+cam.ViewportBounds.Width {
-				cam.ViewportPosition.X = cam.ViewportBounds.X + cam.ViewportBounds.Width - float64(cam.Viewport.Bounds().Dx())
+			maxX := cam.ViewportBounds.Max - viewportWorldWidth
+
+			if targetCameraX < cam.ViewportBounds.Min {
+				targetCameraX = cam.ViewportBounds.Min
+			} else if targetCameraX > maxX {
+				targetCameraX = maxX
 			}
 		}
+
+		cam.ViewportPosition.X = targetCameraX
 	})
 }

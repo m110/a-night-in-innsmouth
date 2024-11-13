@@ -1,10 +1,13 @@
 package component
 
-import "github.com/yohamta/donburi"
+import (
+	"github.com/yohamta/donburi"
+
+	"github.com/m110/secrets/engine"
+)
 
 type MovementBoundsData struct {
-	MinX float64
-	MaxX float64
+	Range engine.FloatRange
 }
 
 var MovementBounds = donburi.NewComponentType[MovementBoundsData]()

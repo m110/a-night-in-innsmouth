@@ -2,7 +2,6 @@ package archetype
 
 import (
 	"github.com/yohamta/donburi"
-	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 
 	"github.com/m110/secrets/assets"
@@ -13,9 +12,10 @@ import (
 
 const (
 	levelMovementMargin = 100
+	levelCameraMargin   = 200
 )
 
-func NewLevel(w donburi.World, targetLevel domain.TargetLevel) (*donburi.Entry, *donburi.Entry) {
+func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	level, ok := assets.Levels[targetLevel.Name]
 	if !ok {
 		panic("Name not found: " + targetLevel.Name)
@@ -44,8 +44,10 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) (*donburi.Entry, 
 		entrypoint := level.Entrypoints[*targetLevel.Entrypoint]
 
 		bounds := component.MovementBoundsData{
-			MinX: levelMovementMargin,
-			MaxX: float64(level.Background.Bounds().Dx() - levelMovementMargin),
+			Range: engine.FloatRange{
+				Min: levelMovementMargin,
+				Max: float64(level.Background.Bounds().Dx() - levelMovementMargin),
+			},
 		}
 
 		character = NewCharacter(entry, bounds)
@@ -54,28 +56,48 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) (*donburi.Entry, 
 		component.Sprite.Get(character).FlipY = entrypoint.FlipY
 	}
 
-	return entry, character
-}
-
-func ChangeLevel(w donburi.World, level domain.TargetLevel) {
-	currentLevel := engine.MustFindWithComponent(w, component.Level)
-	transform.RemoveRecursive(currentLevel)
-
-	newLevel, character := NewLevel(w, level)
-
 	levelCam := engine.MustFindWithComponent(w, component.LevelCamera)
 	cam := component.Camera.Get(levelCam)
-	cam.Root = newLevel
+	cam.Root = entry
+
+	// TODO Review the default
+	if level.CameraZoom != 0 {
+		cam.ViewportZoom = level.CameraZoom
+	} else {
+		cam.ViewportZoom = 0.4
+	}
+
+	heightDiff := float64(game.Settings.ScreenHeight) - float64(level.Background.Bounds().Dy())*cam.ViewportZoom
+	if heightDiff > 0 {
+		cam.ViewportPosition.Y = -heightDiff / 2
+	} else {
+		// Should not happen?
+		cam.ViewportPosition.Y = 0
+	}
+
+	bounds := component.Sprite.Get(entry).Image.Bounds()
+	levelWidth := float64(bounds.Dx())
+
+	viewportWorldWidth := float64(game.Settings.ScreenWidth) / cam.ViewportZoom
+	cam.ViewportPosition.X = levelWidth/2.0 - viewportWorldWidth/2.0
+
 	if character == nil {
-		bounds := component.Sprite.Get(newLevel).Image.Bounds()
-		game := component.MustFindGame(w)
-		cam.ViewportPosition = math.Vec2{
-			X: float64(bounds.Dx()/2.0) - float64(game.Settings.ScreenWidth/2),
-			// TODO Should this be hardcoded?
-			Y: -80,
-		}
 		cam.ViewportTarget = nil
 	} else {
 		cam.ViewportTarget = character
 	}
+
+	cam.ViewportBounds = &engine.FloatRange{
+		Min: -levelCameraMargin,
+		Max: levelWidth + levelCameraMargin,
+	}
+}
+
+func ChangeLevel(w donburi.World, level domain.TargetLevel) {
+	currentLevel, ok := engine.FindWithComponent(w, component.Level)
+	if ok {
+		transform.RemoveRecursive(currentLevel)
+	}
+
+	NewLevel(w, level)
 }

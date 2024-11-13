@@ -12,6 +12,7 @@ type Level struct {
 	POIs         []POI
 	StartPassage string
 	Entrypoints  []Entrypoint
+	CameraZoom   float64
 }
 
 type Entrypoint struct {

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/m110/secrets/engine"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/yohamta/donburi"
@@ -47,6 +49,14 @@ func (d *Debug) Update(w donburi.World) {
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		d.debug.Enabled = !d.debug.Enabled
+
+		game := engine.MustFindWithComponent(w, component.Game)
+		in := component.Input.Get(game)
+		if d.debug.Enabled {
+			in.MoveSpeed *= 3
+		} else {
+			in.MoveSpeed /= 3
+		}
 	}
 
 	if d.debug.Enabled {

@@ -14,7 +14,7 @@ type CameraData struct {
 	ViewportPosition math.Vec2
 	ViewportZoom     float64
 	ViewportTarget   *donburi.Entry
-	ViewportBounds   *engine.Rect
+	ViewportBounds   *engine.FloatRange
 
 	Root  *donburi.Entry
 	Index int

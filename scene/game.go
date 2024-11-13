@@ -108,32 +108,15 @@ func (g *Game) createWorld() donburi.World {
 
 	story.AddMoney(1000)
 
+	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, nil)
+	levelCam.AddComponent(component.LevelCamera)
+	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)
+
 	entrypoint := 0
-	level, character := archetype.NewLevel(world, domain.TargetLevel{
+	archetype.ChangeLevel(world, domain.TargetLevel{
 		Name:       "innsmouth",
 		Entrypoint: &entrypoint,
 	})
-
-	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, level)
-	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)
-
-	levelCam.AddComponent(component.LevelCamera)
-
-	levelCamCam := component.Camera.Get(levelCam)
-
-	levelCamCam.ViewportTarget = character
-	// TODO Should this be hardcoded?
-	levelCamCam.ViewportPosition = math.Vec2{
-		X: 0,
-		Y: -80,
-	}
-	levelCamCam.ViewportZoom = 0.4
-
-	levelCamCam.ViewportBounds = &engine.Rect{
-		X: float64(-g.screenWidth / 2.0),
-		// TODO Dynamic based on width on the level
-		Width: 3000,
-	}
 
 	return world
 }

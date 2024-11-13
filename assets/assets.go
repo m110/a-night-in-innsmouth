@@ -209,9 +209,12 @@ func mustLoadLevel(path string) domain.Level {
 	}
 
 	var startPassage string
+	var cameraZoom float64
 	if levelMap.Properties != nil {
 		startPassage = levelMap.Properties.GetString("startPassage")
 		assertPassageExists(startPassage)
+
+		cameraZoom = levelMap.Properties.GetFloat("cameraZoom")
 	}
 
 	return domain.Level{
@@ -219,6 +222,7 @@ func mustLoadLevel(path string) domain.Level {
 		POIs:         pois,
 		StartPassage: startPassage,
 		Entrypoints:  entrypoints,
+		CameraZoom:   cameraZoom,
 	}
 }
 
