@@ -80,6 +80,11 @@ func HidePOIs(w donburi.World) {
 func CanSeePOI(entry *donburi.Entry) bool {
 	poi := component.POI.Get(entry)
 	game := component.MustFindGame(entry.World)
+
+	if poi.POI.Level != nil {
+		return true
+	}
+
 	passage := game.Story.PassageByTitle(poi.POI.Passage)
 	return passage.ConditionsMet()
 }

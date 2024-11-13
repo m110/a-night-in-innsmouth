@@ -279,7 +279,9 @@ The sun is getting low.
 }
 
 func TestParsePassage_Story2(t *testing.T) {
-	passage := `You arrive at the train station.
+	passage := `if: hasItem Train Ticket to Arkham && fact day2
+--
+You arrive at the train station.
 
 [unless hasItem Train Ticket to Arkham]
 > [[Check tickets to Arkham]]
@@ -300,6 +302,18 @@ func TestParsePassage_Story2(t *testing.T) {
 		Segments: []domain.Segment{
 			{
 				Text: "You arrive at the train station.",
+			},
+		},
+		Conditions: []domain.Condition{
+			{
+				Positive: true,
+				Type:     domain.ConditionTypeHasItem,
+				Value:    "Train Ticket to Arkham",
+			},
+			{
+				Positive: true,
+				Type:     domain.ConditionTypeFact,
+				Value:    "day2",
 			},
 		},
 		Links: []domain.RawLink{

@@ -15,10 +15,6 @@ import (
 func NewCharacter(parent *donburi.Entry) *donburi.Entry {
 	w := parent.World
 	character := NewTagged(w, "Character").
-		WithPosition(math.Vec2{
-			X: 450,
-			Y: 1000,
-		}).
 		WithScale(math.Vec2{
 			X: 0.4,
 			Y: 0.4,
@@ -28,21 +24,12 @@ func NewCharacter(parent *donburi.Entry) *donburi.Entry {
 		WithSprite(component.SpriteData{
 			Image: assets.Character[2],
 		}).
-		With(component.Input).
 		With(component.Velocity).
 		WithSpriteBounds().
 		WithBoundsAsCollider(component.CollisionLayerCharacter).
 		With(component.Animation).
 		With(component.Character).
 		Entry()
-
-	component.Input.SetValue(character, component.InputData{
-		Disabled:     false,
-		MoveRightKey: ebiten.KeyD,
-		MoveLeftKey:  ebiten.KeyA,
-		ActionKey:    ebiten.KeySpace,
-		MoveSpeed:    6,
-	})
 
 	sprite := component.Sprite.Get(character)
 	frames := []*ebiten.Image{

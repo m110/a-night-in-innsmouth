@@ -2,17 +2,19 @@ package archetype
 
 import (
 	"github.com/yohamta/donburi"
+	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )
 
-func NewLevel(w donburi.World, levelName string) *donburi.Entry {
-	level, ok := assets.Levels[levelName]
+func NewLevel(w donburi.World, targetLevel domain.TargetLevel) (*donburi.Entry, *donburi.Entry) {
+	level, ok := assets.Levels[targetLevel.Name]
 	if !ok {
-		panic("Level not found: " + levelName)
+		panic("Name not found: " + targetLevel.Name)
 	}
 
 	entry := NewTagged(w, "Level").
@@ -33,19 +35,38 @@ func NewLevel(w donburi.World, levelName string) *donburi.Entry {
 		ShowPassage(w, game.Story.PassageByTitle(level.StartPassage))
 	}
 
-	return entry
+	var character *donburi.Entry
+	if len(level.Entrypoints) > 0 && targetLevel.Entrypoint != nil {
+		entrypoint := level.Entrypoints[*targetLevel.Entrypoint]
+
+		character = NewCharacter(entry)
+
+		transform.GetTransform(character).LocalPosition = entrypoint.Position
+		component.Sprite.Get(character).FlipY = entrypoint.FlipY
+	}
+
+	return entry, character
 }
 
-func ChangeLevel(w donburi.World, level string) {
+func ChangeLevel(w donburi.World, level domain.TargetLevel) {
 	currentLevel := engine.MustFindWithComponent(w, component.Level)
-	component.Destroy(currentLevel)
-	newLevel := NewLevel(w, level)
+	transform.RemoveRecursive(currentLevel)
+
+	newLevel, character := NewLevel(w, level)
 
 	levelCam := engine.MustFindWithComponent(w, component.LevelCamera)
-	component.Camera.Get(levelCam).Root = newLevel
-
-	// TODO Entry points
-	// TODO Should hide the character if no entry point
-	character := engine.MustFindWithComponent(w, component.Character)
-	transform.ChangeParent(character, newLevel, false)
+	cam := component.Camera.Get(levelCam)
+	cam.Root = newLevel
+	if character == nil {
+		bounds := component.Sprite.Get(newLevel).Image.Bounds()
+		game := component.MustFindGame(w)
+		cam.ViewportPosition = math.Vec2{
+			X: float64(bounds.Dx()/2.0) - float64(game.Settings.ScreenWidth/2),
+			// TODO Should this be hardcoded?
+			Y: -80,
+		}
+		cam.ViewportTarget = nil
+	} else {
+		cam.ViewportTarget = character
+	}
 }

@@ -79,13 +79,20 @@ func (g *Game) createWorld() donburi.World {
 
 	story := domain.NewStory(world, assets.Story)
 
-	game := world.Entry(world.Create(component.Game))
+	game := world.Entry(world.Create(component.Game, component.Input))
 	component.Game.SetValue(game, component.GameData{
 		Story: story,
 		Settings: component.Settings{
 			ScreenWidth:  g.screenWidth,
 			ScreenHeight: g.screenHeight,
 		},
+	})
+	component.Input.SetValue(game, component.InputData{
+		Disabled:     false,
+		MoveRightKey: ebiten.KeyD,
+		MoveLeftKey:  ebiten.KeyA,
+		ActionKey:    ebiten.KeySpace,
+		MoveSpeed:    6,
 	})
 
 	world.Create(component.Debug)
@@ -101,9 +108,11 @@ func (g *Game) createWorld() donburi.World {
 
 	story.AddMoney(1000)
 
-	level := archetype.NewLevel(world, "hotel")
-	// TODO Character position from level
-	character := archetype.NewCharacter(level)
+	entrypoint := 0
+	level, character := archetype.NewLevel(world, domain.TargetLevel{
+		Name:       "innsmouth",
+		Entrypoint: &entrypoint,
+	})
 
 	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, level)
 	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)

@@ -199,9 +199,9 @@ func NextPassage(w donburi.World) {
 		return
 	}
 
-	if link.Level != "" {
+	if link.Level != nil {
 		hideDialog(w)
-		ChangeLevel(w, link.Level)
+		ChangeLevel(w, *link.Level)
 		return
 	}
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="10">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="24">
+ <tileset firstgid="1" source="Character.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="innsmouth.jpeg" width="3072" height="1728"/>
  </imagelayer>
@@ -21,7 +22,20 @@
   </object>
   <object id="9" name="Exit" class="poi" x="2808" y="960" width="176" height="616">
    <properties>
-    <property name="level" value="hotel"/>
+    <property name="level" value="hotel,0"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="Entrypoints">
+  <object id="20" name="Entry Point 0" class="entrypoint" gid="1" x="256" y="936" width="234" height="775.056">
+   <properties>
+    <property name="index" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="21" name="Entry Point 1" class="entrypoint" gid="2147483649" x="2712" y="936" width="234" height="775.056">
+   <properties>
+    <property name="flipY" type="bool" value="true"/>
+    <property name="index" type="int" value="1"/>
    </properties>
   </object>
  </objectgroup>

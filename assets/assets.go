@@ -8,7 +8,11 @@ import (
 	_ "image/png"
 	"io/fs"
 	"path"
+	"sort"
+	"strconv"
 	"strings"
+
+	"github.com/yohamta/donburi/features/math"
 
 	"github.com/m110/secrets/engine"
 
@@ -61,10 +65,18 @@ func MustLoadAssets() {
 
 	mustLoadLevels()
 
+	for _, l := range Levels {
+		for _, p := range l.POIs {
+			if p.Level != nil {
+				assertLevelExists(*p.Level)
+			}
+		}
+	}
+
 	for _, p := range Story.Passages {
 		for _, l := range p.Links {
-			if l.Level != "" {
-				assertLevelExists(l.Level)
+			if l.Level != nil {
+				assertLevelExists(*l.Level)
 			}
 		}
 	}
@@ -105,6 +117,7 @@ func mustLoadLevel(path string) domain.Level {
 	}
 
 	var pois []domain.POI
+	var entrypoints []domain.Entrypoint
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
 			if obj.Class == "poi" {
@@ -123,12 +136,52 @@ func mustLoadLevel(path string) domain.Level {
 
 				level := obj.Properties.GetString("level")
 				if level != "" {
-					assertLevelExists(level)
-					poi.Level = level
+					parts := strings.Split(level, ",")
+					var entrypoint *int
+					if len(parts) == 2 {
+						e, err := strconv.Atoi(strings.TrimSpace(parts[1]))
+						if err != nil {
+							panic(err)
+						}
+						entrypoint = &e
+					} else if len(parts) > 2 {
+						panic(fmt.Sprintf("invalid level: %v", level))
+					}
+
+					poi.Level = &domain.TargetLevel{
+						Name:       strings.TrimSpace(parts[0]),
+						Entrypoint: entrypoint,
+					}
 				}
 
 				pois = append(pois, poi)
 			}
+
+			if obj.Class == "entrypoint" {
+				entrypoint := domain.Entrypoint{
+					Index: obj.Properties.GetInt("index"),
+					Position: math.Vec2{
+						X: obj.X,
+						Y: obj.Y,
+					},
+				}
+
+				if obj.Properties.GetBool("flipY") {
+					entrypoint.FlipY = true
+				}
+
+				entrypoints = append(entrypoints, entrypoint)
+			}
+		}
+	}
+
+	sort.Slice(entrypoints, func(i, j int) bool {
+		return entrypoints[i].Index < entrypoints[j].Index
+	})
+
+	for i, e := range entrypoints {
+		if e.Index != i {
+			panic(fmt.Sprintf("entrypoint index is not sequential: %v", e.Index))
 		}
 	}
 
@@ -165,6 +218,7 @@ func mustLoadLevel(path string) domain.Level {
 		Background:   mustNewEbitenImage(mustReadFile(fmt.Sprintf("levels/%v", imageName))),
 		POIs:         pois,
 		StartPassage: startPassage,
+		Entrypoints:  entrypoints,
 	}
 }
 
@@ -178,9 +232,15 @@ func assertPassageExists(name string) {
 	panic(fmt.Sprintf("passage not found: %v", name))
 }
 
-func assertLevelExists(name string) {
-	if _, ok := levelNames[name]; !ok {
-		panic(fmt.Sprintf("level not found: %v", name))
+func assertLevelExists(level domain.TargetLevel) {
+	if _, ok := Levels[level.Name]; !ok {
+		panic(fmt.Sprintf("level not found: %v"))
+	}
+
+	if level.Entrypoint != nil {
+		if *level.Entrypoint < 0 || *level.Entrypoint >= len(Levels[level.Name].Entrypoints) {
+			panic(fmt.Sprintf("entrypoint not found: %v %v", level.Name, *level.Entrypoint))
+		}
 	}
 }
 

@@ -13,7 +13,7 @@ import (
 )
 
 type Controls struct {
-	query          *donburi.Query
+	characterQuery *donburi.Query
 	dialogQuery    *donburi.Query
 	activePOIQuery *donburi.Query
 	passageQuery   *donburi.Query
@@ -22,9 +22,8 @@ type Controls struct {
 
 func NewControls() *Controls {
 	return &Controls{
-		query: donburi.NewQuery(
+		characterQuery: donburi.NewQuery(
 			filter.Contains(
-				component.Input,
 				component.Sprite,
 				component.Velocity,
 				component.Animation,
@@ -51,58 +50,70 @@ func NewControls() *Controls {
 }
 
 func (c *Controls) Update(w donburi.World) {
-	c.query.Each(w, func(entry *donburi.Entry) {
-		in := component.Input.Get(entry)
+	in := engine.MustFindComponent[component.InputData](w, component.Input)
 
-		if in.Disabled {
-			return
+	if in.Disabled {
+		return
+	}
+
+	character, characterFound := c.characterQuery.First(w)
+
+	dialog, ok := c.dialogQuery.First(w)
+	if ok && component.Active.Get(dialog).Active {
+		if characterFound {
+			stopCharacter(character)
 		}
+		c.UpdateDialog(w)
+		return
+	}
 
-		velocity := component.Velocity.Get(entry)
-		anim := component.Animation.Get(entry)
+	if !characterFound {
+		return
+	}
 
-		dialog, ok := c.dialogQuery.First(w)
-		if ok && component.Active.Get(dialog).Active {
-			velocity.Velocity.X = 0
-			anim.Stop(entry)
-			c.UpdateDialog(w)
-			return
-		}
+	velocity := component.Velocity.Get(character)
+	anim := component.Animation.Get(character)
 
-		sprite := component.Sprite.Get(entry)
+	sprite := component.Sprite.Get(character)
 
-		var moving bool
-		if ebiten.IsKeyPressed(in.MoveRightKey) {
-			velocity.Velocity.X = in.MoveSpeed
-			sprite.FlipY = false
-			anim.Start(entry)
-			moving = true
-		} else if ebiten.IsKeyPressed(in.MoveLeftKey) {
-			velocity.Velocity.X = -in.MoveSpeed
-			sprite.FlipY = true
-			anim.Start(entry)
-			moving = true
-		}
+	var moving bool
+	if ebiten.IsKeyPressed(in.MoveRightKey) {
+		velocity.Velocity.X = in.MoveSpeed
+		sprite.FlipY = false
+		anim.Start(character)
+		moving = true
+	} else if ebiten.IsKeyPressed(in.MoveLeftKey) {
+		velocity.Velocity.X = -in.MoveSpeed
+		sprite.FlipY = true
+		anim.Start(character)
+		moving = true
+	}
 
-		if !moving {
-			velocity.Velocity.X = 0
-			anim.Stop(entry)
-		}
+	if !moving {
+		velocity.Velocity.X = 0
+		anim.Stop(character)
+	}
 
-		if inpututil.IsKeyJustPressed(in.ActionKey) {
-			activePOI, ok := c.activePOIQuery.First(w)
-			if ok {
-				game := component.MustFindGame(w)
-				poi := component.POI.Get(activePOI)
+	if inpututil.IsKeyJustPressed(in.ActionKey) {
+		activePOI, ok := c.activePOIQuery.First(w)
+		if ok {
+			game := component.MustFindGame(w)
+			poi := component.POI.Get(activePOI)
 
-				if poi.POI.Passage != "" {
-					archetype.ShowPassage(w, game.Story.PassageByTitle(poi.POI.Passage))
-				} else if poi.POI.Level != "" {
-					archetype.ChangeLevel(w, poi.POI.Level)
-				}
+			if poi.POI.Passage != "" {
+				archetype.ShowPassage(w, game.Story.PassageByTitle(poi.POI.Passage))
+			} else if poi.POI.Level != nil {
+				archetype.ChangeLevel(w, *poi.POI.Level)
 			}
 		}
-	})
+	}
+}
+
+func stopCharacter(entry *donburi.Entry) {
+	velocity := component.Velocity.Get(entry)
+	anim := component.Animation.Get(entry)
+	velocity.Velocity.X = 0
+	anim.Stop(entry)
 }
 
 func (c *Controls) UpdateDialog(w donburi.World) {

@@ -2,6 +2,7 @@ package twine
 
 import (
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/m110/secrets/domain"
@@ -237,7 +238,22 @@ func parseLinks(segments []domain.Segment) ([]domain.Segment, []domain.RawLink) 
 				if strings.Contains(tm[1], ":") {
 					parts := strings.Split(tm[1], ":")
 					if strings.TrimSpace(parts[0]) == "level" {
-						link.Level = strings.TrimSpace(parts[1])
+						level := strings.Split(parts[1], ",")
+						var entrypoint *int
+						if len(level) == 2 {
+							e, err := strconv.Atoi(strings.TrimSpace(level[1]))
+							if err != nil {
+								panic(err)
+							}
+							entrypoint = &e
+						} else if len(level) > 2 {
+							panic("invalid level: " + parts[1])
+						}
+
+						link.Level = &domain.TargetLevel{
+							Name:       strings.TrimSpace(level[0]),
+							Entrypoint: entrypoint,
+						}
 					}
 				} else {
 					link.Tags = strings.Fields(tm[1])

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="18">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="21">
+ <tileset firstgid="1" source="Character.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="hotel.jpeg" width="3072" height="1728"/>
  </imagelayer>
@@ -45,6 +46,12 @@
     <property name="passage" value="TBA"/>
    </properties>
   </object>
+  <object id="20" name="Exit" class="poi" x="-56" y="960" width="256" height="584">
+   <properties>
+    <property name="level" value="innsmouth,1"/>
+    <property name="passage" value=""/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="4" name="Triggers">
   <object id="12" name="For Fish" class="trigger" x="1200" y="1080" width="192" height="456">
@@ -57,9 +64,22 @@
     <property name="poi" type="object" value="11"/>
    </properties>
   </object>
-  <object id="17" name="For Hat" class="trigger" x="240" y="1056" width="200" height="440">
+  <object id="17" name="For Hat" class="trigger" x="544" y="1000" width="200" height="440">
    <properties>
     <property name="poi" type="object" value="7"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="Entrypoints">
+  <object id="18" name="Entry Point 0" class="entrypoint" gid="1" x="224" y="936" width="234" height="775.056">
+   <properties>
+    <property name="index" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="19" name="Entry Point 1" class="entrypoint" gid="2147483649" x="2592" y="936" width="234" height="775.056">
+   <properties>
+    <property name="flipY" type="bool" value="true"/>
+    <property name="index" type="int" value="1"/>
    </properties>
   </object>
  </objectgroup>

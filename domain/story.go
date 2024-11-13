@@ -31,9 +31,14 @@ type Segment struct {
 type RawLink struct {
 	Text       string
 	Target     string
-	Level      string
+	Level      *TargetLevel
 	Conditions []Condition
 	Tags       []string
+}
+
+type TargetLevel struct {
+	Name       string
+	Entrypoint *int
 }
 
 type Story struct {
@@ -306,7 +311,7 @@ type Link struct {
 
 	Text       string
 	Target     *Passage
-	Level      string
+	Level      *TargetLevel
 	Conditions []Condition
 	Visited    bool
 	Tags       []string
