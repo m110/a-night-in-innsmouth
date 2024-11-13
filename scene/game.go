@@ -101,7 +101,7 @@ func (g *Game) createWorld() donburi.World {
 
 	story.AddMoney(1000)
 
-	level := archetype.NewLevel(world, "innsmouth")
+	level := archetype.NewLevel(world, "hotel")
 	// TODO Character position from level
 	character := archetype.NewCharacter(level)
 

@@ -143,9 +143,16 @@ func mustLoadLevel(path string) domain.Level {
 		}
 	}
 
+	var startPassage string
+	if levelMap.Properties != nil {
+		startPassage = levelMap.Properties.GetString("startPassage")
+		assertPassageExists(startPassage)
+	}
+
 	return domain.Level{
-		Background: mustNewEbitenImage(mustReadFile(fmt.Sprintf("levels/%v", imageName))),
-		POIs:       pois,
+		Background:   mustNewEbitenImage(mustReadFile(fmt.Sprintf("levels/%v", imageName))),
+		POIs:         pois,
+		StartPassage: startPassage,
 	}
 }
 

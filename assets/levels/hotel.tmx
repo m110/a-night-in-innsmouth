@@ -36,7 +36,8 @@
   </object>
   <object id="10" name="Stairs" class="poi" x="2792" y="912" width="256" height="584">
    <properties>
-    <property name="passage" value="TBA"/>
+    <property name="level" value="hotel-hall"/>
+    <property name="passage" value=""/>
    </properties>
   </object>
   <object id="11" name="Painting" class="poi" x="2256" y="656" width="336" height="264">

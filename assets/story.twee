@@ -40,7 +40,7 @@ addFact: askedAboutInnsmouth
 > {back} [["Sure thing"->Newburyport Grocery Store]]
 
 
-:: ... {"position":"3725,1975","size":"100,100"}
+:: ... {"position":"3800,2450","size":"100,100"}
 
 
 
@@ -64,7 +64,7 @@ You feel like you missed something, but you don't know what it is.
 THE END
 
 
-:: Barnacles {"position":"3150,2325","size":"100,100"}
+:: Barnacles {"position":"2975,2875","size":"100,100"}
 This... Looks odd.
 
 > {exit} [[Look away.]]
@@ -137,13 +137,21 @@ The ticket is quite expensive. The train leaves tomorrow morning.
 > [[Reconsider...->Train Station]]
 
 
-:: Dead Fish {"position":"2875,2300","size":"100,100"}
+:: Dead Fish {"position":"2700,2850","size":"100,100"}
 A fish carcass rots on the ground. The smell makes your eyes watery.
 
 > {exit} [[Move away.]]
 
 
-:: Go inside {"position":"2600,2450","size":"100,100"}
+:: Enter the room {"position":"3825,1500","size":"100,100"}
+
+
+
+:: Go back downstairs {"position":"4150,1525","size":"100,100"}
+
+
+
+:: Go inside {"position":"2425,3000","size":"100,100"}
 
 > {back} [[Nothing to do here->Vacant House]]
 
@@ -157,8 +165,16 @@ You wake up early in the morning.
 > [[Exit->Newburyport]]
 
 
-:: Hotel {"position":"3150,1600","size":"100,100"}
+:: Hotel {"position":"3400,1375","size":"100,100"}
 
+
+
+:: Hotel Hall {"position":"3925,1175","size":"100,100"}
+setTitle: Hotel Hall
+--
+The hall is full of dust. A strong fish scent is in the air, stronger under some doors.
+
+> [[Look for your room]]
 
 
 :: Innsmouth {"position":"2700,1600","size":"200,200"}
@@ -171,15 +187,22 @@ You arrive at Innsmouth.
 > [[Restaurant]]
 
 
-:: Leave it be {"position":"2350,2350","size":"100,100"}
+:: Leave it be {"position":"2175,2900","size":"100,100"}
 
 
 
-:: Look away. {"position":"3150,2450","size":"100,100"}
+:: Look away. {"position":"2975,3000","size":"100,100"}
 
 
 
-:: Move away. {"position":"2875,2475","size":"100,100"}
+:: Look for your room {"position":"3925,1350","size":"100,100"}
+There it is. At the end of the corridor, you see the door to your room. The smell isn't so bad in this area.
+
+> [[Enter the room]]
+> {level:hotel} [[Go back downstairs]]
+
+
+:: Move away. {"position":"2700,3025","size":"100,100"}
 
 
 
@@ -234,7 +257,7 @@ You flip the pages and get bored soon.
 > {back} [[Go Back->Newburyport]]
 
 
-:: Restaurant {"position":"3000,2025","size":"100,100"}
+:: Restaurant {"position":"2800,1875","size":"100,100"}
 
 
 
@@ -246,7 +269,7 @@ You heard that the steam train is your best option. Just need to keep in mind yo
 [[Explore the city->Newburyport]]
 
 
-:: TBA {"position":"3725,1800","size":"100,100"}
+:: TBA {"position":"3800,2275","size":"100,100"}
 ...
 
 > {exit} [[...]]
@@ -269,7 +292,7 @@ You arrive at the train station.
 > [[Exit->Newburyport]] 
 
 
-:: Vacant House {"position":"2525,2225","size":"100,100"}
+:: Vacant House {"position":"2350,2775","size":"100,100"}
 The house is in ruin.
 
 > [[Go inside]]

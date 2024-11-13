@@ -7,8 +7,9 @@ import (
 )
 
 type Level struct {
-	Background *ebiten.Image
-	POIs       []POI
+	Background   *ebiten.Image
+	POIs         []POI
+	StartPassage string
 }
 
 type POI struct {

@@ -22,5 +22,11 @@ func NewLevel(w donburi.World, levelName string) *donburi.Entry {
 		NewPOI(entry, poi)
 	}
 
+	game := component.MustFindGame(w)
+
+	if level.StartPassage != "" {
+		ShowPassage(w, game.Story.PassageByTitle(level.StartPassage))
+	}
+
 	return entry
 }
