@@ -12,7 +12,7 @@ import (
 	"github.com/m110/secrets/engine"
 )
 
-func NewCharacter(parent *donburi.Entry) *donburi.Entry {
+func NewCharacter(parent *donburi.Entry, movementBounds component.MovementBoundsData) *donburi.Entry {
 	w := parent.World
 	character := NewTagged(w, "Character").
 		WithScale(math.Vec2{
@@ -29,6 +29,7 @@ func NewCharacter(parent *donburi.Entry) *donburi.Entry {
 		WithBoundsAsCollider(component.CollisionLayerCharacter).
 		With(component.Animation).
 		With(component.Character).
+		With(component.MovementBounds).
 		Entry()
 
 	sprite := component.Sprite.Get(character)
@@ -64,6 +65,8 @@ func NewCharacter(parent *donburi.Entry) *donburi.Entry {
 			sprite.Image = frames[2]
 		},
 	})
+
+	component.MovementBounds.SetValue(character, movementBounds)
 
 	return character
 }

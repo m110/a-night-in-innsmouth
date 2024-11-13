@@ -6,12 +6,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/yohamta/donburi"
+	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
 	"github.com/m110/secrets/component"
-
-	"github.com/yohamta/donburi"
-	"github.com/yohamta/donburi/features/transform"
 )
 
 type HierarchyValidator struct {

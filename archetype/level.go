@@ -11,6 +11,10 @@ import (
 	"github.com/m110/secrets/engine"
 )
 
+const (
+	levelMovementMargin = 100
+)
+
 func NewLevel(w donburi.World, targetLevel domain.TargetLevel) (*donburi.Entry, *donburi.Entry) {
 	level, ok := assets.Levels[targetLevel.Name]
 	if !ok {
@@ -39,7 +43,12 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) (*donburi.Entry, 
 	if len(level.Entrypoints) > 0 && targetLevel.Entrypoint != nil {
 		entrypoint := level.Entrypoints[*targetLevel.Entrypoint]
 
-		character = NewCharacter(entry)
+		bounds := component.MovementBoundsData{
+			MinX: levelMovementMargin,
+			MaxX: float64(level.Background.Bounds().Dx() - levelMovementMargin),
+		}
+
+		character = NewCharacter(entry, bounds)
 
 		transform.GetTransform(character).LocalPosition = entrypoint.Position
 		component.Sprite.Get(character).FlipY = entrypoint.FlipY

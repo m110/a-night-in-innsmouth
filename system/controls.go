@@ -73,16 +73,19 @@ func (c *Controls) Update(w donburi.World) {
 
 	velocity := component.Velocity.Get(character)
 	anim := component.Animation.Get(character)
-
+	movementBounds := component.MovementBounds.Get(character)
 	sprite := component.Sprite.Get(character)
 
+	pos := transform.WorldPosition(character)
+
 	var moving bool
-	if ebiten.IsKeyPressed(in.MoveRightKey) {
+	if pos.X <= movementBounds.MaxX && ebiten.IsKeyPressed(in.MoveRightKey) {
 		velocity.Velocity.X = in.MoveSpeed
 		sprite.FlipY = false
 		anim.Start(character)
 		moving = true
-	} else if ebiten.IsKeyPressed(in.MoveLeftKey) {
+	}
+	if pos.X >= movementBounds.MinX && ebiten.IsKeyPressed(in.MoveLeftKey) {
 		velocity.Velocity.X = -in.MoveSpeed
 		sprite.FlipY = true
 		anim.Start(character)
