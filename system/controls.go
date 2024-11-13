@@ -98,23 +98,11 @@ func (c *Controls) Update(w donburi.World) {
 				if poi.POI.Passage != "" {
 					archetype.ShowPassage(w, game.Story.PassageByTitle(poi.POI.Passage))
 				} else if poi.POI.Level != "" {
-					changeLevel(w, poi.POI.Level)
+					archetype.ChangeLevel(w, poi.POI.Level)
 				}
 			}
 		}
 	})
-}
-
-func changeLevel(w donburi.World, level string) {
-	currentLevel := engine.MustFindWithComponent(w, component.Level)
-	component.Destroy(currentLevel)
-	newLevel := archetype.NewLevel(w, level)
-
-	levelCam := engine.MustFindWithComponent(w, component.LevelCamera)
-	component.Camera.Get(levelCam).Root = newLevel
-
-	character := engine.MustFindWithComponent(w, component.Character)
-	transform.ChangeParent(character, newLevel, false)
 }
 
 func (c *Controls) UpdateDialog(w donburi.World) {

@@ -190,16 +190,25 @@ func NextPassage(w donburi.World) {
 	anim.Start(cameraEntry)
 
 	if link.IsExit() {
-		dialog := engine.MustFindWithComponent(w, component.Dialog)
-		dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
+		hideDialog(w)
+		return
+	}
 
-		component.Active.Get(dialog).Active = false
-		component.Active.Get(dialogCamera).Active = false
-
+	if link.Level != "" {
+		hideDialog(w)
+		ChangeLevel(w, link.Level)
 		return
 	}
 
 	ShowPassage(w, link.Target)
+}
+
+func hideDialog(w donburi.World) {
+	dialog := engine.MustFindWithComponent(w, component.Dialog)
+	dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
+
+	component.Active.Get(dialog).Active = false
+	component.Active.Get(dialogCamera).Active = false
 }
 
 const (

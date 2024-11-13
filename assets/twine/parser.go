@@ -229,6 +229,14 @@ func parseLinks(segments []domain.Segment) ([]domain.Segment, []domain.RawLink) 
 			tagPattern := regexp.MustCompile(`\{(.*?)\}`)
 			tagMatches := tagPattern.FindAllStringSubmatch(match[1], -1)
 			for _, tm := range tagMatches {
+				if strings.Contains(tm[1], ":") {
+					parts := strings.Split(tm[1], ":")
+					if strings.TrimSpace(parts[0]) == "level" {
+						link.Level = strings.TrimSpace(parts[1])
+					}
+				} else {
+					link.Tags = strings.Fields(tm[1])
+				}
 				link.Tags = strings.Fields(tm[1])
 			}
 

@@ -30,6 +30,7 @@ type Segment struct {
 type RawLink struct {
 	Text       string
 	Target     string
+	Level      string
 	Conditions []Condition
 	Tags       []string
 }
@@ -80,6 +81,7 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 			links = append(links, &Link{
 				passage:    passage,
 				Text:       l.Text,
+				Level:      l.Level,
 				Conditions: l.Conditions,
 				Tags:       l.Tags,
 			})
@@ -291,6 +293,7 @@ type Link struct {
 
 	Text       string
 	Target     *Passage
+	Level      string
 	Conditions []Condition
 	Visited    bool
 	Tags       []string

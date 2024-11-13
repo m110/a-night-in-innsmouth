@@ -59,6 +59,18 @@ func MustLoadAssets() {
 		Character[i] = mustNewEbitenImage(mustReadFile(fmt.Sprintf("character/character-%v.png", i+1)))
 	}
 
+	mustLoadLevels()
+
+	for _, p := range Story.Passages {
+		for _, l := range p.Links {
+			if l.Level != "" {
+				assertLevelExists(l.Level)
+			}
+		}
+	}
+}
+
+func mustLoadLevels() {
 	levelPaths, err := fs.Glob(assetsFS, "levels/*.tmx")
 	if err != nil {
 		panic(err)
