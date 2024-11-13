@@ -96,8 +96,11 @@ func mustLoadLevel(path string) domain.Level {
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
 			if obj.Class == "poi" {
+				rect := engine.NewRect(obj.X, obj.Y, obj.Width, obj.Height)
 				poi := domain.POI{
-					Rect: engine.NewRect(obj.X, obj.Y, obj.Width, obj.Height),
+					ID:          fmt.Sprint(obj.ID),
+					TriggerRect: rect,
+					Rect:        rect,
 				}
 
 				passage := obj.Properties.GetString("passage")
@@ -113,6 +116,29 @@ func mustLoadLevel(path string) domain.Level {
 				}
 
 				pois = append(pois, poi)
+			}
+		}
+	}
+
+	for _, o := range levelMap.ObjectGroups {
+		for _, obj := range o.Objects {
+			if obj.Class == "trigger" {
+				rect := engine.NewRect(obj.X, obj.Y, obj.Width, obj.Height)
+				poiID := obj.Properties.GetString("poi")
+
+				var found bool
+				for i, p := range pois {
+					if poiID == p.ID {
+						p.TriggerRect = rect
+						pois[i] = p
+						found = true
+						break
+					}
+				}
+
+				if !found {
+					panic(fmt.Sprintf("poi not found: %v", poiID))
+				}
 			}
 		}
 	}

@@ -1,42 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="11">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="18">
  <imagelayer id="3" name="Background">
   <image source="hotel.jpeg" width="3072" height="1728"/>
  </imagelayer>
  <objectgroup id="2" name="Objects">
-  <object id="1" name="Fish" class="poi" x="1392" y="344" width="232" height="192">
+  <object id="1" name="Fish" class="poi" x="1248" y="144" width="584" height="320">
    <properties>
     <property name="passage" value="TBA"/>
    </properties>
   </object>
-  <object id="3" name="Hotel Clerk" class="poi" x="1616" y="800" width="184" height="208">
+  <object id="3" name="Hotel Clerk" class="poi" x="1624" y="848" width="184" height="216">
    <properties>
     <property name="passage" value="TBA"/>
    </properties>
   </object>
-  <object id="4" name="Keys" class="poi" x="1528" y="1040" width="176" height="152">
+  <object id="4" name="Keys" class="poi" x="1504" y="1024" width="152" height="128">
    <properties>
     <property name="passage" value="TBA"/>
    </properties>
   </object>
-  <object id="5" name="Suitcase" class="poi" x="1896" y="1200" width="360" height="360">
+  <object id="5" name="Suitcase" class="poi" x="1976" y="1288" width="240" height="192">
    <properties>
     <property name="passage" value="TBA"/>
    </properties>
   </object>
-  <object id="7" name="Hat" class="poi" x="200" y="672" width="248" height="272">
+  <object id="7" name="Hat" class="poi" x="256" y="728" width="120" height="184">
    <properties>
     <property name="passage" value="TBA"/>
    </properties>
   </object>
-  <object id="9" name="Paper" class="poi" x="672" y="1032" width="360" height="328">
+  <object id="9" name="Paper" class="poi" x="784" y="1128" width="192" height="136">
    <properties>
     <property name="passage" value="TBA"/>
    </properties>
   </object>
-  <object id="10" name="Stairs" class="poi" x="2712" y="1200" width="336" height="296">
+  <object id="10" name="Stairs" class="poi" x="2792" y="912" width="256" height="584">
    <properties>
     <property name="passage" value="TBA"/>
+   </properties>
+  </object>
+  <object id="11" name="Painting" class="poi" x="2256" y="656" width="336" height="264">
+   <properties>
+    <property name="passage" value="TBA"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="Triggers">
+  <object id="12" name="For Fish" class="trigger" x="1200" y="1080" width="192" height="456">
+   <properties>
+    <property name="poi" type="object" value="1"/>
+   </properties>
+  </object>
+  <object id="15" name="For Painting" class="trigger" x="2344" y="1128" width="184" height="400">
+   <properties>
+    <property name="poi" type="object" value="11"/>
+   </properties>
+  </object>
+  <object id="17" name="For Hat" class="trigger" x="240" y="1056" width="200" height="440">
+   <properties>
+    <property name="poi" type="object" value="7"/>
    </properties>
   </object>
  </objectgroup>

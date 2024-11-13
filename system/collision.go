@@ -35,7 +35,10 @@ func (c *Collision) Init(w donburi.World) {
 
 	events.JustOutOfCollisionEvent.Subscribe(w, func(w donburi.World, event events.JustOutOfCollision) {
 		if event.Layer == int(component.CollisionLayerCharacter) && event.OtherLayer == int(component.CollisionLayerPOI) {
-			hidePOIs(w)
+			if event.Other.HasComponent(component.ActivePOI) {
+				hidePOIs(w)
+				// TODO Check active collisions and switch POI if found
+			}
 		}
 	})
 }

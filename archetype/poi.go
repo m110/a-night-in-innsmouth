@@ -5,6 +5,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
+	"github.com/yohamta/donburi/features/transform"
 	"golang.org/x/image/colornames"
 
 	"github.com/m110/secrets/component"
@@ -19,9 +20,9 @@ func NewPOI(
 
 	entry := NewTagged(w, "POI").
 		WithParent(parent).
-		WithPosition(poi.Rect.Position()).
+		WithPosition(poi.TriggerRect.Position()).
 		WithLayer(component.SpriteLayerPOI).
-		WithBounds(poi.Rect.Size()).
+		WithBounds(poi.TriggerRect.Size()).
 		WithBoundsAsCollider(component.CollisionLayerPOI).
 		With(component.POI).
 		Entry()
@@ -38,12 +39,8 @@ func NewPOI(
 	color.A = 100
 	vector.DrawFilledCircle(indicatorImg, float32(width/2.0), float32(height/2.0), float32(width/2.0), color, true)
 
-	NewTagged(w, "POIIndicator").
+	indicator := NewTagged(w, "POIIndicator").
 		WithParent(entry).
-		WithPosition(math.Vec2{
-			X: 0,
-			Y: 0,
-		}).
 		With(component.Active).
 		With(component.POIIndicator).
 		WithLayerInherit().
@@ -51,6 +48,11 @@ func NewPOI(
 			Image: indicatorImg,
 		}).
 		Entry()
+
+	transform.SetWorldPosition(indicator, math.Vec2{
+		X: poi.Rect.X,
+		Y: poi.Rect.Y,
+	})
 
 	return entry
 }

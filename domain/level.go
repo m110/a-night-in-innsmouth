@@ -12,7 +12,9 @@ type Level struct {
 }
 
 type POI struct {
-	Rect    engine.Rect
-	Passage string
-	Level   string
+	ID          string
+	TriggerRect engine.Rect
+	Rect        engine.Rect
+	Passage     string
+	Level       string
 }
