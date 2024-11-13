@@ -148,8 +148,13 @@ func (c *Controls) Update(w donburi.World) {
 }
 
 func selectPOI(entry *donburi.Entry) {
+	if !archetype.CanSeePOI(entry) {
+		return
+	}
+
 	poi := component.POI.Get(entry)
 	game := component.MustFindGame(entry.World)
+
 	if poi.POI.Passage != "" {
 		archetype.ShowPassage(entry.World, game.Story.PassageByTitle(poi.POI.Passage))
 	} else if poi.POI.Level != nil {

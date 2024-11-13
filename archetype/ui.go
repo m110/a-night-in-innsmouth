@@ -10,11 +10,12 @@ import (
 	"github.com/m110/secrets/component"
 )
 
+const LineSpacingPixels = 24
+
 func MeasureTextHeight(entry *donburi.Entry) float64 {
 	txt := component.Text.Get(entry)
 	font := FontFromSize(txt.Size)
-	// TODO Hardcoded here and in render system
-	_, h := text.Measure(txt.Text, font, 24)
+	_, h := text.Measure(txt.Text, font, LineSpacingPixels)
 	return h
 }
 

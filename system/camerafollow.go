@@ -29,7 +29,6 @@ func (s *CameraFollow) Update(w donburi.World) {
 			return
 		}
 
-		// TODO Should this be multiplied by CameraZoom?
 		pos := transform.WorldPosition(cam.ViewportTarget)
 
 		viewportWorldWidth := float64(cam.Viewport.Bounds().Dx()) / cam.ViewportZoom

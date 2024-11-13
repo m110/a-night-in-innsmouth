@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/m110/secrets/engine"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/yohamta/donburi"
@@ -14,6 +12,7 @@ import (
 	"github.com/yohamta/donburi/filter"
 
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/engine"
 )
 
 type Debug struct {
@@ -31,10 +30,16 @@ func NewDebug(restartLevelCallback func()) *Debug {
 		query: donburi.NewQuery(
 			filter.Contains(transform.Transform, component.Sprite),
 		),
-		// TODO figure out the proper size
-		offscreen:            ebiten.NewImage(3000, 3000),
 		restartLevelCallback: restartLevelCallback,
 	}
+}
+
+func (d *Debug) Init(w donburi.World) {
+	game := component.MustFindGame(w)
+
+	imageWidth := game.Settings.ScreenWidth
+	imageHeight := game.Settings.ScreenHeight
+	d.offscreen = ebiten.NewImage(imageWidth, imageHeight)
 }
 
 func (d *Debug) Update(w donburi.World) {

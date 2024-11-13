@@ -295,7 +295,7 @@ func renderText(entry *donburi.Entry, camera *component.CameraData) {
 	textToDraw := t.Text[:length]
 
 	op := &text.DrawOptions{}
-	op.LineSpacing = 24
+	op.LineSpacing = archetype.LineSpacingPixels
 	op.PrimaryAlign = t.Align
 	op.GeoM.Scale(camera.ViewportZoom, camera.ViewportZoom)
 	op.GeoM.Translate(pos.X, pos.Y)
