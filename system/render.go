@@ -114,6 +114,12 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 			camera.Viewport.DrawImage(camera.Mask, op)
 		}
 
+		if camera.TransitionOverlay != nil {
+			op := &ebiten.DrawImageOptions{}
+			op.ColorScale.Scale(1, 1, 1, float32(camera.TransitionAlpha))
+			camera.Viewport.DrawImage(camera.TransitionOverlay, op)
+		}
+
 		cameraPos := transform.WorldPosition(entry)
 
 		op := &ebiten.DrawImageOptions{}

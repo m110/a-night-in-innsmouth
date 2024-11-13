@@ -19,6 +19,9 @@ type CameraData struct {
 	Root  *donburi.Entry
 	Index int
 	Mask  *ebiten.Image
+
+	TransitionOverlay *ebiten.Image
+	TransitionAlpha   float64
 }
 
 func (d CameraData) Order() int {

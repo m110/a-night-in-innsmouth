@@ -59,11 +59,14 @@ func NewControls() *Controls {
 func (c *Controls) Update(w donburi.World) {
 	in := engine.MustFindComponent[component.InputData](w, component.Input)
 
+	character, characterFound := c.characterQuery.First(w)
+
 	if in.Disabled {
+		if characterFound {
+			stopCharacter(character)
+		}
 		return
 	}
-
-	character, characterFound := c.characterQuery.First(w)
 
 	dialog, ok := c.dialogQuery.First(w)
 	if ok && component.Active.Get(dialog).Active {

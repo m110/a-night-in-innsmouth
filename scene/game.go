@@ -2,6 +2,7 @@ package scene
 
 import (
 	"fmt"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
@@ -110,6 +111,11 @@ func (g *Game) createWorld() donburi.World {
 
 	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, nil)
 	levelCam.AddComponent(component.LevelCamera)
+	overlay := ebiten.NewImage(g.screenWidth, g.screenHeight)
+	overlay.Fill(color.Black)
+	cam := component.Camera.Get(levelCam)
+	cam.TransitionOverlay = overlay
+	cam.TransitionAlpha = 1.0
 	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)
 
 	entrypoint := 0

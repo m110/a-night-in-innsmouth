@@ -1,6 +1,8 @@
 package archetype
 
 import (
+	"time"
+
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"
 
@@ -27,7 +29,38 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 			Image: level.Background,
 		}).
 		With(component.Level).
+		With(component.Animation).
 		Entry()
+
+	spawned := false
+
+	levelCam := engine.MustFindWithComponent(w, component.LevelCamera)
+	cam := component.Camera.Get(levelCam)
+	input := engine.MustFindComponent[component.InputData](w, component.Input)
+
+	component.Animation.SetValue(entry, component.AnimationData{
+		Active: true,
+		Timer:  engine.NewTimer(500 * time.Millisecond),
+		OnStart: func(e *donburi.Entry) {
+			input.Disabled = true
+		},
+		Update: func(e *donburi.Entry) {
+			anim := component.Animation.Get(e)
+			if spawned {
+				cam.TransitionAlpha = anim.Timer.PercentDone()
+				if anim.Timer.IsReady() {
+					anim.Stop(entry)
+				}
+			} else {
+				cam.TransitionAlpha = 1 - anim.Timer.PercentDone()
+				if anim.Timer.IsReady() {
+					spawned = true
+					input.Disabled = false
+					anim.Stop(entry)
+				}
+			}
+		},
+	})
 
 	for _, poi := range level.POIs {
 		NewPOI(entry, poi)
@@ -56,8 +89,6 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 		component.Sprite.Get(character).FlipY = entrypoint.FlipY
 	}
 
-	levelCam := engine.MustFindWithComponent(w, component.LevelCamera)
-	cam := component.Camera.Get(levelCam)
 	cam.Root = entry
 
 	// TODO Review the default
@@ -96,7 +127,13 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 func ChangeLevel(w donburi.World, level domain.TargetLevel) {
 	currentLevel, ok := engine.FindWithComponent(w, component.Level)
 	if ok {
-		transform.RemoveRecursive(currentLevel)
+		anim := component.Animation.Get(currentLevel)
+		anim.Start(currentLevel)
+		anim.OnStop = func(e *donburi.Entry) {
+			transform.RemoveRecursive(e)
+			NewLevel(w, level)
+		}
+		return
 	}
 
 	NewLevel(w, level)
