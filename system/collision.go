@@ -25,11 +25,7 @@ func (c *Collision) Init(w donburi.World) {
 		// TODO remove casting
 		if event.Layer == int(component.CollisionLayerCharacter) && event.OtherLayer == int(component.CollisionLayerPOI) {
 			hidePOIs(w)
-
-			event.Other.AddComponent(component.ActivePOI)
-
-			poiIndicator := engine.MustFindChildWithComponent(event.Other, component.POIIndicator)
-			component.Active.Get(poiIndicator).Active = true
+			showPOI(event.Other)
 		}
 	})
 
@@ -37,7 +33,24 @@ func (c *Collision) Init(w donburi.World) {
 		if event.Layer == int(component.CollisionLayerCharacter) && event.OtherLayer == int(component.CollisionLayerPOI) {
 			if event.Other.HasComponent(component.ActivePOI) {
 				hidePOIs(w)
-				// TODO Check active collisions and switch POI if found
+
+				collider := component.Collider.Get(event.Entry)
+
+				var nextCollisionEntry *donburi.Entry
+				var nextCollision *component.Collision
+				for key, collision := range collider.CollidesWith {
+					if key.Layer != component.CollisionLayerPOI {
+						continue
+					}
+					if nextCollision == nil || collision.TimesSeen > nextCollision.TimesSeen {
+						nextCollision = &collision
+						nextCollisionEntry = w.Entry(key.Other)
+					}
+				}
+
+				if nextCollisionEntry != nil {
+					showPOI(nextCollisionEntry)
+				}
 			}
 		}
 	})
@@ -59,6 +72,13 @@ func hidePOIs(w donburi.World) {
 	indicatorsQuery.Each(w, func(entry *donburi.Entry) {
 		component.Active.Get(entry).Active = false
 	})
+}
+
+func showPOI(entry *donburi.Entry) {
+	entry.AddComponent(component.ActivePOI)
+
+	poiIndicator := engine.MustFindChildWithComponent(entry, component.POIIndicator)
+	component.Active.Get(poiIndicator).Active = true
 }
 
 var collisions = map[component.ColliderLayer]map[component.ColliderLayer]struct{}{
