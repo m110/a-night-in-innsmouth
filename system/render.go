@@ -118,6 +118,7 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(cameraPos.X, cameraPos.Y)
+		op.Filter = ebiten.FilterLinear
 		r.offscreen.DrawImage(camera.Viewport, op)
 
 		if r.debug.Enabled {
@@ -265,6 +266,7 @@ func renderSprite(entry *donburi.Entry, camera *component.CameraData) {
 
 	op.GeoM.Scale(camera.ViewportZoom, camera.ViewportZoom)
 	op.GeoM.Translate(x, y)
+	op.Filter = ebiten.FilterLinear
 
 	camera.Viewport.DrawImage(sprite.Image, op)
 }
