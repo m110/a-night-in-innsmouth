@@ -26,7 +26,7 @@
   </object>
   <object id="7" name="Hat" class="poi" x="256" y="728" width="120" height="184">
    <properties>
-    <property name="passage" value="TBA"/>
+    <property name="passage" value="Hat on a Hook"/>
    </properties>
   </object>
   <object id="9" name="Paper" class="poi" x="784" y="1128" width="192" height="136">

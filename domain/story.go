@@ -14,12 +14,13 @@ type RawStory struct {
 }
 
 type RawPassage struct {
-	Title    string
-	Header   string
-	Tags     []string
-	Segments []Segment
-	Macros   []Macro
-	Links    []RawLink
+	Title      string
+	Header     string
+	Tags       []string
+	Segments   []Segment
+	Conditions []Condition
+	Macros     []Macro
+	Links      []RawLink
 }
 
 type Segment struct {
@@ -68,12 +69,13 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 		}
 
 		passage := &Passage{
-			story:     story,
-			Title:     p.Title,
-			Header:    p.Header,
-			Segments:  p.Segments,
-			Macros:    p.Macros,
-			IsOneTime: isOneTime,
+			story:      story,
+			Title:      p.Title,
+			Header:     p.Header,
+			Segments:   p.Segments,
+			Conditions: p.Conditions,
+			Macros:     p.Macros,
+			IsOneTime:  isOneTime,
 		}
 
 		var links []*Link
@@ -202,11 +204,12 @@ func (s *Story) TestCondition(c Condition) bool {
 type Passage struct {
 	story *Story
 
-	Title    string
-	Header   string
-	Segments []Segment
-	Macros   []Macro
-	AllLinks []*Link
+	Title      string
+	Header     string
+	Segments   []Segment
+	Conditions []Condition
+	Macros     []Macro
+	AllLinks   []*Link
 
 	IsOneTime bool
 	Visited   bool
@@ -232,6 +235,16 @@ func (p *Passage) Content() string {
 	}
 
 	return content
+}
+
+func (p *Passage) ConditionsMet() bool {
+	for _, c := range p.Conditions {
+		if !p.story.TestCondition(c) {
+			return false
+		}
+	}
+
+	return true
 }
 
 func (p *Passage) Visit() {

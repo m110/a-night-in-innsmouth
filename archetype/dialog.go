@@ -191,6 +191,11 @@ func NextPassage(w donburi.World) {
 
 	if link.IsExit() {
 		hideDialog(w)
+
+		// Refresh POIs in case the conditions to show the passage changed
+		HidePOIs(w)
+		CheckNextPOI(w)
+
 		return
 	}
 

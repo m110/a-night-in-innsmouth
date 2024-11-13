@@ -82,6 +82,11 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 				continue
 			}
 
+			if macroType == "if" || macroType == "unless" {
+				passage.Conditions = parseConditions(macroType + " " + macroValue)
+				continue
+			}
+
 			macro := domain.Macro{
 				Type:  parseMacroType(macroType),
 				Value: macroValue,

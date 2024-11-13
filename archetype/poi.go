@@ -6,10 +6,12 @@ import (
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
+	"github.com/yohamta/donburi/filter"
 	"golang.org/x/image/colornames"
 
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/domain"
+	"github.com/m110/secrets/engine"
 )
 
 func NewPOI(
@@ -55,4 +57,57 @@ func NewPOI(
 	})
 
 	return entry
+}
+
+func HidePOIs(w donburi.World) {
+	activePOI, ok := donburi.NewQuery(
+		filter.Contains(
+			component.ActivePOI,
+		),
+	).First(w)
+	if ok {
+		activePOI.RemoveComponent(component.ActivePOI)
+	}
+	indicatorsQuery := donburi.NewQuery(filter.Contains(
+		component.POIIndicator,
+	))
+
+	indicatorsQuery.Each(w, func(entry *donburi.Entry) {
+		component.Active.Get(entry).Active = false
+	})
+}
+
+func CanSeePOI(entry *donburi.Entry) bool {
+	poi := component.POI.Get(entry)
+	game := component.MustFindGame(entry.World)
+	passage := game.Story.PassageByTitle(poi.POI.Passage)
+	return passage.ConditionsMet()
+}
+
+func ShowPOI(entry *donburi.Entry) {
+	entry.AddComponent(component.ActivePOI)
+
+	poiIndicator := engine.MustFindChildWithComponent(entry, component.POIIndicator)
+	component.Active.Get(poiIndicator).Active = true
+}
+
+func CheckNextPOI(w donburi.World) {
+	character := engine.MustFindWithComponent(w, component.Character)
+	collider := component.Collider.Get(character)
+
+	var nextCollisionEntry *donburi.Entry
+	var nextCollision *component.Collision
+	for key, collision := range collider.CollidesWith {
+		if key.Layer != component.CollisionLayerPOI {
+			continue
+		}
+		if nextCollision == nil || collision.TimesSeen > nextCollision.TimesSeen {
+			nextCollision = &collision
+			nextCollisionEntry = character.World.Entry(key.Other)
+		}
+	}
+
+	if nextCollisionEntry != nil && CanSeePOI(nextCollisionEntry) {
+		ShowPOI(nextCollisionEntry)
+	}
 }

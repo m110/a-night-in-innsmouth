@@ -165,8 +165,17 @@ You wake up early in the morning.
 > [[Exit->Newburyport]]
 
 
-:: Hotel {"position":"3400,1375","size":"100,100"}
+:: Hat on a Hook {"position":"3925,725","size":"100,100"}
+unless: hasItem hat
+--
+An old hat hangs on the hook in the hotel lobby.
 
+> [[Take it.]]
+> {exit} [[Leave.]]
+
+
+:: Hotel {"position":"3550,825","size":"100,100"}
+[[Hat on a Hook]]
 
 
 :: Hotel Hall {"position":"3925,1175","size":"100,100"}
@@ -187,7 +196,11 @@ You arrive at Innsmouth.
 > [[Restaurant]]
 
 
-:: Leave it be {"position":"2175,2900","size":"100,100"}
+:: Leave it be {"position":"2125,3000","size":"100,100"}
+
+
+
+:: Leave. {"position":"4100,950","size":"100,100"}
 
 
 
@@ -273,6 +286,14 @@ You heard that the steam train is your best option. Just need to keep in mind yo
 ...
 
 > {exit} [[...]]
+
+
+:: Take it. {"position":"4125,725","size":"100,100"}
+addItem: hat
+--
+You took the hat.
+
+> {exit} [[Leave.]]
 
 
 :: Train Station {"position":"1550,925","size":"100,100"}

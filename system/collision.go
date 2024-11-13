@@ -5,6 +5,7 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
+	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/engine"
 	"github.com/m110/secrets/events"
@@ -24,61 +25,21 @@ func (c *Collision) Init(w donburi.World) {
 	events.JustCollidedEvent.Subscribe(w, func(w donburi.World, event events.JustCollided) {
 		// TODO remove casting
 		if event.Layer == int(component.CollisionLayerCharacter) && event.OtherLayer == int(component.CollisionLayerPOI) {
-			hidePOIs(w)
-			showPOI(event.Other)
+			if archetype.CanSeePOI(event.Other) {
+				archetype.HidePOIs(w)
+				archetype.ShowPOI(event.Other)
+			}
 		}
 	})
 
 	events.JustOutOfCollisionEvent.Subscribe(w, func(w donburi.World, event events.JustOutOfCollision) {
 		if event.Layer == int(component.CollisionLayerCharacter) && event.OtherLayer == int(component.CollisionLayerPOI) {
 			if event.Other.HasComponent(component.ActivePOI) {
-				hidePOIs(w)
-
-				collider := component.Collider.Get(event.Entry)
-
-				var nextCollisionEntry *donburi.Entry
-				var nextCollision *component.Collision
-				for key, collision := range collider.CollidesWith {
-					if key.Layer != component.CollisionLayerPOI {
-						continue
-					}
-					if nextCollision == nil || collision.TimesSeen > nextCollision.TimesSeen {
-						nextCollision = &collision
-						nextCollisionEntry = w.Entry(key.Other)
-					}
-				}
-
-				if nextCollisionEntry != nil {
-					showPOI(nextCollisionEntry)
-				}
+				archetype.HidePOIs(w)
+				archetype.CheckNextPOI(w)
 			}
 		}
 	})
-}
-
-func hidePOIs(w donburi.World) {
-	activePOI, ok := donburi.NewQuery(
-		filter.Contains(
-			component.ActivePOI,
-		),
-	).First(w)
-	if ok {
-		activePOI.RemoveComponent(component.ActivePOI)
-	}
-	indicatorsQuery := donburi.NewQuery(filter.Contains(
-		component.POIIndicator,
-	))
-
-	indicatorsQuery.Each(w, func(entry *donburi.Entry) {
-		component.Active.Get(entry).Active = false
-	})
-}
-
-func showPOI(entry *donburi.Entry) {
-	entry.AddComponent(component.ActivePOI)
-
-	poiIndicator := engine.MustFindChildWithComponent(entry, component.POIIndicator)
-	component.Active.Get(poiIndicator).Active = true
 }
 
 var collisions = map[component.ColliderLayer]map[component.ColliderLayer]struct{}{
