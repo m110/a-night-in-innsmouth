@@ -28,7 +28,7 @@ func NewControls() *Controls {
 			filter.Contains(
 				component.Sprite,
 				component.Velocity,
-				component.Animation,
+				component.Animator,
 			),
 		),
 		dialogQuery: donburi.NewQuery(
@@ -117,7 +117,8 @@ func (c *Controls) Update(w donburi.World) {
 	}
 
 	velocity := component.Velocity.Get(character)
-	anim := component.Animation.Get(character)
+	animator := component.Animator.Get(character)
+	anim := animator.Animations["walk"]
 	movementBounds := component.MovementBounds.Get(character)
 	sprite := component.Sprite.Get(character)
 
@@ -159,7 +160,7 @@ func selectPOI(entry *donburi.Entry) {
 	game := component.MustFindGame(entry.World)
 
 	if poi.POI.Passage != "" {
-		archetype.ShowPassage(entry.World, game.Story.PassageByTitle(poi.POI.Passage))
+		archetype.ShowPassage(entry.World, game.Story.PassageByTitle(poi.POI.Passage), entry)
 	} else if poi.POI.Level != nil {
 		archetype.ChangeLevel(entry.World, *poi.POI.Level)
 	}
@@ -167,7 +168,8 @@ func selectPOI(entry *donburi.Entry) {
 
 func stopCharacter(entry *donburi.Entry) {
 	velocity := component.Velocity.Get(entry)
-	anim := component.Animation.Get(entry)
+	animator := component.Animator.Get(entry)
+	anim := animator.Animations["walk"]
 	velocity.Velocity.X = 0
 	anim.Stop(entry)
 }

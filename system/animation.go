@@ -13,7 +13,7 @@ type Animation struct {
 
 func NewAnimation() *Animation {
 	return &Animation{
-		query: donburi.NewQuery(filter.Contains(component.Animation)),
+		query: donburi.NewQuery(filter.Contains(component.Animator)),
 	}
 }
 
@@ -21,13 +21,15 @@ func (s *Animation) Init(w donburi.World) {}
 
 func (s *Animation) Update(w donburi.World) {
 	s.query.Each(w, func(entry *donburi.Entry) {
-		animation := component.Animation.Get(entry)
-		if !animation.Active {
-			return
+		animator := component.Animator.Get(entry)
+		for _, animation := range animator.Animations {
+			if !animation.Active {
+				return
+			}
+			if animation.Timer != nil {
+				animation.Timer.Update()
+			}
+			animation.Update(entry, animation)
 		}
-		if animation.Timer != nil {
-			animation.Timer.Update()
-		}
-		animation.Update(entry)
 	})
 }

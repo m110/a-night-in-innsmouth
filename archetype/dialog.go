@@ -82,14 +82,18 @@ func NewDialogLog(w donburi.World) *donburi.Entry {
 	)
 
 	cam.AddComponent(component.DialogCamera)
-	cam.AddComponent(component.Animation)
+	cam.AddComponent(component.Animator)
+	component.Animator.SetValue(cam, component.AnimatorData{
+		Animations: make(map[string]*component.Animation),
+	})
 	cam.AddComponent(component.Active)
 
 	component.Camera.Get(cam).Mask = CreateScrollMask(dialogWidth, cameraHeight)
 
-	component.Animation.SetValue(cam, component.AnimationData{
+	anim := component.Animator.Get(cam)
+	anim.Animations["scroll"] = &component.Animation{
 		Timer: engine.NewTimer(500 * time.Millisecond),
-	})
+	}
 
 	return log
 }
@@ -180,14 +184,15 @@ func NextPassage(w donburi.World) {
 	cameraEntry := engine.MustFindWithComponent(w, component.DialogCamera)
 	cam := component.Camera.Get(cameraEntry)
 	startY := cam.ViewportPosition.Y
-	anim := component.Animation.Get(cameraEntry)
-	anim.Update = func(e *donburi.Entry) {
-		cam.ViewportPosition.Y = startY + height*anim.Timer.PercentDone()
-		if anim.Timer.IsReady() {
-			anim.Stop(cameraEntry)
+	anim := component.Animator.Get(cameraEntry)
+	scroll := anim.Animations["scroll"]
+	scroll.Update = func(e *donburi.Entry, a *component.Animation) {
+		cam.ViewportPosition.Y = startY + height*a.Timer.PercentDone()
+		if a.Timer.IsReady() {
+			a.Stop(cameraEntry)
 		}
 	}
-	anim.Start(cameraEntry)
+	scroll.Start(cameraEntry)
 
 	if link.IsExit() {
 		hideDialog(w)
@@ -205,7 +210,7 @@ func NextPassage(w donburi.World) {
 		return
 	}
 
-	ShowPassage(w, link.Target)
+	ShowPassage(w, link.Target, nil)
 }
 
 func hideDialog(w donburi.World) {
@@ -223,9 +228,14 @@ const (
 	passageTextWidth = 380
 )
 
-func ShowPassage(w donburi.World, domainPassage *domain.Passage) *donburi.Entry {
+func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi.Entry) *donburi.Entry {
 	dialog := engine.MustFindWithComponent(w, component.Dialog)
 	dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
+
+	if source != nil {
+		//levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
+
+	}
 
 	component.Active.Get(dialog).Active = true
 	component.Active.Get(dialogCamera).Active = true

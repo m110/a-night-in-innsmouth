@@ -29,7 +29,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 			Image: level.Background,
 		}).
 		With(component.Level).
-		With(component.Animation).
+		WithAnimator().
 		Entry()
 
 	spawned := false
@@ -38,29 +38,30 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	cam := component.Camera.Get(levelCam)
 	input := engine.MustFindComponent[component.InputData](w, component.Input)
 
-	component.Animation.SetValue(entry, component.AnimationData{
+	anim := component.Animator.Get(entry)
+
+	anim.Animations["transition"] = &component.Animation{
 		Active: true,
 		Timer:  engine.NewTimer(500 * time.Millisecond),
 		OnStart: func(e *donburi.Entry) {
 			input.Disabled = true
 		},
-		Update: func(e *donburi.Entry) {
-			anim := component.Animation.Get(e)
+		Update: func(e *donburi.Entry, a *component.Animation) {
 			if spawned {
-				cam.TransitionAlpha = anim.Timer.PercentDone()
-				if anim.Timer.IsReady() {
-					anim.Stop(entry)
+				cam.TransitionAlpha = a.Timer.PercentDone()
+				if a.Timer.IsReady() {
+					a.Stop(entry)
 				}
 			} else {
-				cam.TransitionAlpha = 1 - anim.Timer.PercentDone()
-				if anim.Timer.IsReady() {
+				cam.TransitionAlpha = 1 - a.Timer.PercentDone()
+				if a.Timer.IsReady() {
 					spawned = true
 					input.Disabled = false
-					anim.Stop(entry)
+					a.Stop(entry)
 				}
 			}
 		},
-	})
+	}
 
 	for _, poi := range level.POIs {
 		NewPOI(entry, poi)
@@ -69,7 +70,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	game := component.MustFindGame(w)
 
 	if level.StartPassage != "" {
-		ShowPassage(w, game.Story.PassageByTitle(level.StartPassage))
+		ShowPassage(w, game.Story.PassageByTitle(level.StartPassage), nil)
 	}
 
 	var character *donburi.Entry
@@ -127,12 +128,14 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 func ChangeLevel(w donburi.World, level domain.TargetLevel) {
 	currentLevel, ok := engine.FindWithComponent(w, component.Level)
 	if ok {
-		anim := component.Animation.Get(currentLevel)
-		anim.Start(currentLevel)
-		anim.OnStop = func(e *donburi.Entry) {
+		anim := component.Animator.Get(currentLevel)
+		anim.Start("transition", currentLevel)
+		transition := anim.Animations["transition"]
+		transition.OnStop = func(e *donburi.Entry) {
 			transform.RemoveRecursive(e)
 			NewLevel(w, level)
 		}
+		anim.Animations["transition"] = transition
 		return
 	}
 

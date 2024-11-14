@@ -111,6 +111,7 @@ func (g *Game) createWorld() donburi.World {
 
 	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, nil)
 	levelCam.AddComponent(component.LevelCamera)
+	levelCam.AddComponent(component.BriefZoom)
 	overlay := ebiten.NewImage(g.screenWidth, g.screenHeight)
 	overlay.Fill(color.Black)
 	cam := component.Camera.Get(levelCam)
