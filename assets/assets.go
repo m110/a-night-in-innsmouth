@@ -12,18 +12,15 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/yohamta/donburi/features/math"
-
-	"github.com/m110/secrets/engine"
-
-	"github.com/lafriks/go-tiled"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
+	"github.com/lafriks/go-tiled"
+	"github.com/yohamta/donburi/features/math"
 	"golang.org/x/text/language"
 
 	"github.com/m110/secrets/assets/twine"
 	"github.com/m110/secrets/domain"
+	"github.com/m110/secrets/engine"
 )
 
 var (
@@ -45,6 +42,8 @@ var (
 
 	levelNames = map[string]struct{}{}
 	Levels     = map[string]domain.Level{}
+
+	Objects = map[string]*ebiten.Image{}
 )
 
 func MustLoadAssets() {
@@ -63,6 +62,7 @@ func MustLoadAssets() {
 		Character[i] = mustNewEbitenImage(mustReadFile(fmt.Sprintf("character/character-%v.png", i+1)))
 	}
 
+	mustLoadObjects()
 	mustLoadLevels()
 
 	for _, l := range Levels {
@@ -79,6 +79,18 @@ func MustLoadAssets() {
 				assertLevelExists(*l.Level)
 			}
 		}
+	}
+}
+
+func mustLoadObjects() {
+	paths, err := fs.Glob(assetsFS, "levels/objects/*.png")
+	if err != nil {
+		panic(err)
+	}
+
+	for _, p := range paths {
+		name := strings.TrimSuffix(path.Base(p), ".png")
+		Objects[name] = mustNewEbitenImage(mustReadFile(p))
 	}
 }
 
@@ -121,11 +133,24 @@ func mustLoadLevel(path string) domain.Level {
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
 			if obj.Class == "poi" {
-				rect := engine.NewRect(obj.X, obj.Y, obj.Width, obj.Height)
+				img := obj.Properties.GetString("image")
+
+				y := obj.Y
+				var objectImg *ebiten.Image
+				if img != "" {
+					y -= obj.Height
+					if _, ok := Objects[img]; !ok {
+						panic(fmt.Sprintf("object not found: %v", img))
+					}
+					objectImg = ebiten.NewImageFromImage(Objects[img])
+				}
+
+				rect := engine.NewRect(obj.X, y, obj.Width, obj.Height)
 				poi := domain.POI{
 					ID:          fmt.Sprint(obj.ID),
 					TriggerRect: rect,
 					Rect:        rect,
+					Image:       objectImg,
 				}
 
 				passage := obj.Properties.GetString("passage")
@@ -152,6 +177,10 @@ func mustLoadLevel(path string) domain.Level {
 						Name:       strings.TrimSpace(parts[0]),
 						Entrypoint: entrypoint,
 					}
+				}
+
+				if passage == "" && level == "" {
+					panic(fmt.Sprintf("poi has no passage or level: %v", obj.ID))
 				}
 
 				pois = append(pois, poi)

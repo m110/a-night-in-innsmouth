@@ -23,6 +23,7 @@ type Entrypoint struct {
 
 type POI struct {
 	ID          string
+	Image       *ebiten.Image
 	TriggerRect engine.Rect
 	Rect        engine.Rect
 	Passage     string

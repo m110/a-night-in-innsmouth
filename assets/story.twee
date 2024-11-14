@@ -31,7 +31,7 @@ The shopkeeper looks at your nervously. He clearly doesn't want to talk about it
 > {back} [[Nevermind->Newburyport Grocery Store]]
 
 
-:: "Just curious" {"position":"1200,1800","size":"100,100"}
+:: "Just curious" {"position":"1200,1850","size":"100,100"}
 addFact: askedAboutInnsmouth
 --
 "I don't know anything interesting, sir."
@@ -70,6 +70,12 @@ This... Looks odd.
 > {exit} [[Look away.]]
 
 
+:: Board {"position":"1750,2200","size":"100,100"}
+"Campbell's Tomato Soup - 10 cents"
+
+> {exit} [[Perhaps later.]]
+
+
 :: Board the train to Arkham {"position":"2000,775","size":"100,100"}
 setTitle: Train to Arkham
 takeItem: Train Ticket to Arkham
@@ -77,6 +83,12 @@ takeItem: Train Ticket to Arkham
 You take the train. The travel doesn't take long.
 
 > [[...->Arkham]]
+
+
+:: Boy {"position":"1550,2200","size":"100,100"}
+Hi.
+
+> {exit} [[See you around.]]
 
 
 :: Bus Station {"position":"1775,1300","size":"100,100"}
@@ -263,6 +275,10 @@ The shopkeeper welcomes you.
 > {back} [["I gotta go"->Newburyport]]
 
 
+:: Perhaps later. {"position":"1750,2375","size":"100,100"}
+
+
+
 :: Read the newspaper {"position":"700,1350","size":"100,100"}
 You flip the pages and get bored soon.
 
@@ -271,6 +287,10 @@ You flip the pages and get bored soon.
 
 
 :: Restaurant {"position":"2800,1875","size":"100,100"}
+
+
+
+:: See you around. {"position":"1550,2375","size":"100,100"}
 
 
 

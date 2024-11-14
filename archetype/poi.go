@@ -33,6 +33,21 @@ func NewPOI(
 		POI: poi,
 	})
 
+	if poi.Image != nil {
+		poiImage := NewTagged(w, "POIImage").
+			WithParent(entry).
+			WithLayerInherit().
+			WithSprite(component.SpriteData{
+				Image: poi.Image,
+			}).
+			Entry()
+
+		transform.SetWorldPosition(poiImage, math.Vec2{
+			X: poi.Rect.X,
+			Y: poi.Rect.Y,
+		})
+	}
+
 	width := poi.Rect.Size().Width
 	height := poi.Rect.Size().Height
 

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="21">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="24">
  <tileset firstgid="1" source="Character.tsx"/>
+ <tileset firstgid="2" source="objects/Objects.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="hotel.jpeg" width="3072" height="1728"/>
  </imagelayer>
- <objectgroup id="2" name="Objects">
+ <objectgroup color="#85c78d" id="2" name="Objects">
   <object id="1" name="Fish" class="poi" x="1248" y="144" width="584" height="320">
    <properties>
     <property name="passage" value="TBA"/>
@@ -48,7 +49,7 @@
   </object>
   <object id="20" name="Exit" class="poi" x="-56" y="960" width="256" height="584">
    <properties>
-    <property name="level" value="innsmouth,1"/>
+    <property name="level" value="city,1"/>
     <property name="passage" value=""/>
    </properties>
   </object>
