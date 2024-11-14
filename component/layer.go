@@ -1,31 +1,13 @@
 package component
 
-import "github.com/yohamta/donburi"
+import (
+	"github.com/yohamta/donburi"
 
-type LayerID int
-
-// SpriteLayerInherit is a special value that indicates that the entity should
-// inherit the layer of its parent entity + 1.
-const SpriteLayerInherit LayerID = 0
-
-const (
-	SpriteLayerBackground LayerID = 100 + iota*10
-	SpriteLayerPOI
-	SpriteLayerCharacter
-	SpriteLayerForeground
-	SpriteLayerIndicator
-)
-
-const (
-	SpriteUILayerUI = 200 + iota*10
-	SpriteUILayerBackground
-	SpriteUILayerText
-	SpriteUILayerButtons
-	SpriteUILayerTop
+	"github.com/m110/secrets/definitions"
 )
 
 type LayerData struct {
-	Layer LayerID
+	Layer definitions.LayerID
 }
 
 var Layer = donburi.NewComponentType[LayerData]()

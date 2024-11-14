@@ -4,12 +4,15 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi/features/math"
 
+	"github.com/m110/secrets/definitions"
+
 	"github.com/m110/secrets/engine"
 )
 
 type Level struct {
 	Background   *ebiten.Image
 	POIs         []POI
+	Objects      []Object
 	StartPassage string
 	Entrypoints  []Entrypoint
 	CameraZoom   float64
@@ -28,4 +31,10 @@ type POI struct {
 	Rect        engine.Rect
 	Passage     string
 	Level       *TargetLevel
+}
+
+type Object struct {
+	Image    *ebiten.Image
+	Position math.Vec2
+	Layer    definitions.LayerID
 }

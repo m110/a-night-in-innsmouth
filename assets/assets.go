@@ -12,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/m110/secrets/definitions"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/lafriks/go-tiled"
@@ -128,10 +130,31 @@ func mustLoadLevel(path string) domain.Level {
 		panic("background image not found")
 	}
 
+	var objects []domain.Object
 	var pois []domain.POI
 	var entrypoints []domain.Entrypoint
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
+			if obj.Class == "object" {
+				img := obj.Properties.GetString("image")
+				layer := o.Properties.GetInt("layer")
+
+				if _, ok := Objects[img]; !ok {
+					panic(fmt.Sprintf("object not found: %v", img))
+				}
+
+				domainObj := domain.Object{
+					Image: ebiten.NewImageFromImage(Objects[img]),
+					Position: math.Vec2{
+						X: obj.X,
+						Y: obj.Y - obj.Height,
+					},
+					Layer: definitions.LayerID(layer),
+				}
+
+				objects = append(objects, domainObj)
+			}
+
 			if obj.Class == "poi" {
 				img := obj.Properties.GetString("image")
 
@@ -181,6 +204,10 @@ func mustLoadLevel(path string) domain.Level {
 
 				if passage == "" && level == "" {
 					panic(fmt.Sprintf("poi has no passage or level: %v", obj.ID))
+				}
+
+				if passage != "" && level != "" {
+					panic(fmt.Sprintf("poi has both passage and level: %v", obj.ID))
 				}
 
 				pois = append(pois, poi)
@@ -249,6 +276,7 @@ func mustLoadLevel(path string) domain.Level {
 	return domain.Level{
 		Background:   mustNewEbitenImage(mustReadFile(fmt.Sprintf("levels/%v", imageName))),
 		POIs:         pois,
+		Objects:      objects,
 		StartPassage: startPassage,
 		Entrypoints:  entrypoints,
 		CameraZoom:   cameraZoom,

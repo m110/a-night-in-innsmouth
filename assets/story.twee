@@ -85,12 +85,6 @@ You take the train. The travel doesn't take long.
 > [[...->Arkham]]
 
 
-:: Boy {"position":"1550,2200","size":"100,100"}
-Hi.
-
-> {exit} [[See you around.]]
-
-
 :: Bus Station {"position":"1775,1300","size":"100,100"}
 setTitle: Bus Station
 --
@@ -177,6 +171,12 @@ You wake up early in the morning.
 > [[Exit->Newburyport]]
 
 
+:: Grocery {"position":"2325,2425","size":"100,100"}
+"Hello, mister!"
+
+> {level:city,2} [[I'll see you later.]]
+
+
 :: Hat on a Hook {"position":"3925,725","size":"100,100"}
 unless: hasItem hat
 --
@@ -196,6 +196,10 @@ setTitle: Hotel Hall
 The hall is full of dust. A strong fish scent is in the air, stronger under some doors.
 
 > [[Look for your room]]
+
+
+:: I'll see you later. {"position":"2325,2550","size":"100,100"}
+
 
 
 :: Innsmouth {"position":"2700,1600","size":"200,200"}
@@ -287,10 +291,6 @@ You flip the pages and get bored soon.
 
 
 :: Restaurant {"position":"2800,1875","size":"100,100"}
-
-
-
-:: See you around. {"position":"1550,2375","size":"100,100"}
 
 
 

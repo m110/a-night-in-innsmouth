@@ -4,6 +4,8 @@ import (
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"
 
+	"github.com/m110/secrets/definitions"
+
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/domain"
@@ -22,7 +24,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	}
 
 	entry := NewTagged(w, "Level").
-		WithLayer(component.SpriteLayerBackground).
+		WithLayer(definitions.SpriteLayerBackground).
 		WithSprite(component.SpriteData{
 			Image: level.Background,
 		}).
@@ -65,6 +67,10 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 		NewPOI(entry, poi)
 	}
 
+	for _, o := range level.Objects {
+		NewObject(entry, o)
+	}
+
 	game := component.MustFindGame(w)
 
 	if level.StartPassage != "" {
@@ -99,6 +105,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	heightDiff := float64(game.Settings.ScreenHeight) - float64(level.Background.Bounds().Dy())*cam.ViewportZoom
 	if heightDiff > 0 {
+		// TODO Seems misaligned anyway, review
 		cam.ViewportPosition.Y = -heightDiff / 2
 	} else {
 		// Should not happen?
@@ -109,11 +116,14 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	levelWidth := float64(bounds.Dx())
 
 	viewportWorldWidth := float64(game.Settings.ScreenWidth) / cam.ViewportZoom
-	cam.ViewportPosition.X = levelWidth/2.0 - viewportWorldWidth/2.0
 
 	if character == nil {
+		// Show the "board" on the left of the dialog
+		// TODO: make this more explicit than "level without character"
+		cam.ViewportPosition.X = levelWidth/2.0 - viewportWorldWidth/3.0
 		cam.ViewportTarget = nil
 	} else {
+		cam.ViewportPosition.X = levelWidth/2.0 - viewportWorldWidth/2.0
 		cam.ViewportTarget = character
 	}
 

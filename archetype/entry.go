@@ -6,6 +6,8 @@ import (
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 
+	"github.com/m110/secrets/definitions"
+
 	"github.com/m110/secrets/engine"
 
 	"github.com/m110/secrets/component"
@@ -85,7 +87,7 @@ func (b EntryBuilder) WithSpriteBounds() EntryBuilder {
 	return b
 }
 
-func (b EntryBuilder) WithBoundsAsCollider(layer component.ColliderLayer) EntryBuilder {
+func (b EntryBuilder) WithBoundsAsCollider(layer definitions.ColliderLayer) EntryBuilder {
 	b.With(component.Collider)
 
 	bounds := component.Bounds.Get(b.entry)
@@ -99,7 +101,7 @@ func (b EntryBuilder) WithBoundsAsCollider(layer component.ColliderLayer) EntryB
 	return b
 }
 
-func (b EntryBuilder) WithLayer(layer component.LayerID) EntryBuilder {
+func (b EntryBuilder) WithLayer(layer definitions.LayerID) EntryBuilder {
 	b.With(component.Layer)
 	component.Layer.Get(b.entry).Layer = layer
 	return b

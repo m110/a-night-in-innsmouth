@@ -5,6 +5,8 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
+	"github.com/m110/secrets/definitions"
+
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/engine"
@@ -23,8 +25,7 @@ func NewCollision() *Collision {
 
 func (c *Collision) Init(w donburi.World) {
 	events.JustCollidedEvent.Subscribe(w, func(w donburi.World, event events.JustCollided) {
-		// TODO remove casting
-		if event.Layer == int(component.CollisionLayerCharacter) && event.OtherLayer == int(component.CollisionLayerPOI) {
+		if event.Layer == definitions.CollisionLayerCharacter && event.OtherLayer == definitions.CollisionLayerPOI {
 			if archetype.CanSeePOI(event.Other) {
 				archetype.HidePOIs(w)
 				archetype.ShowPOI(event.Other)
@@ -33,7 +34,7 @@ func (c *Collision) Init(w donburi.World) {
 	})
 
 	events.JustOutOfCollisionEvent.Subscribe(w, func(w donburi.World, event events.JustOutOfCollision) {
-		if event.Layer == int(component.CollisionLayerCharacter) && event.OtherLayer == int(component.CollisionLayerPOI) {
+		if event.Layer == definitions.CollisionLayerCharacter && event.OtherLayer == definitions.CollisionLayerPOI {
 			if event.Other.HasComponent(component.ActivePOI) {
 				archetype.HidePOIs(w)
 				archetype.CheckNextPOI(w)
@@ -42,9 +43,9 @@ func (c *Collision) Init(w donburi.World) {
 	})
 }
 
-var collisions = map[component.ColliderLayer]map[component.ColliderLayer]struct{}{
-	component.CollisionLayerCharacter: {
-		component.CollisionLayerPOI: {},
+var collisions = map[definitions.ColliderLayer]map[definitions.ColliderLayer]struct{}{
+	definitions.CollisionLayerCharacter: {
+		definitions.CollisionLayerPOI: {},
 	},
 }
 
@@ -107,9 +108,9 @@ func (c *Collision) Update(w donburi.World) {
 
 					event := events.JustCollided{
 						Entry:      entry,
-						Layer:      int(collider.Layer),
+						Layer:      collider.Layer,
 						Other:      other,
-						OtherLayer: int(otherCollider.Layer),
+						OtherLayer: otherCollider.Layer,
 					}
 					events.JustCollidedEvent.Publish(w, event)
 				}
@@ -140,9 +141,9 @@ func (c *Collision) Update(w donburi.World) {
 
 				event := events.JustOutOfCollision{
 					Entry:      entry,
-					Layer:      int(collider.Layer),
+					Layer:      collider.Layer,
 					Other:      w.Entry(key.Other),
-					OtherLayer: int(key.Layer),
+					OtherLayer: key.Layer,
 				}
 				events.JustOutOfCollisionEvent.Publish(w, event)
 			}

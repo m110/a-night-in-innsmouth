@@ -7,6 +7,8 @@ import (
 	"sort"
 	"unicode/utf8"
 
+	"github.com/m110/secrets/definitions"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -190,7 +192,7 @@ func renderColliderDebug(entry *donburi.Entry, camera *component.CameraData) {
 	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(w), float32(h), 1, colornames.Lime, false)
 }
 
-func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer component.LayerID) []entryWithLayer {
+func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer definitions.LayerID) []entryWithLayer {
 	if !entry.Valid() || !isActive(entry) {
 		return nil
 	}
@@ -229,7 +231,7 @@ func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer component.LayerI
 	return result
 }
 
-func getEntryWithLayer(entry *donburi.Entry, rootLayer component.LayerID) entryWithLayer {
+func getEntryWithLayer(entry *donburi.Entry, rootLayer definitions.LayerID) entryWithLayer {
 	if !entry.HasComponent(component.Layer) {
 		return entryWithLayer{
 			entry: entry,
@@ -341,5 +343,5 @@ func isActive(entry *donburi.Entry) bool {
 
 type entryWithLayer struct {
 	entry *donburi.Entry
-	layer component.LayerID
+	layer definitions.LayerID
 }

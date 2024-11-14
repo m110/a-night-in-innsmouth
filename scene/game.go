@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"image/color"
 
+	"github.com/m110/secrets/definitions"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	donburievents "github.com/yohamta/donburi/features/events"
@@ -99,7 +101,7 @@ func (g *Game) createWorld() donburi.World {
 	world.Create(component.Debug)
 
 	ui := archetype.NewTagged(world, "UI").
-		WithLayer(component.SpriteUILayerUI).
+		WithLayer(definitions.SpriteUILayerUI).
 		Entry()
 
 	archetype.NewDialog(world)
@@ -167,7 +169,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 
 	inventoryButton := archetype.NewTagged(w, "Inventory Button").
 		WithParent(ui).
-		WithLayer(component.SpriteUILayerUI).
+		WithLayer(definitions.SpriteUILayerUI).
 		With(component.Active).
 		WithSprite(component.SpriteData{
 			Image: inventoryButtonImg,
@@ -180,7 +182,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 	component.Collider.SetValue(inventoryButton, component.ColliderData{
 		Width:  float64(inventoryWidth),
 		Height: float64(inventoryHeight),
-		Layer:  component.CollisionLayerButton,
+		Layer:  definitions.CollisionLayerButton,
 	})
 
 	archetype.NewTagged(w, "Inventory Button Text").
@@ -199,7 +201,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 
 	inventory := archetype.NewTagged(w, "Inventory").
 		WithParent(ui).
-		WithLayer(component.SpriteUILayerUI).
+		WithLayer(definitions.SpriteUILayerUI).
 		With(component.Active).
 		WithSprite(component.SpriteData{
 			Image: inventoryImg,
@@ -211,7 +213,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 	component.Collider.SetValue(inventory, component.ColliderData{
 		Width:  float64(inventoryWidth),
 		Height: float64(g.screenHeight),
-		Layer:  component.CollisionLayerButton,
+		Layer:  definitions.CollisionLayerButton,
 	})
 
 	inventoryText := archetype.NewTagged(w, "Inventory Text").

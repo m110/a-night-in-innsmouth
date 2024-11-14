@@ -9,6 +9,8 @@ import (
 	"github.com/yohamta/donburi/filter"
 	"golang.org/x/image/colornames"
 
+	"github.com/m110/secrets/definitions"
+
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
@@ -23,9 +25,9 @@ func NewPOI(
 	entry := NewTagged(w, "POI").
 		WithParent(parent).
 		WithPosition(poi.TriggerRect.Position()).
-		WithLayer(component.SpriteLayerPOI).
+		WithLayer(definitions.SpriteLayerPOI).
 		WithBounds(poi.TriggerRect.Size()).
-		WithBoundsAsCollider(component.CollisionLayerPOI).
+		WithBoundsAsCollider(definitions.CollisionLayerPOI).
 		With(component.POI).
 		Entry()
 
@@ -112,13 +114,15 @@ func ShowPOI(entry *donburi.Entry) {
 }
 
 func CheckNextPOI(w donburi.World) {
+	// TODO Simple image boards could be used differently from levels
+	// Remember the character pos and return to it? If simply exit
 	character := engine.MustFindWithComponent(w, component.Character)
 	collider := component.Collider.Get(character)
 
 	var nextCollisionEntry *donburi.Entry
 	var nextCollision *component.Collision
 	for key, collision := range collider.CollidesWith {
-		if key.Layer != component.CollisionLayerPOI {
+		if key.Layer != definitions.CollisionLayerPOI {
 			continue
 		}
 		if nextCollision == nil || collision.TimesSeen > nextCollision.TimesSeen {

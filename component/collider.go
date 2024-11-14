@@ -2,21 +2,14 @@ package component
 
 import (
 	"github.com/yohamta/donburi"
-)
 
-const (
-	CollisionLayerNone      ColliderLayer = iota
-	CollisionLayerButton    ColliderLayer = iota
-	CollisionLayerCharacter ColliderLayer = iota
-	CollisionLayerPOI       ColliderLayer = iota
+	"github.com/m110/secrets/definitions"
 )
-
-type ColliderLayer int
 
 type ColliderData struct {
 	Width  float64
 	Height float64
-	Layer  ColliderLayer
+	Layer  definitions.ColliderLayer
 
 	CollidesWith           map[CollisionKey]Collision
 	JustCollidedWith       map[CollisionKey]struct{}
@@ -24,7 +17,7 @@ type ColliderData struct {
 }
 
 type CollisionKey struct {
-	Layer ColliderLayer
+	Layer definitions.ColliderLayer
 	Other donburi.Entity
 }
 
