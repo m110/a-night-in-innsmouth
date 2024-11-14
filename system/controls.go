@@ -226,7 +226,8 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 		clickRect := engine.NewRect(float64(x), float64(y), 1, 1)
 
 		c.buttonsQuery.Each(w, func(entry *donburi.Entry) {
-			pos := transform.WorldPosition(entry)
+			dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
+			pos := transform.WorldPosition(entry).Add(transform.WorldPosition(dialogCamera))
 			collider := component.Collider.Get(entry)
 			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
 			if colliderRect.Intersects(clickRect) {
@@ -264,7 +265,7 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 		archetype.NextPassage(w)
 	}
 
-	camera := component.Camera.Get(engine.MustFindWithComponent(w, component.DialogCamera))
+	camera := component.Camera.Get(engine.MustFindWithComponent(w, component.DialogLogCamera))
 
 	if optionUpdated || next {
 		camera.ViewportPosition.Y = stackedView.CurrentY

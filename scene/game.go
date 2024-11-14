@@ -102,8 +102,7 @@ func (g *Game) createWorld() donburi.World {
 		WithLayer(component.SpriteUILayerUI).
 		Entry()
 
-	archetype.NewDialog(world, ui)
-	archetype.NewDialogLog(world)
+	archetype.NewDialog(world)
 
 	g.createInventory(world, ui)
 

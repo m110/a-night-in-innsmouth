@@ -7,9 +7,13 @@ import (
 var (
 	ActiveOptionIndicator = donburi.NewTag()
 
-	Dialog       = donburi.NewTag()
-	DialogLog    = donburi.NewTag()
-	DialogCamera = donburi.NewTag()
+	Dialog          = donburi.NewTag()
+	DialogCamera    = donburi.NewTag()
+	DialogLog       = donburi.NewTag()
+	DialogLogCamera = donburi.NewTag()
+
+	// InnerCamera means the camera is placed inside another camera.
+	InnerCamera = donburi.NewTag()
 
 	Level       = donburi.NewTag()
 	LevelCamera = donburi.NewTag()

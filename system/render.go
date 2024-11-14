@@ -55,88 +55,8 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 
 	count := 0
 	r.camerasQuery.EachOrdered(w, component.Camera, func(entry *donburi.Entry) {
-		if entry.HasComponent(component.Active) {
-			if !component.Active.Get(entry).Active {
-				return
-			}
-		}
-
-		camera := component.Camera.Get(entry)
-
-		if !camera.Root.HasComponent(component.Layer) {
-			panic("missing root layer")
-		}
-
-		rootLayer := component.Layer.Get(camera.Root).Layer
-		children := r.getAllChildren(camera.Root, rootLayer)
-
-		byLayer := map[int][]entryWithLayer{}
-		for _, child := range children {
-			byLayer[int(child.layer)] = append(byLayer[int(child.layer)], child)
-		}
-
-		var layers []int
-		for l := range byLayer {
-			layers = append(layers, l)
-		}
-
-		sort.Ints(layers)
-
-		camera.Viewport.Clear()
-
-		for _, layer := range layers {
-			for _, child := range byLayer[layer] {
-				count++
-
-				if child.entry.HasComponent(component.Sprite) {
-					renderSprite(child.entry, camera)
-				}
-
-				if child.entry.HasComponent(component.Text) {
-					renderText(child.entry, camera)
-				}
-
-				if r.debug.Enabled {
-					if child.entry.HasComponent(component.Bounds) {
-						renderBoundsDebug(child.entry, camera)
-					}
-
-					if child.entry.HasComponent(component.Collider) {
-						renderColliderDebug(child.entry, camera)
-					}
-				}
-			}
-		}
-
-		if camera.Mask != nil {
-			op := &ebiten.DrawImageOptions{}
-			op.Blend = ebiten.BlendDestinationIn
-			camera.Viewport.DrawImage(camera.Mask, op)
-		}
-
-		if camera.TransitionOverlay != nil {
-			op := &ebiten.DrawImageOptions{}
-			op.ColorScale.Scale(1, 1, 1, float32(camera.TransitionAlpha))
-			camera.Viewport.DrawImage(camera.TransitionOverlay, op)
-		}
-
-		cameraPos := transform.WorldPosition(entry)
-
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(cameraPos.X, cameraPos.Y)
-		op.Filter = ebiten.FilterLinear
-
-		if camera.AlphaOverride != nil {
-			op.ColorM.Scale(1.0, 1.0, 1.0, camera.AlphaOverride.A)
-		}
-		if camera.ColorOverride != nil {
-			op.ColorM.Translate(camera.ColorOverride.R, camera.ColorOverride.G, camera.ColorOverride.B, 0)
-		}
-
-		r.offscreen.DrawImage(camera.Viewport, op)
-
-		if r.debug.Enabled {
-			renderCameraDebug(entry, r.offscreen)
+		if !entry.HasComponent(component.InnerCamera) {
+			count += r.renderCamera(entry, r.offscreen)
 		}
 	})
 
@@ -149,6 +69,99 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("World entities: %v", w.Len()), debugX, 80)
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Rendered entities: %v", count), debugX, 100)
 	}
+}
+
+func (r *Render) renderCamera(entry *donburi.Entry, offscreen *ebiten.Image) int {
+	if entry.HasComponent(component.Active) {
+		if !component.Active.Get(entry).Active {
+			return 0
+		}
+	}
+
+	camera := component.Camera.Get(entry)
+
+	if !camera.Root.HasComponent(component.Layer) {
+		panic("missing root layer")
+	}
+
+	rootLayer := component.Layer.Get(camera.Root).Layer
+	children := r.getAllChildren(camera.Root, rootLayer)
+
+	byLayer := map[int][]entryWithLayer{}
+	for _, child := range children {
+		byLayer[int(child.layer)] = append(byLayer[int(child.layer)], child)
+	}
+
+	var layers []int
+	for l := range byLayer {
+		layers = append(layers, l)
+	}
+
+	sort.Ints(layers)
+
+	camera.Viewport.Clear()
+
+	count := 0
+	for _, layer := range layers {
+		for _, child := range byLayer[layer] {
+			count++
+
+			if child.entry.HasComponent(component.Sprite) {
+				renderSprite(child.entry, camera)
+			}
+
+			if child.entry.HasComponent(component.Text) {
+				renderText(child.entry, camera)
+			}
+
+			if child.entry.HasComponent(component.Camera) {
+				count += r.renderCamera(child.entry, camera.Viewport)
+			}
+
+			if r.debug.Enabled {
+				if child.entry.HasComponent(component.Bounds) {
+					renderBoundsDebug(child.entry, camera)
+				}
+
+				if child.entry.HasComponent(component.Collider) {
+					renderColliderDebug(child.entry, camera)
+				}
+			}
+		}
+	}
+
+	if camera.Mask != nil {
+		op := &ebiten.DrawImageOptions{}
+		op.Blend = ebiten.BlendDestinationIn
+		camera.Viewport.DrawImage(camera.Mask, op)
+	}
+
+	if camera.TransitionOverlay != nil {
+		op := &ebiten.DrawImageOptions{}
+		op.ColorScale.Scale(1, 1, 1, float32(camera.TransitionAlpha))
+		camera.Viewport.DrawImage(camera.TransitionOverlay, op)
+	}
+
+	cameraPos := transform.WorldPosition(entry)
+
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(cameraPos.X, cameraPos.Y)
+	op.Filter = ebiten.FilterLinear
+
+	if camera.AlphaOverride != nil {
+		op.ColorM.Scale(1.0, 1.0, 1.0, camera.AlphaOverride.A)
+	}
+	if camera.ColorOverride != nil {
+		op.ColorM.Translate(camera.ColorOverride.R, camera.ColorOverride.G, camera.ColorOverride.B, 0)
+	}
+
+	offscreen.DrawImage(camera.Viewport, op)
+
+	if r.debug.Enabled {
+		renderCameraDebug(entry, offscreen)
+	}
+
+	return count
 }
 
 func renderCameraDebug(entry *donburi.Entry, offscreen *ebiten.Image) {
@@ -197,7 +210,7 @@ func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer component.LayerI
 
 		seen[e] = true
 
-		if e.HasComponent(component.Sprite) || e.HasComponent(component.Text) {
+		if e.HasComponent(component.Sprite) || e.HasComponent(component.Text) || e.HasComponent(component.Camera) {
 			result = append(result, getEntryWithLayer(e, rootLayer))
 		}
 
