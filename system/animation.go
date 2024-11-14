@@ -24,7 +24,7 @@ func (s *Animation) Update(w donburi.World) {
 		animator := component.Animator.Get(entry)
 		for _, animation := range animator.Animations {
 			if !animation.Active {
-				return
+				continue
 			}
 			if animation.Timer != nil {
 				animation.Timer.Update()

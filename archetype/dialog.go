@@ -201,6 +201,25 @@ func NextPassage(w donburi.World) {
 		HidePOIs(w)
 		CheckNextPOI(w)
 
+		levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
+		lCam := component.Camera.Get(levelCamera)
+		bz := component.BriefZoom.Get(levelCamera)
+
+		zoomAnim := newCameraZoomAnimation(
+			lCam,
+			lCam.ViewportPosition,
+			bz.OriginCamera.ViewportPosition,
+			lCam.ViewportZoom,
+			bz.OriginCamera.ViewportZoom,
+		)
+
+		zoomAnim.OnStop = func(e *donburi.Entry) {
+			lCam.ViewportBounds = bz.OriginCamera.ViewportBounds
+			lCam.ViewportTarget = bz.OriginCamera.ViewportTarget
+		}
+
+		component.Animator.Get(levelCamera).Animations["zoom-out"] = zoomAnim
+
 		return
 	}
 
@@ -233,8 +252,31 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 	dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
 
 	if source != nil {
-		//levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
+		levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
+		cam := component.Camera.Get(levelCamera)
+		bz := component.BriefZoom.Get(levelCamera)
+		bz.OriginCamera = *cam
 
+		cam.ViewportBounds = nil
+		cam.ViewportTarget = nil
+
+		originPosition := cam.ViewportPosition
+		originZoom := cam.ViewportZoom
+		targetZoom := cam.ViewportZoom * 1.5
+
+		bounds := component.Bounds.Get(source)
+
+		targetWorldPos := transform.WorldPosition(source)
+		viewportWidth := float64(cam.Viewport.Bounds().Dx()) / targetZoom
+		viewportHeight := float64(cam.Viewport.Bounds().Dy()) / targetZoom
+
+		targetPosition := math.Vec2{
+			X: targetWorldPos.X + bounds.Width/2.0 - viewportWidth/4.0,
+			Y: targetWorldPos.Y + bounds.Height/2.0 - viewportHeight/2.0,
+		}
+
+		animator := component.Animator.Get(levelCamera)
+		animator.Animations["zoom-in"] = newCameraZoomAnimation(cam, originPosition, targetPosition, originZoom, targetZoom)
 	}
 
 	component.Active.Get(dialog).Active = true
@@ -398,4 +440,28 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 	})
 
 	return passage
+}
+
+func newCameraZoomAnimation(
+	cam *component.CameraData,
+	originPosition, targetPosition math.Vec2,
+	originZoom, targetZoom float64,
+) *component.Animation {
+	return &component.Animation{
+		Active: true,
+		Timer:  engine.NewTimer(500 * time.Millisecond),
+		Update: func(e *donburi.Entry, a *component.Animation) {
+			t := a.Timer.PercentDone()
+
+			if a.Timer.IsReady() {
+				// Force exact final position and zoom when animation ends
+				cam.ViewportPosition = targetPosition
+				cam.ViewportZoom = targetZoom
+				a.Stop(e)
+			} else {
+				cam.ViewportPosition = engine.LerpVec2(originPosition, targetPosition, t)
+				cam.ViewportZoom = engine.Lerp(originZoom, targetZoom, t)
+			}
+		},
+	}
 }
