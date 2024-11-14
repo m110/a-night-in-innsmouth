@@ -24,6 +24,9 @@ const (
 	dialogWidth = 500
 
 	passageMargin = 32
+
+	LevelTransitionDuration = 500 * time.Millisecond
+	openDialogDuration      = 1000 * time.Millisecond
 )
 
 func NewDialog(w donburi.World, parent *donburi.Entry) *donburi.Entry {
@@ -41,17 +44,74 @@ func NewDialog(w donburi.World, parent *donburi.Entry) *donburi.Entry {
 	dialog := NewTagged(w, "Dialog").
 		WithParent(parent).
 		WithPosition(pos).
-		WithLayer(component.SpriteUILayerUI).
-		With(component.Active).
-		With(component.Dialog).
-		Entry()
-
-	NewTagged(w, "Dialog Background").
-		WithParent(dialog).
 		WithLayer(component.SpriteUILayerBackground).
 		WithSprite(component.SpriteData{
 			Image: backgroundImage,
-		})
+		}).
+		With(component.Active).
+		With(component.Dialog).
+		With(component.Animator).
+		Entry()
+
+	input := engine.MustFindComponent[component.InputData](w, component.Input)
+
+	sprite := component.Sprite.Get(dialog)
+	animator := component.Animator.Get(dialog)
+	animator.AddAnimation("fade-in", &component.Animation{
+		Active: false,
+		Timer:  engine.NewTimer(openDialogDuration),
+		Update: func(e *donburi.Entry, a *component.Animation) {
+			t := a.Timer.PercentDone()
+			t = engine.EaseInOut(t)
+
+			if a.Timer.IsReady() {
+				a.Stop(e)
+			}
+
+			sprite.AlphaOverride = &component.AlphaOverride{
+				A: t,
+			}
+		},
+		OnStart: func(e *donburi.Entry) {
+			sprite.AlphaOverride = &component.AlphaOverride{
+				A: 0,
+			}
+			input.Disabled = true
+		},
+		OnStop: func(e *donburi.Entry) {
+			sprite.AlphaOverride = nil
+			input.Disabled = false
+		},
+	})
+
+	animator.AddAnimation("fade-out", &component.Animation{
+		Active: false,
+		Timer:  engine.NewTimer(openDialogDuration),
+		Update: func(e *donburi.Entry, a *component.Animation) {
+			t := a.Timer.PercentDone()
+			t = engine.EaseInOut(t)
+
+			if a.Timer.IsReady() {
+				a.Stop(e)
+			}
+
+			sprite.AlphaOverride = &component.AlphaOverride{
+				A: 1 - t,
+			}
+		},
+		OnStart: func(e *donburi.Entry) {
+			sprite.AlphaOverride = &component.AlphaOverride{
+				A: 1,
+			}
+			input.Disabled = true
+		},
+		OnStop: func(e *donburi.Entry) {
+			sprite.AlphaOverride = nil
+			input.Disabled = false
+
+			component.Active.Get(dialog).Active = false
+		},
+	})
 
 	return dialog
 }
@@ -73,7 +133,7 @@ func NewDialogLog(w donburi.World) *donburi.Entry {
 
 	cameraHeight := height - 300
 	// TODO not sure if best place for this
-	cam := NewCamera(
+	camera := NewCamera(
 		w,
 		pos,
 		engine.Size{Width: dialogWidth, Height: cameraHeight},
@@ -81,19 +141,65 @@ func NewDialogLog(w donburi.World) *donburi.Entry {
 		log,
 	)
 
-	cam.AddComponent(component.DialogCamera)
-	cam.AddComponent(component.Animator)
-	component.Animator.SetValue(cam, component.AnimatorData{
-		Animations: make(map[string]*component.Animation),
-	})
-	cam.AddComponent(component.Active)
+	camera.AddComponent(component.DialogCamera)
+	camera.AddComponent(component.Animator)
+	camera.AddComponent(component.Active)
 
-	component.Camera.Get(cam).Mask = CreateScrollMask(dialogWidth, cameraHeight)
+	cam := component.Camera.Get(camera)
+	cam.Mask = CreateScrollMask(dialogWidth, cameraHeight)
 
-	anim := component.Animator.Get(cam)
-	anim.Animations["scroll"] = &component.Animation{
+	anim := component.Animator.Get(camera)
+	anim.AddAnimation("scroll", &component.Animation{
 		Timer: engine.NewTimer(500 * time.Millisecond),
-	}
+	})
+	anim.AddAnimation("fade-in", &component.Animation{
+		Active: false,
+		Timer:  engine.NewTimer(openDialogDuration),
+		Update: func(e *donburi.Entry, a *component.Animation) {
+			t := a.Timer.PercentDone()
+			t = engine.EaseInOut(t)
+
+			if a.Timer.IsReady() {
+				a.Stop(e)
+			}
+
+			cam.AlphaOverride = &component.AlphaOverride{
+				A: t,
+			}
+		},
+		OnStart: func(e *donburi.Entry) {
+			cam.AlphaOverride = &component.AlphaOverride{
+				A: 0,
+			}
+		},
+		OnStop: func(e *donburi.Entry) {
+			cam.AlphaOverride = nil
+		},
+	})
+	anim.AddAnimation("fade-out", &component.Animation{
+		Active: false,
+		Timer:  engine.NewTimer(openDialogDuration),
+		Update: func(e *donburi.Entry, a *component.Animation) {
+			t := a.Timer.PercentDone()
+			t = engine.EaseInOut(t)
+
+			if a.Timer.IsReady() {
+				a.Stop(e)
+			}
+
+			cam.AlphaOverride = &component.AlphaOverride{
+				A: 1 - t,
+			}
+		},
+		OnStart: func(e *donburi.Entry) {
+			cam.AlphaOverride = &component.AlphaOverride{
+				A: 1,
+			}
+		},
+		OnStop: func(e *donburi.Entry) {
+			cam.AlphaOverride = nil
+		},
+	})
 
 	return log
 }
@@ -195,7 +301,7 @@ func NextPassage(w donburi.World) {
 	scroll.Start(cameraEntry)
 
 	if link.IsExit() {
-		hideDialog(w)
+		hideDialog(w, nil)
 
 		// Refresh POIs in case the conditions to show the passage changed
 		HidePOIs(w)
@@ -218,26 +324,50 @@ func NextPassage(w donburi.World) {
 			lCam.ViewportTarget = bz.OriginCamera.ViewportTarget
 		}
 
-		component.Animator.Get(levelCamera).Animations["zoom-out"] = zoomAnim
+		component.Animator.Get(levelCamera).AddAnimation("zoom-out", zoomAnim)
 
 		return
 	}
 
 	if link.Level != nil {
-		hideDialog(w)
-		ChangeLevel(w, *link.Level)
+		hideDialog(w, func(e *donburi.Entry) {
+			ChangeLevel(w, *link.Level)
+		})
 		return
 	}
 
 	ShowPassage(w, link.Target, nil)
 }
 
-func hideDialog(w donburi.World) {
+func showDialog(w donburi.World) {
 	dialog := engine.MustFindWithComponent(w, component.Dialog)
-	dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
+	if component.Active.Get(dialog).Active {
+		return
+	}
 
-	component.Active.Get(dialog).Active = false
-	component.Active.Get(dialogCamera).Active = false
+	dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
+	component.Active.Get(dialog).Active = true
+	component.Active.Get(dialogCamera).Active = true
+
+	component.Animator.Get(dialog).Animations["fade-in"].Start(dialog)
+	component.Animator.Get(dialogCamera).Animations["fade-in"].Start(dialog)
+}
+
+func hideDialog(w donburi.World, onHide func(e *donburi.Entry)) {
+	dialog := engine.MustFindWithComponent(w, component.Dialog)
+	if !component.Active.Get(dialog).Active {
+		return
+	}
+
+	dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
+	component.Animator.Get(dialogCamera).Animations["fade-out"].Start(dialogCamera)
+
+	anim := component.Animator.Get(dialog).Animations["fade-out"]
+	if onHide != nil {
+		anim.OnStopOneShot = append(anim.OnStopOneShot, onHide)
+	}
+
+	anim.Start(dialog)
 }
 
 const (
@@ -249,7 +379,6 @@ const (
 
 func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi.Entry) *donburi.Entry {
 	dialog := engine.MustFindWithComponent(w, component.Dialog)
-	dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
 
 	if source != nil {
 		levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
@@ -276,11 +405,10 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		}
 
 		animator := component.Animator.Get(levelCamera)
-		animator.Animations["zoom-in"] = newCameraZoomAnimation(cam, originPosition, targetPosition, originZoom, targetZoom)
+		animator.AddAnimation("zoom-in", newCameraZoomAnimation(cam, originPosition, targetPosition, originZoom, targetZoom))
 	}
 
-	component.Active.Get(dialog).Active = true
-	component.Active.Get(dialogCamera).Active = true
+	showDialog(w)
 
 	log := engine.MustFindWithComponent(w, component.DialogLog)
 	stackedView := component.StackedView.Get(log)
@@ -449,9 +577,11 @@ func newCameraZoomAnimation(
 ) *component.Animation {
 	return &component.Animation{
 		Active: true,
-		Timer:  engine.NewTimer(500 * time.Millisecond),
+		Timer:  engine.NewTimer(openDialogDuration),
 		Update: func(e *donburi.Entry, a *component.Animation) {
 			t := a.Timer.PercentDone()
+
+			t = engine.EaseInOut(t)
 
 			if a.Timer.IsReady() {
 				// Force exact final position and zoom when animation ends

@@ -27,7 +27,7 @@ func NewCharacter(parent *donburi.Entry, movementBounds component.MovementBounds
 		With(component.Velocity).
 		WithSpriteBounds().
 		WithBoundsAsCollider(component.CollisionLayerCharacter).
-		WithAnimator().
+		With(component.Animator).
 		With(component.Character).
 		With(component.MovementBounds).
 		Entry()
@@ -44,7 +44,7 @@ func NewCharacter(parent *donburi.Entry, movementBounds component.MovementBounds
 
 	anim := component.Animator.Get(character)
 
-	anim.Animations["walk"] = &component.Animation{
+	anim.AddAnimation("walk", &component.Animation{
 		Timer: engine.NewTimer(200 * time.Millisecond),
 		Update: func(e *donburi.Entry, a *component.Animation) {
 			if a.Timer.IsReady() {
@@ -64,7 +64,7 @@ func NewCharacter(parent *donburi.Entry, movementBounds component.MovementBounds
 			currentFrame = 0
 			sprite.Image = frames[2]
 		},
-	}
+	})
 
 	component.MovementBounds.SetValue(character, movementBounds)
 

@@ -22,6 +22,9 @@ type CameraData struct {
 
 	TransitionOverlay *ebiten.Image
 	TransitionAlpha   float64
+
+	ColorOverride *ColorOverride
+	AlphaOverride *AlphaOverride
 }
 
 func (d CameraData) Order() int {

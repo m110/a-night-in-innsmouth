@@ -127,14 +127,6 @@ func (b EntryBuilder) WithText(text component.TextData) EntryBuilder {
 	return b
 }
 
-func (b EntryBuilder) WithAnimator() EntryBuilder {
-	b.With(component.Animator)
-	component.Animator.SetValue(b.entry, component.AnimatorData{
-		Animations: make(map[string]*component.Animation),
-	})
-	return b
-}
-
 func (b EntryBuilder) WithTag(tag string) EntryBuilder {
 	if !b.entry.HasComponent(component.Tag) {
 		b.With(component.Tag)

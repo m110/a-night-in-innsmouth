@@ -1,8 +1,6 @@
 package archetype
 
 import (
-	"time"
-
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"
 
@@ -29,7 +27,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 			Image: level.Background,
 		}).
 		With(component.Level).
-		WithAnimator().
+		With(component.Animator).
 		Entry()
 
 	spawned := false
@@ -40,9 +38,9 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	anim := component.Animator.Get(entry)
 
-	anim.Animations["transition"] = &component.Animation{
+	anim.AddAnimation("transition", &component.Animation{
 		Active: true,
-		Timer:  engine.NewTimer(500 * time.Millisecond),
+		Timer:  engine.NewTimer(LevelTransitionDuration),
 		OnStart: func(e *donburi.Entry) {
 			input.Disabled = true
 		},
@@ -61,7 +59,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 				}
 			}
 		},
-	}
+	})
 
 	for _, poi := range level.POIs {
 		NewPOI(entry, poi)
@@ -135,7 +133,7 @@ func ChangeLevel(w donburi.World, level domain.TargetLevel) {
 			transform.RemoveRecursive(e)
 			NewLevel(w, level)
 		}
-		anim.Animations["transition"] = transition
+		anim.AddAnimation("transition", transition)
 		return
 	}
 

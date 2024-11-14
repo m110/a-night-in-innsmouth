@@ -125,6 +125,14 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(cameraPos.X, cameraPos.Y)
 		op.Filter = ebiten.FilterLinear
+
+		if camera.AlphaOverride != nil {
+			op.ColorM.Scale(1.0, 1.0, 1.0, camera.AlphaOverride.A)
+		}
+		if camera.ColorOverride != nil {
+			op.ColorM.Translate(camera.ColorOverride.R, camera.ColorOverride.G, camera.ColorOverride.B, 0)
+		}
+
 		r.offscreen.DrawImage(camera.Viewport, op)
 
 		if r.debug.Enabled {
