@@ -23,4 +23,5 @@ var (
 
 	ActivePOI    = donburi.NewTag()
 	POIIndicator = donburi.NewTag()
+	POIImage     = donburi.NewTag()
 )

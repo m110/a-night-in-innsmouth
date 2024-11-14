@@ -5,7 +5,6 @@ import (
 	"github.com/yohamta/donburi/features/math"
 
 	"github.com/m110/secrets/definitions"
-
 	"github.com/m110/secrets/engine"
 )
 

@@ -2,16 +2,13 @@ package archetype
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
-	"golang.org/x/image/colornames"
-
-	"github.com/m110/secrets/definitions"
 
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )
@@ -41,7 +38,11 @@ func NewPOI(
 			WithLayerInherit().
 			WithSprite(component.SpriteData{
 				Image: poi.Image,
+				ColorBlendOverride: &component.ColorBlendOverride{
+					Value: 0,
+				},
 			}).
+			With(component.POIImage).
 			Entry()
 
 		transform.SetWorldPosition(poiImage, math.Vec2{
@@ -53,10 +54,8 @@ func NewPOI(
 	width := poi.Rect.Size().Width
 	height := poi.Rect.Size().Height
 
+	// TODO Clean up
 	indicatorImg := ebiten.NewImage(width, height)
-	color := colornames.Indianred
-	color.A = 100
-	vector.DrawFilledCircle(indicatorImg, float32(width/2.0), float32(height/2.0), float32(width/2.0), color, true)
 
 	indicator := NewTagged(w, "POIIndicator").
 		WithParent(entry).

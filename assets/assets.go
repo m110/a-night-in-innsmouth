@@ -12,8 +12,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/m110/secrets/definitions"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/lafriks/go-tiled"
@@ -21,6 +19,7 @@ import (
 	"golang.org/x/text/language"
 
 	"github.com/m110/secrets/assets/twine"
+	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )

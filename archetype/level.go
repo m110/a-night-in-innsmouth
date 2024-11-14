@@ -4,10 +4,9 @@ import (
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"
 
-	"github.com/m110/secrets/definitions"
-
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )

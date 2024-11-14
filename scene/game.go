@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"image/color"
 
-	"github.com/m110/secrets/definitions"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	donburievents "github.com/yohamta/donburi/features/events"
@@ -14,6 +12,7 @@ import (
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 	"github.com/m110/secrets/events"
@@ -62,6 +61,7 @@ func (g *Game) loadLevel() {
 		system.NewCollision(),
 		system.NewAnimation(),
 		system.NewHierarchyValidator(),
+		system.NewDetectPOI(),
 		system.NewText(),
 		system.NewTimeToLive(),
 		system.NewDestroy(),

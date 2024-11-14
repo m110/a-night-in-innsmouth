@@ -24,8 +24,9 @@ type SpriteData struct {
 
 	Hidden bool
 
-	ColorOverride *ColorOverride
-	AlphaOverride *AlphaOverride
+	ColorOverride      *ColorOverride
+	AlphaOverride      *AlphaOverride
+	ColorBlendOverride *ColorBlendOverride
 }
 
 type ColorOverride struct {
@@ -34,6 +35,12 @@ type ColorOverride struct {
 
 type AlphaOverride struct {
 	A float64
+}
+
+type ColorBlendOverride struct {
+	// Value is in range [0, 1]
+	// 0 is monochrome, 1 is the original color
+	Value float64
 }
 
 func (s *SpriteData) Show() {

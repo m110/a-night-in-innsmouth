@@ -7,8 +7,6 @@ import (
 	"sort"
 	"unicode/utf8"
 
-	"github.com/m110/secrets/definitions"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -21,6 +19,7 @@ import (
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/engine"
 )
 
@@ -292,6 +291,9 @@ func renderSprite(entry *donburi.Entry, camera *component.CameraData) {
 	if sprite.ColorOverride != nil {
 		op.ColorM.Translate(sprite.ColorOverride.R, sprite.ColorOverride.G, sprite.ColorOverride.B, 0)
 	}
+	if sprite.ColorBlendOverride != nil {
+		blendMonochrome(op, sprite.ColorBlendOverride.Value)
+	}
 
 	op.GeoM.Scale(camera.ViewportZoom, camera.ViewportZoom)
 	op.GeoM.Translate(x, y)
@@ -344,4 +346,49 @@ func isActive(entry *donburi.Entry) bool {
 type entryWithLayer struct {
 	entry *donburi.Entry
 	layer definitions.LayerID
+}
+
+func blendMonochrome(op *ebiten.DrawImageOptions, blend float64) {
+	// Clamp blend value between 0 and 1
+	if blend < 0 {
+		blend = 0
+	}
+	if blend > 1 {
+		blend = 1
+	}
+
+	// Standard luminance coefficients
+	rCoeff := 0.299
+	gCoeff := 0.587
+	bCoeff := 0.114
+
+	// Create color matrix
+	cm := ebiten.ColorM{}
+
+	// Monochrome matrix components
+	monoR := rCoeff * (1 - blend)
+	monoG := gCoeff * (1 - blend)
+	monoB := bCoeff * (1 - blend)
+
+	// Color preservation component
+	colorComponent := blend
+
+	// Set color matrix values
+	cm.Reset()
+	// Red output
+	cm.SetElement(0, 0, monoR+colorComponent) // R contribution
+	cm.SetElement(0, 1, monoG)                // G contribution
+	cm.SetElement(0, 2, monoB)                // B contribution
+
+	// Green output
+	cm.SetElement(1, 0, monoR)                // R contribution
+	cm.SetElement(1, 1, monoG+colorComponent) // G contribution
+	cm.SetElement(1, 2, monoB)                // B contribution
+
+	// Blue output
+	cm.SetElement(2, 0, monoR)                // R contribution
+	cm.SetElement(2, 1, monoG)                // G contribution
+	cm.SetElement(2, 2, monoB+colorComponent) // B contribution
+
+	op.ColorM = cm
 }
