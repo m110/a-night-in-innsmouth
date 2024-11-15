@@ -134,12 +134,14 @@ func (r *Render) renderCamera(entry *donburi.Entry, offscreen *ebiten.Image) int
 	if camera.Mask != nil {
 		op := &ebiten.DrawImageOptions{}
 		op.Blend = ebiten.BlendDestinationIn
+		op.Filter = ebiten.FilterLinear
 		camera.Viewport.DrawImage(camera.Mask, op)
 	}
 
 	if camera.TransitionOverlay != nil {
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.Scale(1, 1, 1, float32(camera.TransitionAlpha))
+		op.Filter = ebiten.FilterLinear
 		camera.Viewport.DrawImage(camera.TransitionOverlay, op)
 	}
 

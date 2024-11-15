@@ -2,6 +2,7 @@ package archetype
 
 import (
 	"github.com/yohamta/donburi"
+	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 
 	"github.com/m110/secrets/assets"
@@ -11,8 +12,9 @@ import (
 )
 
 const (
-	levelMovementMargin = 100
-	levelCameraMargin   = 200
+	levelMovementMargin               = 100
+	levelCameraMarginPercent          = 0.2
+	scrollingLevelCameraMarginPercent = 0.45
 )
 
 func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
@@ -126,29 +128,43 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	levelWidth := float64(bounds.Dx())
 
 	screenWidth := float64(game.Settings.ScreenWidth)
-	viewportWorldWidth := screenWidth / cam.ViewportZoom
+	screenWorldWidth := screenWidth / cam.ViewportZoom
+	viewportWorldWidth := float64(cam.Viewport.Bounds().Dx()) / cam.ViewportZoom
 
 	if character == nil {
-		// Show the level in the middle of the space that's left outside the dialog
-		dialogScreenWidth := float64(dialogWidth(w))
+		targetPos := math.Vec2{
+			X: levelWidth / 2.0,
+			Y: cam.ViewportPosition.Y,
+		}
 
-		availableScreenRatio := (screenWidth - dialogScreenWidth) / screenWidth
-		centerRatio := availableScreenRatio / 2.0
+		target := NewTagged(w, "ViewportTarget").
+			WithParent(entry).
+			WithPosition(targetPos).
+			With(component.Velocity).
+			WithBounds(engine.Size{
+				Width:  50,
+				Height: 50,
+			}).
+			Entry()
 
-		targetCenterInWorld := viewportWorldWidth * centerRatio
-		cam.ViewportPosition.X = levelWidth/2.0 - targetCenterInWorld
+		component.Velocity.Get(target).Velocity = math.Vec2{
+			X: 1,
+		}
 
-		cam.ViewportTarget = nil
+		cam.ViewportTarget = target
+
+		cam.ViewportBounds.X = &engine.FloatRange{
+			Min: float64(-scrollingLevelCameraMargin(w)),
+			Max: levelWidth + float64(scrollingLevelCameraMargin(w)) - viewportWorldWidth,
+		}
 	} else {
-		cam.ViewportPosition.X = levelWidth/2.0 - viewportWorldWidth/2.0
+		cam.ViewportPosition.X = levelWidth/2.0 - screenWorldWidth/2.0
 		cam.ViewportTarget = character
-	}
 
-	viewportWidth := float64(cam.Viewport.Bounds().Dx()) / cam.ViewportZoom
-
-	cam.ViewportBounds.X = &engine.FloatRange{
-		Min: -levelCameraMargin,
-		Max: levelWidth + levelCameraMargin - viewportWidth,
+		cam.ViewportBounds.X = &engine.FloatRange{
+			Min: float64(-levelCameraMargin(w)),
+			Max: levelWidth + float64(levelCameraMargin(w)) - viewportWorldWidth,
+		}
 	}
 }
 
@@ -186,4 +202,14 @@ func ChangeLevel(w donburi.World, level domain.TargetLevel) {
 	}
 
 	NewLevel(w, level)
+}
+
+func levelCameraMargin(w donburi.World) int {
+	game := component.MustFindGame(w)
+	return int(float64(game.Settings.ScreenWidth) * levelCameraMarginPercent)
+}
+
+func scrollingLevelCameraMargin(w donburi.World) int {
+	game := component.MustFindGame(w)
+	return int(float64(game.Settings.ScreenWidth) * scrollingLevelCameraMarginPercent)
 }
