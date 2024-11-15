@@ -22,13 +22,14 @@ type Entrypoint struct {
 }
 
 type POI struct {
-	ID          string
-	Image       *ebiten.Image
-	TriggerRect engine.Rect
-	Rect        engine.Rect
-	Passage     string
-	Level       *TargetLevel
-	EdgeTrigger *Edge
+	ID           string
+	Image        *ebiten.Image
+	TriggerRect  engine.Rect
+	Rect         engine.Rect
+	Passage      string
+	Level        *TargetLevel
+	EdgeTrigger  *Direction
+	TouchTrigger bool
 }
 
 type Object struct {
@@ -38,9 +39,9 @@ type Object struct {
 	Layer    LayerID
 }
 
-type Edge string
+type Direction string
 
 var (
-	EdgeLeft  Edge = "left"
-	EdgeRight Edge = "right"
+	EdgeLeft  Direction = "left"
+	EdgeRight Direction = "right"
 )

@@ -27,6 +27,11 @@ func (c *Collision) Init(w donburi.World) {
 			if archetype.CanInteractWithPOI(event.Other) {
 				archetype.DeactivatePOIs(w)
 				archetype.ActivatePOI(event.Other)
+
+				poi := component.POI.Get(event.Other)
+				if poi.POI.TouchTrigger {
+					archetype.SelectPOI(event.Other)
+				}
 			}
 		}
 	})

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="9">
+ <imagelayer id="2" name="Background">
+  <image source="train-station.jpeg" width="3072" height="1728"/>
+ </imagelayer>
+ <objectgroup id="3" name="Objects">
+  <object id="3" name="Newspaper" class="poi" x="1200" y="1000" width="120" height="72">
+   <properties>
+    <property name="passage" value="Train Station Newspaper"/>
+   </properties>
+  </object>
+  <object id="4" name="Bottle" class="poi" x="1664" y="968" width="40" height="56">
+   <properties>
+    <property name="image" value=""/>
+    <property name="passage" value="Train Station Bottle"/>
+   </properties>
+  </object>
+  <object id="5" name="Train Sheet" class="poi" x="2000" y="856" width="72" height="72">
+   <properties>
+    <property name="image" value=""/>
+    <property name="passage" value="Train Sheet"/>
+   </properties>
+  </object>
+  <object id="6" name="Clock" class="poi" x="2088" y="728" width="80" height="80">
+   <properties>
+    <property name="passage" value="Train Station Clock"/>
+   </properties>
+  </object>
+  <object id="7" name="Station" class="poi" x="1456" y="832" width="88" height="176">
+   <properties>
+    <property name="passage" value="Train Station"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="Entrypoints">
+  <object id="1" name="Entrypoint 0" class="entrypoint" x="616" y="560" width="120" height="272"/>
+  <object id="2" name="Exit" class="poi" x="2560" y="744" width="104" height="344">
+   <properties>
+    <property name="level" value="bus-station,0"/>
+    <property name="touchTrigger" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="8" name="Entrypoint 1" class="entrypoint" x="2304" y="560" width="120" height="272">
+   <properties>
+    <property name="flipY" type="bool" value="true"/>
+    <property name="index" type="int" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

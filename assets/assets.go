@@ -173,8 +173,8 @@ func mustLoadLevel(path string) domain.Level {
 					objectImg = ebiten.NewImageFromImage(Objects[img])
 				}
 
-				var domainEdge *domain.Edge
-				edge := domain.Edge(obj.Properties.GetString("edge"))
+				var domainEdge *domain.Direction
+				edge := domain.Direction(obj.Properties.GetString("edge"))
 				if edge != "" {
 					if edge != domain.EdgeLeft && edge != domain.EdgeRight {
 						panic(fmt.Sprintf("invalid edge: %v", edge))
@@ -185,11 +185,12 @@ func mustLoadLevel(path string) domain.Level {
 
 				rect := engine.NewRect(obj.X, y, obj.Width, obj.Height)
 				poi := domain.POI{
-					ID:          fmt.Sprint(obj.ID),
-					TriggerRect: rect,
-					Rect:        rect,
-					Image:       objectImg,
-					EdgeTrigger: domainEdge,
+					ID:           fmt.Sprint(obj.ID),
+					Image:        objectImg,
+					TriggerRect:  rect,
+					Rect:         rect,
+					EdgeTrigger:  domainEdge,
+					TouchTrigger: obj.Properties.GetBool("touchTrigger"),
 				}
 
 				passage := obj.Properties.GetString("passage")
