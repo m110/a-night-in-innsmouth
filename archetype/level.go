@@ -112,9 +112,10 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 		cam.ViewportZoom = 0.4
 	}
 
-	heightDiff := float64(game.Settings.ScreenHeight) - float64(level.Background.Bounds().Dy())*cam.ViewportZoom
+	// Multiply by zoom to go from world space to screen space
+	// Divide by zoom to go from screen space to world space
+	heightDiff := (float64(game.Settings.ScreenHeight) - float64(level.Background.Bounds().Dy())*cam.ViewportZoom) / cam.ViewportZoom
 	if heightDiff > 0 {
-		// TODO Seems misaligned anyway, review
 		cam.ViewportPosition.Y = -heightDiff / 2
 	} else {
 		// Should not happen?
@@ -128,6 +129,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	if character == nil {
 		// Show the "board" on the left of the dialog
+		// TODO Adjust after making the dialog take % of the screen
 		cam.ViewportPosition.X = levelWidth/2.0 - viewportWorldWidth/3.0
 		cam.ViewportTarget = nil
 	} else {

@@ -148,6 +148,10 @@ func NewDialog(w donburi.World) *donburi.Entry {
 
 	logCam := component.Camera.Get(logCamera)
 	logCam.Mask = CreateScrollMask(dialogWidth, logCameraHeight)
+	logCam.ViewportBounds.Y = &engine.FloatRange{
+		Min: 0,
+		Max: 0,
+	}
 
 	return log
 }
