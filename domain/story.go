@@ -4,8 +4,6 @@ import (
 	"strconv"
 
 	"github.com/yohamta/donburi"
-
-	"github.com/m110/secrets/events"
 )
 
 type RawStory struct {
@@ -141,7 +139,6 @@ func (s *Story) AddItem(item string) {
 		Count: 1,
 	})
 
-	// TODO domain should not import events?
 	s.publishInventoryUpdated()
 }
 
@@ -160,14 +157,14 @@ func (s *Story) TakeItem(item string) {
 }
 
 func (s *Story) publishInventoryUpdated() {
-	var eventItems []events.Item
+	var eventItems []InventoryItem
 	for _, i := range s.Items {
-		eventItems = append(eventItems, events.Item{
+		eventItems = append(eventItems, InventoryItem{
 			Name:  i.Name,
 			Count: i.Count,
 		})
 	}
-	events.InventoryUpdatedEvent.Publish(s.world, events.InventoryUpdated{
+	InventoryUpdatedEvent.Publish(s.world, InventoryUpdated{
 		Money: s.Money,
 		Items: eventItems,
 	})

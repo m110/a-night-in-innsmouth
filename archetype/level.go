@@ -6,7 +6,6 @@ import (
 
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
-	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )
@@ -23,7 +22,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	}
 
 	entry := NewTagged(w, "Level").
-		WithLayer(definitions.SpriteLayerBackground).
+		WithLayer(domain.SpriteLayerBackground).
 		WithSprite(component.SpriteData{
 			Image: level.Background,
 		}).

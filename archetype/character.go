@@ -3,7 +3,7 @@ package archetype
 import (
 	"time"
 
-	"github.com/m110/secrets/definitions"
+	"github.com/m110/secrets/domain"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
@@ -22,13 +22,13 @@ func NewCharacter(parent *donburi.Entry, movementBounds component.MovementBounds
 			Y: 0.4,
 		}).
 		WithParent(parent).
-		WithLayer(definitions.SpriteLayerCharacter).
+		WithLayer(domain.SpriteLayerCharacter).
 		WithSprite(component.SpriteData{
 			Image: assets.Character[2],
 		}).
 		With(component.Velocity).
 		WithSpriteBounds().
-		WithBoundsAsCollider(definitions.CollisionLayerCharacter).
+		WithBoundsAsCollider(domain.CollisionLayerCharacter).
 		With(component.Animator).
 		With(component.Character).
 		With(component.MovementBounds).

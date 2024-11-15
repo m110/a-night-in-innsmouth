@@ -7,7 +7,6 @@ import (
 	"github.com/yohamta/donburi/filter"
 
 	"github.com/m110/secrets/component"
-	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )
@@ -21,9 +20,9 @@ func NewPOI(
 	entry := NewTagged(w, "POI").
 		WithParent(parent).
 		WithPosition(poi.TriggerRect.Position()).
-		WithLayer(definitions.SpriteLayerPOI).
+		WithLayer(domain.SpriteLayerPOI).
 		WithBounds(poi.TriggerRect.Size()).
-		WithBoundsAsCollider(definitions.CollisionLayerPOI).
+		WithBoundsAsCollider(domain.CollisionLayerPOI).
 		With(component.POI).
 		Entry()
 
@@ -89,7 +88,7 @@ func CheckNextPOI(w donburi.World) {
 	var nextCollisionEntry *donburi.Entry
 	var nextCollision *component.Collision
 	for key, collision := range collider.CollidesWith {
-		if key.Layer != definitions.CollisionLayerPOI {
+		if key.Layer != domain.CollisionLayerPOI {
 			continue
 		}
 		if nextCollision == nil || collision.TimesSeen > nextCollision.TimesSeen {

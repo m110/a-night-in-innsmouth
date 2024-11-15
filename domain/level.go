@@ -4,7 +4,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi/features/math"
 
-	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/engine"
 )
 
@@ -35,5 +34,5 @@ type POI struct {
 type Object struct {
 	Image    *ebiten.Image
 	Position math.Vec2
-	Layer    definitions.LayerID
+	Layer    LayerID
 }

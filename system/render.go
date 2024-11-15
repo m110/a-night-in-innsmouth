@@ -7,6 +7,8 @@ import (
 	"sort"
 	"unicode/utf8"
 
+	"github.com/m110/secrets/domain"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -19,7 +21,6 @@ import (
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
-	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/engine"
 )
 
@@ -191,7 +192,7 @@ func renderColliderDebug(entry *donburi.Entry, camera *component.CameraData) {
 	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(w), float32(h), 1, colornames.Lime, false)
 }
 
-func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer definitions.LayerID) []entryWithLayer {
+func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer domain.LayerID) []entryWithLayer {
 	if !entry.Valid() || !isActive(entry) {
 		return nil
 	}
@@ -230,7 +231,7 @@ func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer definitions.Laye
 	return result
 }
 
-func getEntryWithLayer(entry *donburi.Entry, rootLayer definitions.LayerID) entryWithLayer {
+func getEntryWithLayer(entry *donburi.Entry, rootLayer domain.LayerID) entryWithLayer {
 	if !entry.HasComponent(component.Layer) {
 		return entryWithLayer{
 			entry: entry,
@@ -345,7 +346,7 @@ func isActive(entry *donburi.Entry) bool {
 
 type entryWithLayer struct {
 	entry *donburi.Entry
-	layer definitions.LayerID
+	layer domain.LayerID
 }
 
 func blendMonochrome(op *ebiten.DrawImageOptions, blend float64) {

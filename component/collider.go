@@ -3,13 +3,13 @@ package component
 import (
 	"github.com/yohamta/donburi"
 
-	"github.com/m110/secrets/definitions"
+	"github.com/m110/secrets/domain"
 )
 
 type ColliderData struct {
 	Width  float64
 	Height float64
-	Layer  definitions.ColliderLayer
+	Layer  domain.ColliderLayer
 
 	CollidesWith           map[CollisionKey]Collision
 	JustCollidedWith       map[CollisionKey]struct{}
@@ -17,7 +17,7 @@ type ColliderData struct {
 }
 
 type CollisionKey struct {
-	Layer definitions.ColliderLayer
+	Layer domain.ColliderLayer
 	Other donburi.Entity
 }
 

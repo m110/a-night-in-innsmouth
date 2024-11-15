@@ -12,10 +12,8 @@ import (
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
-	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
-	"github.com/m110/secrets/events"
 	"github.com/m110/secrets/system"
 )
 
@@ -101,7 +99,7 @@ func (g *Game) createWorld() donburi.World {
 	world.Create(component.Debug)
 
 	ui := archetype.NewTagged(world, "UI").
-		WithLayer(definitions.SpriteUILayerUI).
+		WithLayer(domain.SpriteUILayerUI).
 		Entry()
 
 	archetype.NewDialog(world)
@@ -169,7 +167,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 
 	inventoryButton := archetype.NewTagged(w, "Inventory Button").
 		WithParent(ui).
-		WithLayer(definitions.SpriteUILayerUI).
+		WithLayer(domain.SpriteUILayerUI).
 		With(component.Active).
 		WithSprite(component.SpriteData{
 			Image: inventoryButtonImg,
@@ -182,7 +180,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 	component.Collider.SetValue(inventoryButton, component.ColliderData{
 		Width:  float64(inventoryWidth),
 		Height: float64(inventoryHeight),
-		Layer:  definitions.CollisionLayerButton,
+		Layer:  domain.CollisionLayerButton,
 	})
 
 	archetype.NewTagged(w, "Inventory Button Text").
@@ -201,7 +199,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 
 	inventory := archetype.NewTagged(w, "Inventory").
 		WithParent(ui).
-		WithLayer(definitions.SpriteUILayerUI).
+		WithLayer(domain.SpriteUILayerUI).
 		With(component.Active).
 		WithSprite(component.SpriteData{
 			Image: inventoryImg,
@@ -213,7 +211,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 	component.Collider.SetValue(inventory, component.ColliderData{
 		Width:  float64(inventoryWidth),
 		Height: float64(g.screenHeight),
-		Layer:  definitions.CollisionLayerButton,
+		Layer:  domain.CollisionLayerButton,
 	})
 
 	inventoryText := archetype.NewTagged(w, "Inventory Text").
@@ -228,7 +226,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 		}).
 		Entry()
 
-	events.InventoryUpdatedEvent.Subscribe(w, func(w donburi.World, event events.InventoryUpdated) {
+	domain.InventoryUpdatedEvent.Subscribe(w, func(w donburi.World, event domain.InventoryUpdated) {
 		text := "Inventory (e)\n\n- " + formatAsDollars(event.Money) + "\n"
 		for _, item := range event.Items {
 			var count string

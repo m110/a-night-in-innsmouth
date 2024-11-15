@@ -19,7 +19,6 @@ import (
 	"golang.org/x/text/language"
 
 	"github.com/m110/secrets/assets/twine"
-	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )
@@ -148,7 +147,7 @@ func mustLoadLevel(path string) domain.Level {
 						X: obj.X,
 						Y: obj.Y - obj.Height,
 					},
-					Layer: definitions.LayerID(layer),
+					Layer: domain.LayerID(layer),
 				}
 
 				objects = append(objects, domainObj)

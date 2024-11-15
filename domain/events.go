@@ -1,38 +1,36 @@
-package events
+package domain
 
 import (
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/events"
-
-	"github.com/m110/secrets/definitions"
 )
 
-type Item struct {
+type InventoryItem struct {
 	Name  string
 	Count int
 }
 
 type InventoryUpdated struct {
 	Money int
-	Items []Item
+	Items []InventoryItem
 }
 
 var InventoryUpdatedEvent = events.NewEventType[InventoryUpdated]()
 
 type JustCollided struct {
 	Entry      *donburi.Entry
-	Layer      definitions.ColliderLayer
+	Layer      ColliderLayer
 	Other      *donburi.Entry
-	OtherLayer definitions.ColliderLayer
+	OtherLayer ColliderLayer
 }
 
 var JustCollidedEvent = events.NewEventType[JustCollided]()
 
 type JustOutOfCollision struct {
 	Entry      *donburi.Entry
-	Layer      definitions.ColliderLayer
+	Layer      ColliderLayer
 	Other      *donburi.Entry
-	OtherLayer definitions.ColliderLayer
+	OtherLayer ColliderLayer
 }
 
 var JustOutOfCollisionEvent = events.NewEventType[JustOutOfCollision]()

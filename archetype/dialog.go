@@ -6,8 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/m110/secrets/definitions"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/yohamta/donburi"
@@ -43,7 +41,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 	backgroundImage.Fill(assets.UIBackgroundColor)
 
 	dialog := NewTagged(w, "Dialog").
-		WithLayer(definitions.SpriteUILayerBackground).
+		WithLayer(domain.SpriteUILayerBackground).
 		WithSprite(component.SpriteData{
 			Image: backgroundImage,
 		}).
@@ -124,7 +122,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 	im := ebiten.NewImage(dialogWidth, height)
 	im.Fill(colornames.Yellow)
 	log := NewTagged(w, "Log").
-		WithLayer(definitions.SpriteUILayerTop).
+		WithLayer(domain.SpriteUILayerTop).
 		With(component.DialogLog).
 		With(component.StackedView).
 		Entry()
@@ -364,7 +362,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 
 	passage := NewTagged(w, "Passage").
 		WithParent(log).
-		WithLayer(definitions.SpriteUILayerText).
+		WithLayer(domain.SpriteUILayerText).
 		WithPosition(math.Vec2{
 			X: passageMarginLeft,
 			Y: stackedView.CurrentY + passageMarginTop,
@@ -443,7 +441,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 	for i, link := range domainPassage.Links() {
 		op := NewTagged(w, "Option").
 			WithParent(dialog).
-			WithLayer(definitions.SpriteUILayerButtons).
+			WithLayer(domain.SpriteUILayerButtons).
 			WithSprite(component.SpriteData{}).
 			With(component.Collider).
 			With(component.DialogOption).
@@ -504,7 +502,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		component.Collider.SetValue(op, component.ColliderData{
 			Width:  float64(optionImageWidth),
 			Height: float64(lineHeight),
-			Layer:  definitions.CollisionLayerButton,
+			Layer:  domain.CollisionLayerButton,
 		})
 
 		currentY += lineHeight + 24

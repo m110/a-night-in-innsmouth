@@ -5,11 +5,11 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
+	"github.com/m110/secrets/domain"
+
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/component"
-	"github.com/m110/secrets/definitions"
 	"github.com/m110/secrets/engine"
-	"github.com/m110/secrets/events"
 )
 
 type Collision struct {
@@ -23,8 +23,8 @@ func NewCollision() *Collision {
 }
 
 func (c *Collision) Init(w donburi.World) {
-	events.JustCollidedEvent.Subscribe(w, func(w donburi.World, event events.JustCollided) {
-		if event.Layer == definitions.CollisionLayerCharacter && event.OtherLayer == definitions.CollisionLayerPOI {
+	domain.JustCollidedEvent.Subscribe(w, func(w donburi.World, event domain.JustCollided) {
+		if event.Layer == domain.CollisionLayerCharacter && event.OtherLayer == domain.CollisionLayerPOI {
 			if archetype.CanSeePOI(event.Other) {
 				archetype.DeactivatePOIs(w)
 				archetype.ActivatePOI(event.Other)
@@ -32,8 +32,8 @@ func (c *Collision) Init(w donburi.World) {
 		}
 	})
 
-	events.JustOutOfCollisionEvent.Subscribe(w, func(w donburi.World, event events.JustOutOfCollision) {
-		if event.Layer == definitions.CollisionLayerCharacter && event.OtherLayer == definitions.CollisionLayerPOI {
+	domain.JustOutOfCollisionEvent.Subscribe(w, func(w donburi.World, event domain.JustOutOfCollision) {
+		if event.Layer == domain.CollisionLayerCharacter && event.OtherLayer == domain.CollisionLayerPOI {
 			if event.Other.HasComponent(component.ActivePOI) {
 				archetype.DeactivatePOIs(w)
 				archetype.CheckNextPOI(w)
@@ -42,9 +42,9 @@ func (c *Collision) Init(w donburi.World) {
 	})
 }
 
-var collisions = map[definitions.ColliderLayer]map[definitions.ColliderLayer]struct{}{
-	definitions.CollisionLayerCharacter: {
-		definitions.CollisionLayerPOI: {},
+var collisions = map[domain.ColliderLayer]map[domain.ColliderLayer]struct{}{
+	domain.CollisionLayerCharacter: {
+		domain.CollisionLayerPOI: {},
 	},
 }
 
@@ -105,13 +105,13 @@ func (c *Collision) Update(w donburi.World) {
 
 					collider.JustCollidedWith[key] = struct{}{}
 
-					event := events.JustCollided{
+					event := domain.JustCollided{
 						Entry:      entry,
 						Layer:      collider.Layer,
 						Other:      other,
 						OtherLayer: otherCollider.Layer,
 					}
-					events.JustCollidedEvent.Publish(w, event)
+					domain.JustCollidedEvent.Publish(w, event)
 				}
 
 				currentCollision.Detected = true
@@ -138,13 +138,13 @@ func (c *Collision) Update(w donburi.World) {
 				collider.JustOutOfCollisionWith[key] = struct{}{}
 				delete(collider.CollidesWith, key)
 
-				event := events.JustOutOfCollision{
+				event := domain.JustOutOfCollision{
 					Entry:      entry,
 					Layer:      collider.Layer,
 					Other:      w.Entry(key.Other),
 					OtherLayer: key.Layer,
 				}
-				events.JustOutOfCollisionEvent.Publish(w, event)
+				domain.JustOutOfCollisionEvent.Publish(w, event)
 			}
 		}
 	}

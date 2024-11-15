@@ -1,7 +1,4 @@
-package definitions
-
-// TODO package introduced just to avoid circular dependencies
-// Figure out how to remove import domain -> events
+package domain
 
 type LayerID int
 
