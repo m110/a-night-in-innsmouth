@@ -3,23 +3,25 @@ package archetype
 import (
 	"time"
 
-	"github.com/m110/secrets/domain"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )
+
+// TODO should come from the level file
+const characterScale = 0.4
 
 func NewCharacter(parent *donburi.Entry, movementBounds component.MovementBoundsData) *donburi.Entry {
 	w := parent.World
 	character := NewTagged(w, "Character").
 		WithScale(math.Vec2{
-			X: 0.4,
-			Y: 0.4,
+			X: characterScale,
+			Y: characterScale,
 		}).
 		WithParent(parent).
 		WithLayer(domain.SpriteLayerCharacter).
@@ -67,6 +69,10 @@ func NewCharacter(parent *donburi.Entry, movementBounds component.MovementBounds
 			sprite.Image = frames[2]
 		},
 	})
+
+	r := movementBounds.Range
+	r.Max -= float64(sprite.Image.Bounds().Dx()) / 2.0
+	movementBounds.Range = r
 
 	component.MovementBounds.SetValue(character, movementBounds)
 

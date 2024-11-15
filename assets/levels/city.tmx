@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="26">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="27">
  <tileset firstgid="1" source="objects/Objects.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="city.jpeg" width="3072" height="1728"/>
@@ -50,6 +50,13 @@
   </object>
   <object id="19" x="240" y="1112">
    <ellipse/>
+  </object>
+  <object id="26" name="Exit" class="poi" x="-184" y="984" width="176" height="616">
+   <properties>
+    <property name="edge" propertytype="edge" value="left"/>
+    <property name="level" value="innsmouth,1"/>
+    <property name="touchTrigger" type="bool" value="true"/>
+   </properties>
   </object>
  </objectgroup>
  <objectgroup id="5" name="Objects">

@@ -65,7 +65,7 @@ func DeactivatePOIs(w donburi.World) {
 	}
 }
 
-func CanSeePOI(entry *donburi.Entry) bool {
+func CanInteractWithPOI(entry *donburi.Entry) bool {
 	poi := component.POI.Get(entry)
 
 	poiImage, ok := transform.FindChildWithComponent(entry, component.POIImage)
@@ -92,6 +92,21 @@ func CanSeePOI(entry *donburi.Entry) bool {
 	return passage.ConditionsMet()
 }
 
+func SelectPOI(entry *donburi.Entry) {
+	if !CanInteractWithPOI(entry) {
+		return
+	}
+
+	poi := component.POI.Get(entry)
+	game := component.MustFindGame(entry.World)
+
+	if poi.POI.Passage != "" {
+		ShowPassage(entry.World, game.Story.PassageByTitle(poi.POI.Passage), entry)
+	} else if poi.POI.Level != nil {
+		ChangeLevel(entry.World, *poi.POI.Level)
+	}
+}
+
 func ActivatePOI(entry *donburi.Entry) {
 	entry.AddComponent(component.ActivePOI)
 }
@@ -112,7 +127,7 @@ func CheckNextPOI(w donburi.World) {
 		}
 	}
 
-	if nextCollisionEntry != nil && CanSeePOI(nextCollisionEntry) {
+	if nextCollisionEntry != nil && CanInteractWithPOI(nextCollisionEntry) {
 		ActivatePOI(nextCollisionEntry)
 	}
 }

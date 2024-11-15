@@ -172,6 +172,7 @@ func ChangeLevel(w donburi.World, level domain.TargetLevel) {
 	currentLevel, ok := engine.FindWithComponent(w, component.Level)
 	if ok {
 		lvl := component.Level.Get(currentLevel)
+		lvl.Changing = true
 		game := component.MustFindGame(w)
 
 		var characterPos *domain.CharacterPosition

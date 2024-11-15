@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="24">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="26">
  <tileset firstgid="1" source="Character.tsx"/>
  <tileset firstgid="2" source="objects/Objects.tsx"/>
+ <tileset firstgid="6" source=":/automap-tiles.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="hotel.jpeg" width="3072" height="1728"/>
  </imagelayer>
@@ -36,10 +37,12 @@
     <property name="passage" value="TBA"/>
    </properties>
   </object>
-  <object id="10" name="Stairs" class="poi" x="2792" y="912" width="256" height="584">
+  <object id="24" name="Stairs Touch Trigger" class="poi" x="3072" y="904" width="160" height="584">
    <properties>
+    <property name="edge" propertytype="edge" value="right"/>
     <property name="level" value="hotel-hall"/>
     <property name="passage" value=""/>
+    <property name="touchTrigger" type="bool" value="true"/>
    </properties>
   </object>
   <object id="11" name="Painting" class="poi" x="2256" y="656" width="336" height="264">
@@ -47,10 +50,12 @@
     <property name="passage" value="TBA"/>
    </properties>
   </object>
-  <object id="20" name="Exit" class="poi" x="-56" y="960" width="256" height="584">
+  <object id="25" name="Exit Touch Trigger" class="poi" x="-208" y="920" width="192" height="584">
    <properties>
+    <property name="edge" propertytype="edge" value="left"/>
     <property name="level" value="city,1"/>
     <property name="passage" value=""/>
+    <property name="touchTrigger" type="bool" value="true"/>
    </properties>
   </object>
  </objectgroup>

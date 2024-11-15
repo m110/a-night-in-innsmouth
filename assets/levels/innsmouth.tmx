@@ -5,7 +5,7 @@
   <image source="innsmouth.jpeg" width="3072" height="1728"/>
  </imagelayer>
  <objectgroup id="3" name="Objects">
-  <object id="1" name="Door" class="poi" x="1136" y="840" width="248" height="240">
+  <object id="1" name="Door" class="poi" x="1176" y="864" width="192" height="400">
    <properties>
     <property name="passage" value="Vacant House"/>
    </properties>
@@ -15,14 +15,16 @@
     <property name="passage" value="Barnacles"/>
    </properties>
   </object>
-  <object id="8" name="Fish" class="poi" x="2096" y="1328" width="256" height="208">
+  <object id="8" name="Fish" class="poi" x="2144" y="1368" width="152" height="128">
    <properties>
     <property name="passage" value="Dead Fish"/>
    </properties>
   </object>
-  <object id="9" name="Exit" class="poi" x="2808" y="960" width="176" height="616">
+  <object id="9" name="Exit" class="poi" x="3072" y="984" width="176" height="616">
    <properties>
-    <property name="level" value="hotel,0"/>
+    <property name="edge" propertytype="edge" value="right"/>
+    <property name="level" value="city,0"/>
+    <property name="touchTrigger" type="bool" value="true"/>
    </properties>
   </object>
  </objectgroup>

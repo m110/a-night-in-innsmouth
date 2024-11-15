@@ -24,7 +24,7 @@ func NewCollision() *Collision {
 func (c *Collision) Init(w donburi.World) {
 	domain.JustCollidedEvent.Subscribe(w, func(w donburi.World, event domain.JustCollided) {
 		if event.Layer == domain.CollisionLayerCharacter && event.OtherLayer == domain.CollisionLayerPOI {
-			if archetype.CanSeePOI(event.Other) {
+			if archetype.CanInteractWithPOI(event.Other) {
 				archetype.DeactivatePOIs(w)
 				archetype.ActivatePOI(event.Other)
 			}

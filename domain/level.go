@@ -28,6 +28,7 @@ type POI struct {
 	Rect        engine.Rect
 	Passage     string
 	Level       *TargetLevel
+	EdgeTrigger Edge
 }
 
 type Object struct {
@@ -36,3 +37,10 @@ type Object struct {
 	Scale    math.Vec2
 	Layer    LayerID
 }
+
+type Edge string
+
+var (
+	EdgeLeft  Edge = "left"
+	EdgeRight Edge = "right"
+)

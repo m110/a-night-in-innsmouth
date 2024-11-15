@@ -8,6 +8,8 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
+	"github.com/m110/secrets/domain"
+
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/engine"
@@ -57,6 +59,11 @@ func NewControls() *Controls {
 }
 
 func (c *Controls) Update(w donburi.World) {
+	lvl := engine.MustFindComponent[component.LevelData](w, component.Level)
+	if lvl.Changing {
+		return
+	}
+
 	in := engine.MustFindComponent[component.InputData](w, component.Input)
 
 	character, characterFound := c.characterQuery.First(w)
@@ -106,7 +113,10 @@ func (c *Controls) Update(w donburi.World) {
 			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
 
 			if colliderRect.Intersects(clickRect) {
-				selectPOI(entry)
+				if characterFound {
+					stopCharacter(character)
+				}
+				archetype.SelectPOI(entry)
 				return
 			}
 		}
@@ -138,24 +148,27 @@ func (c *Controls) Update(w donburi.World) {
 		moving = true
 	}
 
+	if pos.X >= movementBounds.Range.Max {
+		for p := range c.poiQuery.Iter(w) {
+			if component.POI.Get(p).POI.EdgeTrigger == domain.EdgeRight {
+				archetype.SelectPOI(p)
+				moving = true
+				break
+			}
+		}
+	} else if pos.X <= movementBounds.Range.Min {
+		for p := range c.poiQuery.Iter(w) {
+			if component.POI.Get(p).POI.EdgeTrigger == domain.EdgeLeft {
+				archetype.SelectPOI(p)
+				moving = true
+				break
+			}
+		}
+	}
+
 	if !moving {
 		velocity.Velocity.X = 0
 		anim.Stop(character)
-	}
-}
-
-func selectPOI(entry *donburi.Entry) {
-	if !archetype.CanSeePOI(entry) {
-		return
-	}
-
-	poi := component.POI.Get(entry)
-	game := component.MustFindGame(entry.World)
-
-	if poi.POI.Passage != "" {
-		archetype.ShowPassage(entry.World, game.Story.PassageByTitle(poi.POI.Passage), entry)
-	} else if poi.POI.Level != nil {
-		archetype.ChangeLevel(entry.World, *poi.POI.Level)
 	}
 }
 
