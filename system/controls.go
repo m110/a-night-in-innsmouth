@@ -8,11 +8,14 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
-	"github.com/m110/secrets/domain"
-
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
+)
+
+const (
+	clickMoveThreshold = 10
 )
 
 type Controls struct {
@@ -84,19 +87,19 @@ func (c *Controls) Update(w donburi.World) {
 		return
 	}
 
-	var clicked bool
+	var justClicked bool
 	var x, y int
 
 	touchIDs := inpututil.AppendJustPressedTouchIDs(nil)
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		clicked = true
+		justClicked = true
 		x, y = ebiten.CursorPosition()
 	} else if len(touchIDs) > 0 {
-		clicked = true
+		justClicked = true
 		x, y = ebiten.TouchPosition(touchIDs[0])
 	}
 
-	if clicked {
+	if justClicked {
 		levelCam := engine.MustFindWithComponent(w, component.LevelCamera)
 		cam := component.Camera.Get(levelCam)
 
@@ -108,6 +111,11 @@ func (c *Controls) Update(w donburi.World) {
 		clickRect := engine.NewRect(worldClickPos.X, worldClickPos.Y, 1, 1)
 
 		for entry := range c.poiQuery.Iter(w) {
+			poi := component.POI.Get(entry)
+			if poi.POI.EdgeTrigger != nil {
+				continue
+			}
+
 			pos := transform.WorldPosition(entry)
 			collider := component.Collider.Get(entry)
 			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
@@ -126,22 +134,60 @@ func (c *Controls) Update(w donburi.World) {
 		return
 	}
 
+	var movingRight, movingLeft bool
+	for _, key := range in.MoveRightKeys {
+		if ebiten.IsKeyPressed(key) {
+			movingRight = true
+			break
+		}
+	}
+
+	for _, key := range in.MoveLeftKeys {
+		if ebiten.IsKeyPressed(key) {
+			movingLeft = true
+			break
+		}
+	}
+
+	var clicked bool
+	touchIDs = ebiten.AppendTouchIDs(nil)
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+		clicked = true
+		x, _ = ebiten.CursorPosition()
+	} else if len(touchIDs) > 0 {
+		clicked = true
+		x, _ = ebiten.TouchPosition(touchIDs[0])
+	}
+
+	levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
+	cam := component.Camera.Get(levelCamera)
+	screenPos := cam.WorldPositionToViewportPosition(character)
+
+	if clicked {
+		diff := float64(x) - screenPos.X
+		// TODO Pivot center instead of adding width
+		if diff > 0 && diff > clickMoveThreshold+70 {
+			movingRight = true
+		} else if diff < -clickMoveThreshold {
+			movingLeft = true
+		}
+	}
+
+	pos := transform.WorldPosition(character)
 	velocity := component.Velocity.Get(character)
 	animator := component.Animator.Get(character)
 	anim := animator.Animations["walk"]
 	movementBounds := component.MovementBounds.Get(character)
 	sprite := component.Sprite.Get(character)
 
-	pos := transform.WorldPosition(character)
-
 	var moving bool
-	if pos.X <= movementBounds.Range.Max && ebiten.IsKeyPressed(in.MoveRightKey) {
+	if pos.X <= movementBounds.Range.Max && movingRight {
 		velocity.Velocity.X = in.MoveSpeed
 		sprite.FlipY = false
 		anim.Start(character)
 		moving = true
 	}
-	if pos.X >= movementBounds.Range.Min && ebiten.IsKeyPressed(in.MoveLeftKey) {
+	if pos.X >= movementBounds.Range.Min && movingLeft {
 		velocity.Velocity.X = -in.MoveSpeed
 		sprite.FlipY = true
 		anim.Start(character)
@@ -150,7 +196,8 @@ func (c *Controls) Update(w donburi.World) {
 
 	if pos.X >= movementBounds.Range.Max {
 		for p := range c.poiQuery.Iter(w) {
-			if component.POI.Get(p).POI.EdgeTrigger == domain.EdgeRight {
+			edge := component.POI.Get(p).POI.EdgeTrigger
+			if edge != nil && *edge == domain.EdgeRight {
 				archetype.SelectPOI(p)
 				moving = true
 				break
@@ -158,7 +205,8 @@ func (c *Controls) Update(w donburi.World) {
 		}
 	} else if pos.X <= movementBounds.Range.Min {
 		for p := range c.poiQuery.Iter(w) {
-			if component.POI.Get(p).POI.EdgeTrigger == domain.EdgeLeft {
+			edge := component.POI.Get(p).POI.EdgeTrigger
+			if edge != nil && *edge == domain.EdgeLeft {
 				archetype.SelectPOI(p)
 				moving = true
 				break

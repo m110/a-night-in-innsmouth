@@ -8,13 +8,12 @@ import (
 type InputData struct {
 	Disabled bool
 
-	MoveRightKey ebiten.Key
-	MoveLeftKey  ebiten.Key
-	ActionKey    ebiten.Key
+	MoveRightKeys []ebiten.Key
+	MoveLeftKeys  []ebiten.Key
+	ActionKeys    []ebiten.Key
 
 	MoveSpeed float64
-
-	ShootKey ebiten.Key
+	ShootKey  ebiten.Key
 }
 
 var Input = donburi.NewComponentType[InputData]()

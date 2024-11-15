@@ -28,7 +28,7 @@ type POI struct {
 	Rect        engine.Rect
 	Passage     string
 	Level       *TargetLevel
-	EdgeTrigger Edge
+	EdgeTrigger *Edge
 }
 
 type Object struct {

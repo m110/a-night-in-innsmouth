@@ -89,11 +89,11 @@ func (g *Game) createWorld() donburi.World {
 		},
 	})
 	component.Input.SetValue(game, component.InputData{
-		Disabled:     false,
-		MoveRightKey: ebiten.KeyD,
-		MoveLeftKey:  ebiten.KeyA,
-		ActionKey:    ebiten.KeySpace,
-		MoveSpeed:    6,
+		Disabled:      false,
+		MoveRightKeys: []ebiten.Key{ebiten.KeyD, ebiten.KeyRight},
+		MoveLeftKeys:  []ebiten.Key{ebiten.KeyA, ebiten.KeyLeft},
+		ActionKeys:    []ebiten.Key{ebiten.KeySpace},
+		MoveSpeed:     6,
 	})
 
 	world.Create(component.Debug)
