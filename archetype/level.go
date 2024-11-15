@@ -125,12 +125,19 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	bounds := component.Sprite.Get(entry).Image.Bounds()
 	levelWidth := float64(bounds.Dx())
 
-	viewportWorldWidth := float64(game.Settings.ScreenWidth) / cam.ViewportZoom
+	screenWidth := float64(game.Settings.ScreenWidth)
+	viewportWorldWidth := screenWidth / cam.ViewportZoom
 
 	if character == nil {
-		// Show the "board" on the left of the dialog
-		// TODO Adjust after making the dialog take % of the screen
-		cam.ViewportPosition.X = levelWidth/2.0 - viewportWorldWidth/3.0
+		// Show the level in the middle of the space that's left outside the dialog
+		dialogScreenWidth := float64(dialogWidth(w))
+
+		availableScreenRatio := (screenWidth - dialogScreenWidth) / screenWidth
+		centerRatio := availableScreenRatio / 2.0
+
+		targetCenterInWorld := viewportWorldWidth * centerRatio
+		cam.ViewportPosition.X = levelWidth/2.0 - targetCenterInWorld
+
 		cam.ViewportTarget = nil
 	} else {
 		cam.ViewportPosition.X = levelWidth/2.0 - viewportWorldWidth/2.0

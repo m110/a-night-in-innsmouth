@@ -21,7 +21,9 @@ import (
 )
 
 const (
-	dialogWidth = 500
+	dialogWidthPercent            = 0.5
+	logHeightPercent              = 0.6
+	dialogOptionsTopMarginPercent = 0.05
 
 	passageMargin = 32
 
@@ -31,13 +33,15 @@ const (
 
 func NewDialog(w donburi.World) *donburi.Entry {
 	game := component.MustFindGame(w)
+	dialogWidth := dialogWidth(w)
+
 	pos := math.Vec2{
-		X: float64(game.Settings.ScreenWidth) - dialogWidth - 25,
+		X: float64(game.Settings.ScreenWidth - dialogWidth),
 		Y: 0,
 	}
-	height := game.Settings.ScreenHeight
+	screenHeight := game.Settings.ScreenHeight
 
-	backgroundImage := ebiten.NewImage(dialogWidth, height)
+	backgroundImage := ebiten.NewImage(dialogWidth, screenHeight)
 	backgroundImage.Fill(assets.UIBackgroundColor)
 
 	dialog := NewTagged(w, "Dialog").
@@ -52,7 +56,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 	dialogCamera := NewCamera(
 		w,
 		pos,
-		engine.Size{Width: dialogWidth, Height: height},
+		engine.Size{Width: dialogWidth, Height: screenHeight},
 		2,
 		dialog,
 	)
@@ -119,7 +123,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 		},
 	})
 
-	im := ebiten.NewImage(dialogWidth, height)
+	im := ebiten.NewImage(dialogWidth, screenHeight)
 	im.Fill(colornames.Yellow)
 	log := NewTagged(w, "Log").
 		WithLayer(domain.SpriteUILayerTop).
@@ -127,7 +131,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 		With(component.StackedView).
 		Entry()
 
-	logCameraHeight := height - 300
+	logCameraHeight := int(float64(screenHeight) * logHeightPercent)
 	logCamera := NewCamera(
 		w,
 		math.Vec2{},
@@ -219,7 +223,7 @@ func NextPassage(w donburi.World) {
 				}).
 				WithText(component.TextData{
 					Text:  fmt.Sprintf("-> %s", t.Text),
-					Color: assets.TextBlueColor,
+					Color: assets.TextDarkColor,
 				}).
 				With(component.Bounds).
 				Entry()
@@ -461,9 +465,12 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		A: 150,
 	}
 
+	game := component.MustFindGame(w)
+	screenHeight := game.Settings.ScreenHeight
+
 	optionImageWidth := 400
 	optionWidth := 380
-	currentY := 500
+	currentY := int(float64(screenHeight)*(logHeightPercent)) + int(float64(screenHeight)*(dialogOptionsTopMarginPercent))
 	heightPerLine := 28
 	paddingPerLine := 4
 
@@ -570,4 +577,9 @@ func newCameraZoomAnimation(
 			}
 		},
 	}
+}
+
+func dialogWidth(w donburi.World) int {
+	game := component.MustFindGame(w)
+	return int(float64(game.Settings.ScreenWidth) * dialogWidthPercent)
 }
