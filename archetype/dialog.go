@@ -233,10 +233,15 @@ func NextPassage(w donburi.World) {
 		component.Destroy(e)
 	}
 
-	stackedView.CurrentY += height
-
 	cameraEntry := engine.MustFindWithComponent(w, component.DialogLogCamera)
 	cam := component.Camera.Get(cameraEntry)
+
+	stackedView.CurrentY += height
+	cam.ViewportBounds.Y = &engine.FloatRange{
+		Min: 0,
+		Max: stackedView.CurrentY,
+	}
+
 	startY := cam.ViewportPosition.Y
 	anim := component.Animator.Get(cameraEntry)
 	scroll := anim.Animations["scroll"]
@@ -333,7 +338,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		bz := component.BriefZoom.Get(levelCamera)
 		bz.OriginCamera = *cam
 
-		cam.ViewportBounds = nil
+		cam.ViewportBounds = component.ViewportBounds{}
 		cam.ViewportTarget = nil
 
 		originPosition := cam.ViewportPosition

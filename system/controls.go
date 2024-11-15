@@ -268,19 +268,20 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 	camera := component.Camera.Get(engine.MustFindWithComponent(w, component.DialogLogCamera))
 
 	if optionUpdated || next {
-		camera.ViewportPosition.Y = stackedView.CurrentY
+		// Scroll to the bottom, so the player sees the options
+		// Otherwise, the player could select an option they don't see on the screen
+		camera.ViewportPosition.Y = camera.ViewportBounds.Y.Max
 		stackedView.Scrolled = false
 	} else if scroll != 0 {
 		stackedView.Scrolled = true
-		camera.ViewportPosition.Y -= float64(scroll)
 
-		// TODO Could use a "boundary" on Camera to prevent going out of bounds
-		if camera.ViewportPosition.Y < 0 {
-			camera.ViewportPosition.Y = 0
-		}
+		viewportPos := camera.ViewportPosition
+		viewportPos.Y -= float64(scroll)
 
-		if camera.ViewportPosition.Y >= stackedView.CurrentY {
-			camera.ViewportPosition.Y = stackedView.CurrentY
+		camera.SetViewportPosition(viewportPos)
+
+		if camera.ViewportPosition.Y >= camera.ViewportBounds.Y.Max {
+			// At the bottom
 			stackedView.Scrolled = false
 		}
 	}

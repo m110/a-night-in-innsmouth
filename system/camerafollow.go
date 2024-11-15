@@ -35,16 +35,8 @@ func (s *CameraFollow) Update(w donburi.World) {
 
 		targetCameraX := pos.X - viewportWorldWidth/2.0
 
-		if cam.ViewportBounds != nil {
-			maxX := cam.ViewportBounds.Max - viewportWorldWidth
-
-			if targetCameraX < cam.ViewportBounds.Min {
-				targetCameraX = cam.ViewportBounds.Min
-			} else if targetCameraX > maxX {
-				targetCameraX = maxX
-			}
-		}
-
-		cam.ViewportPosition.X = targetCameraX
+		viewportPos := cam.ViewportPosition
+		viewportPos.X = targetCameraX
+		cam.SetViewportPosition(viewportPos)
 	})
 }

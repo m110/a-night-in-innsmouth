@@ -14,7 +14,7 @@ type CameraData struct {
 	ViewportPosition math.Vec2
 	ViewportZoom     float64
 	ViewportTarget   *donburi.Entry
-	ViewportBounds   *engine.FloatRange
+	ViewportBounds   ViewportBounds
 
 	Root  *donburi.Entry
 	Index int
@@ -27,11 +27,28 @@ type CameraData struct {
 	AlphaOverride *AlphaOverride
 }
 
+type ViewportBounds struct {
+	X *engine.FloatRange
+	Y *engine.FloatRange
+}
+
+func (d *CameraData) SetViewportPosition(pos math.Vec2) {
+	if d.ViewportBounds.X != nil {
+		pos.X = engine.Clamp(pos.X, d.ViewportBounds.X.Min, d.ViewportBounds.X.Max)
+	}
+
+	if d.ViewportBounds.Y != nil {
+		pos.Y = engine.Clamp(pos.Y, d.ViewportBounds.Y.Min, d.ViewportBounds.Y.Max)
+	}
+
+	d.ViewportPosition = pos
+}
+
 func (d CameraData) Order() int {
 	return d.Index
 }
 
-func (d CameraData) WorldPositionToViewportPosition(e *donburi.Entry) math.Vec2 {
+func (d *CameraData) WorldPositionToViewportPosition(e *donburi.Entry) math.Vec2 {
 	pos := transform.WorldPosition(e)
 	pos = pos.Sub(d.ViewportPosition)
 	pos = pos.MulScalar(d.ViewportZoom)

@@ -125,9 +125,11 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 		cam.ViewportTarget = character
 	}
 
-	cam.ViewportBounds = &engine.FloatRange{
+	viewportWidth := float64(cam.Viewport.Bounds().Dx()) / cam.ViewportZoom
+
+	cam.ViewportBounds.X = &engine.FloatRange{
 		Min: -levelCameraMargin,
-		Max: levelWidth + levelCameraMargin,
+		Max: levelWidth + levelCameraMargin - viewportWidth,
 	}
 }
 
