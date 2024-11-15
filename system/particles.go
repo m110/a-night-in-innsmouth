@@ -5,11 +5,10 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/yohamta/donburi/features/transform"
-
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/yohamta/donburi"
+	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
 	"github.com/m110/secrets/component"

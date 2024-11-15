@@ -5,10 +5,9 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
-	"github.com/m110/secrets/domain"
-
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )
 

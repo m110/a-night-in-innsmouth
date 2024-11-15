@@ -7,8 +7,6 @@ import (
 	"sort"
 	"unicode/utf8"
 
-	"github.com/m110/secrets/domain"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -21,6 +19,7 @@ import (
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
+	"github.com/m110/secrets/domain"
 	"github.com/m110/secrets/engine"
 )
 
@@ -350,7 +349,6 @@ type entryWithLayer struct {
 }
 
 func blendMonochrome(op *ebiten.DrawImageOptions, blend float64) {
-	// Clamp blend value between 0 and 1
 	if blend < 0 {
 		blend = 0
 	}
@@ -363,7 +361,6 @@ func blendMonochrome(op *ebiten.DrawImageOptions, blend float64) {
 	gCoeff := 0.587
 	bCoeff := 0.114
 
-	// Create color matrix
 	cm := ebiten.ColorM{}
 
 	// Monochrome matrix components
@@ -374,22 +371,21 @@ func blendMonochrome(op *ebiten.DrawImageOptions, blend float64) {
 	// Color preservation component
 	colorComponent := blend
 
-	// Set color matrix values
 	cm.Reset()
 	// Red output
-	cm.SetElement(0, 0, monoR+colorComponent) // R contribution
-	cm.SetElement(0, 1, monoG)                // G contribution
-	cm.SetElement(0, 2, monoB)                // B contribution
+	cm.SetElement(0, 0, monoR+colorComponent)
+	cm.SetElement(0, 1, monoG)
+	cm.SetElement(0, 2, monoB)
 
 	// Green output
-	cm.SetElement(1, 0, monoR)                // R contribution
-	cm.SetElement(1, 1, monoG+colorComponent) // G contribution
-	cm.SetElement(1, 2, monoB)                // B contribution
+	cm.SetElement(1, 0, monoR)
+	cm.SetElement(1, 1, monoG+colorComponent)
+	cm.SetElement(1, 2, monoB)
 
 	// Blue output
-	cm.SetElement(2, 0, monoR)                // R contribution
-	cm.SetElement(2, 1, monoG)                // G contribution
-	cm.SetElement(2, 2, monoB+colorComponent) // B contribution
+	cm.SetElement(2, 0, monoR)
+	cm.SetElement(2, 1, monoG)
+	cm.SetElement(2, 2, monoB+colorComponent)
 
 	op.ColorM = cm
 }
