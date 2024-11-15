@@ -194,7 +194,7 @@ func (c *Controls) Update(w donburi.World) {
 		moving = true
 	}
 
-	if pos.X >= movementBounds.Range.Max {
+	if pos.X >= movementBounds.Range.Max && movingRight {
 		for p := range c.poiQuery.Iter(w) {
 			edge := component.POI.Get(p).POI.EdgeTrigger
 			if edge != nil && *edge == domain.EdgeRight {
@@ -203,7 +203,7 @@ func (c *Controls) Update(w donburi.World) {
 				break
 			}
 		}
-	} else if pos.X <= movementBounds.Range.Min {
+	} else if pos.X <= movementBounds.Range.Min && movingLeft {
 		for p := range c.poiQuery.Iter(w) {
 			edge := component.POI.Get(p).POI.EdgeTrigger
 			if edge != nil && *edge == domain.EdgeLeft {

@@ -8,12 +8,13 @@ import (
 )
 
 type Level struct {
-	Background   *ebiten.Image
-	POIs         []POI
-	Objects      []Object
-	StartPassage string
-	Entrypoints  []Entrypoint
-	CameraZoom   float64
+	Background     *ebiten.Image
+	POIs           []POI
+	Objects        []Object
+	StartPassage   string
+	Entrypoints    []Entrypoint
+	CameraZoom     float64
+	CharacterScale float64
 }
 
 type Entrypoint struct {

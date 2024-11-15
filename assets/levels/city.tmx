@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="27">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="29">
  <tileset firstgid="1" source="objects/Objects.tsx"/>
+ <tileset firstgid="5" source="Character.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="city.jpeg" width="3072" height="1728"/>
  </imagelayer>
@@ -11,7 +12,7 @@
     <property name="index" type="int" value="1"/>
    </properties>
   </object>
-  <object id="18" name="Entrypoint 0" class="entrypoint" x="176" y="952" width="184" height="256"/>
+  <object id="28" name="Entrypoint 0" class="entrypoint" gid="5" x="264" y="1504" width="144" height="476.958"/>
  </objectgroup>
  <objectgroup id="4" name="POI">
   <object id="6" name="Hotel" class="poi" gid="3" x="2784" y="1216" width="89" height="92">
@@ -47,9 +48,6 @@
    <properties>
     <property name="poi" type="object" value="11"/>
    </properties>
-  </object>
-  <object id="19" x="240" y="1112">
-   <ellipse/>
   </object>
   <object id="26" name="Exit" class="poi" x="-184" y="984" width="176" height="616">
    <properties>

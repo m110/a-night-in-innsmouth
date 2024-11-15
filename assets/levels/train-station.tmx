@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="9">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="13">
+ <tileset firstgid="1" source="Character.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="train-station.jpeg" width="3072" height="1728"/>
  </imagelayer>
@@ -33,18 +34,18 @@
   </object>
  </objectgroup>
  <objectgroup id="4" name="Entrypoints">
-  <object id="1" name="Entrypoint 0" class="entrypoint" x="616" y="560" width="120" height="272"/>
   <object id="2" name="Exit" class="poi" x="2560" y="744" width="104" height="344">
    <properties>
     <property name="level" value="bus-station,0"/>
     <property name="touchTrigger" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="8" name="Entrypoint 1" class="entrypoint" x="2304" y="560" width="120" height="272">
+  <object id="8" name="Entrypoint 1" class="entrypoint" x="2344" y="816" width="120" height="272">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>
    </properties>
   </object>
+  <object id="10" name="Entrypoint 0" class="entrypoint" gid="1" x="776" y="1096" width="104" height="344.469"/>
  </objectgroup>
 </map>

@@ -29,12 +29,12 @@
   </object>
  </objectgroup>
  <objectgroup id="5" name="Entrypoints">
-  <object id="20" name="Entry Point 0" class="entrypoint" gid="1" x="256" y="936" width="234" height="775.056">
+  <object id="20" name="Entry Point 0" class="entrypoint" gid="1" x="320" y="1544" width="200" height="662.441">
    <properties>
     <property name="index" type="int" value="0"/>
    </properties>
   </object>
-  <object id="21" name="Entry Point 1" class="entrypoint" gid="2147483649" x="2712" y="936" width="234" height="775.056">
+  <object id="21" name="Entry Point 1" class="entrypoint" gid="2147483649" x="2720" y="1560" width="216" height="715.436">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>

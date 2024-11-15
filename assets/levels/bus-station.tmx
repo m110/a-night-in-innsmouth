@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="9">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="10">
+ <tileset firstgid="1" source="Character.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="bus-station.jpeg" width="3072" height="1728"/>
  </imagelayer>
@@ -16,12 +17,12 @@
   </object>
  </objectgroup>
  <objectgroup id="5" name="Entrypoints">
-  <object id="4" name="Entrypoint 0" class="entrypoint" x="104" y="704" width="224" height="440"/>
   <object id="5" name="Exit" class="poi" x="-192" y="680" width="160" height="712">
    <properties>
     <property name="edge" propertytype="edge" value="left"/>
     <property name="level" value="train-station,1"/>
    </properties>
   </object>
+  <object id="9" name="Entrypoint 0" class="entrypoint" gid="1" x="192" y="1208" width="137.673" height="456"/>
  </objectgroup>
 </map>

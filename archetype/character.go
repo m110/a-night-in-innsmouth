@@ -13,15 +13,17 @@ import (
 	"github.com/m110/secrets/engine"
 )
 
-// TODO should come from the level file
-const characterScale = 0.4
+func NewCharacter(parent *donburi.Entry, scale float64, movementBounds component.MovementBoundsData) *donburi.Entry {
+	// Sanity check
+	if scale == 0 {
+		panic("character scale cannot be 0")
+	}
 
-func NewCharacter(parent *donburi.Entry, movementBounds component.MovementBoundsData) *donburi.Entry {
 	w := parent.World
 	character := NewTagged(w, "Character").
 		WithScale(math.Vec2{
-			X: characterScale,
-			Y: characterScale,
+			X: scale,
+			Y: scale,
 		}).
 		WithParent(parent).
 		WithLayer(domain.SpriteLayerCharacter).

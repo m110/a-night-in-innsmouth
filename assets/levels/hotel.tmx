@@ -61,12 +61,12 @@
  </objectgroup>
  <objectgroup id="4" name="Triggers"/>
  <objectgroup id="5" name="Entrypoints">
-  <object id="18" name="Entry Point 0" class="entrypoint" gid="1" x="224" y="936" width="234" height="775.056">
+  <object id="18" name="Entry Point 0" class="entrypoint" gid="1" x="248" y="1536" width="200" height="662.441">
    <properties>
     <property name="index" type="int" value="0"/>
    </properties>
   </object>
-  <object id="19" name="Entry Point 1" class="entrypoint" gid="2147483649" x="2592" y="936" width="234" height="775.056">
+  <object id="19" name="Entry Point 1" class="entrypoint" gid="2147483649" x="2600" y="1504" width="234" height="775.056">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>

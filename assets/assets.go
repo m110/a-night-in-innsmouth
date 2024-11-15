@@ -131,6 +131,7 @@ func mustLoadLevel(path string) domain.Level {
 	var objects []domain.Object
 	var pois []domain.POI
 	var entrypoints []domain.Entrypoint
+	var characterScale float64
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
 			if obj.Class == "object" {
@@ -166,6 +167,8 @@ func mustLoadLevel(path string) domain.Level {
 				y := obj.Y
 				var objectImg *ebiten.Image
 				if img != "" {
+					// Image-based objects have pivot set to bottom-left
+					// Other objects have pivot set to top-left
 					y -= obj.Height
 					if _, ok := Objects[img]; !ok {
 						panic(fmt.Sprintf("object not found: %v", img))
@@ -238,6 +241,12 @@ func mustLoadLevel(path string) domain.Level {
 					},
 				}
 
+				if obj.GID != 0 {
+					// Image-based entrypoints have pivot set to bottom-left
+					// Other entrypoints have pivot set to top-left
+					pos.LocalPosition.Y -= obj.Height
+				}
+
 				if obj.Properties.GetBool("flipY") {
 					pos.FlipY = true
 				}
@@ -245,6 +254,11 @@ func mustLoadLevel(path string) domain.Level {
 				entrypoint := domain.Entrypoint{
 					Index:             obj.Properties.GetInt("index"),
 					CharacterPosition: pos,
+				}
+
+				// The first entrypoint's scale is used for all entrypoint
+				if entrypoint.Index == 0 {
+					characterScale = obj.Height / float64(Character[2].Bounds().Dy())
 				}
 
 				entrypoints = append(entrypoints, entrypoint)
@@ -295,12 +309,13 @@ func mustLoadLevel(path string) domain.Level {
 	}
 
 	return domain.Level{
-		Background:   mustNewEbitenImage(mustReadFile(fmt.Sprintf("levels/%v", imageName))),
-		POIs:         pois,
-		Objects:      objects,
-		StartPassage: startPassage,
-		Entrypoints:  entrypoints,
-		CameraZoom:   cameraZoom,
+		Background:     mustNewEbitenImage(mustReadFile(fmt.Sprintf("levels/%v", imageName))),
+		POIs:           pois,
+		Objects:        objects,
+		StartPassage:   startPassage,
+		Entrypoints:    entrypoints,
+		CameraZoom:     cameraZoom,
+		CharacterScale: characterScale,
 	}
 }
 
