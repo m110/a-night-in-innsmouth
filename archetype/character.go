@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
+	"github.com/yohamta/donburi/features/transform"
 
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
@@ -79,4 +80,22 @@ func NewCharacter(parent *donburi.Entry, scale float64, movementBounds component
 	component.MovementBounds.SetValue(character, movementBounds)
 
 	return character
+}
+
+func RotateCharacterTowards(target *donburi.Entry) {
+	character, ok := engine.FindWithComponent(target.World, component.Character)
+	if !ok {
+		return
+	}
+
+	pos := transform.WorldPosition(character)
+	targetPos := transform.WorldPosition(target)
+
+	sprite := component.Sprite.Get(character)
+
+	if pos.X < targetPos.X {
+		sprite.FlipY = false
+	} else {
+		sprite.FlipY = true
+	}
 }

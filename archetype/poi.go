@@ -102,6 +102,7 @@ func SelectPOI(entry *donburi.Entry) {
 
 	if poi.POI.Passage != "" {
 		ShowPassage(entry.World, game.Story.PassageByTitle(poi.POI.Passage), entry)
+		RotateCharacterTowards(entry)
 	} else if poi.POI.Level != nil {
 		ChangeLevel(entry.World, *poi.POI.Level)
 	}
