@@ -32,6 +32,7 @@ func (d *DetectPOI) Update(w donburi.World) {
 	d.poiQuery.Each(w, func(poi *donburi.Entry) {
 		poiPos := transform.WorldPosition(poi)
 		// TODO Probably should consider width + height and calculate off center
+		// TODO Could be based on just X pos
 		distance := characterPos.Distance(poiPos)
 		component.Sprite.Get(poi).ColorBlendOverride.Value = distanceToBlendValue(distance)
 	})

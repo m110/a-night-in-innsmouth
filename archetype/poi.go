@@ -11,7 +11,7 @@ import (
 	"github.com/m110/secrets/engine"
 )
 
-var PoiVisibleDistance = engine.FloatRange{Min: 400, Max: 800}
+var PoiVisibleDistance = engine.FloatRange{Min: 200, Max: 400}
 
 func NewPOI(
 	parent *donburi.Entry,
@@ -73,6 +73,7 @@ func CanInteractWithPOI(entry *donburi.Entry) bool {
 		character, found := engine.FindWithComponent(entry.World, component.Character)
 		if found {
 			// TODO Probably should consider width + height and calculate off center
+			// TODO Could be based on just X pos
 			characterPos := transform.WorldPosition(character)
 			poiPos := transform.WorldPosition(poiImage)
 			dist := characterPos.Distance(poiPos)
@@ -100,9 +101,12 @@ func SelectPOI(entry *donburi.Entry) {
 	poi := component.POI.Get(entry)
 	game := component.MustFindGame(entry.World)
 
+	RotateCharacterTowards(entry)
+
 	if poi.POI.Passage != "" {
-		ShowPassage(entry.World, game.Story.PassageByTitle(poi.POI.Passage), entry)
-		RotateCharacterTowards(entry)
+		passage := game.Story.PassageByTitle(poi.POI.Passage)
+		passage.Visit()
+		ShowPassage(entry.World, passage, entry)
 	} else if poi.POI.Level != nil {
 		ChangeLevel(entry.World, *poi.POI.Level)
 	}

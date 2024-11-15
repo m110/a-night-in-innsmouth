@@ -31,6 +31,13 @@ const (
 	openDialogDuration      = 1000 * time.Millisecond
 )
 
+var optionColor = color.RGBA{
+	R: 50,
+	G: 50,
+	B: 50,
+	A: 150,
+}
+
 func NewDialog(w donburi.World) *donburi.Entry {
 	game := component.MustFindGame(w)
 	dialogWidth := dialogWidth(w)
@@ -398,6 +405,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		WithLayer(domain.SpriteUILayerText).
 		WithPosition(math.Vec2{
 			X: passageMarginLeft,
+			// TODO should be always trying to show the bottom
 			Y: stackedView.CurrentY + passageMarginTop,
 		}).
 		With(component.Passage).
@@ -434,35 +442,56 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		passageHeight += textHeight + headerMargin
 	}
 
-	txt := NewTagged(w, "Passage Text").
-		WithText(component.TextData{
-			Text:           domainPassage.Content(),
-			Streaming:      true,
-			StreamingTimer: engine.NewTimer(500 * time.Millisecond),
-		}).
-		WithParent(passage).
-		WithLayerInherit().
-		WithPosition(math.Vec2{
-			X: 10,
-			Y: textY,
-		}).
-		With(component.Bounds).
-		Entry()
+	streamingTime := 500 * time.Millisecond
 
-	AdjustTextWidth(txt, passageTextWidth)
-	textHeight := MeasureTextHeight(txt)
-	passageHeight += textHeight
+	for i, segment := range domainPassage.AvailableSegments() {
+		segmentColor := assets.TextColor
+		if segment.IsHint {
+			segmentColor = assets.TextOrangeColor
+		}
 
-	component.Bounds.SetValue(txt, component.BoundsData{
-		Width:  passageTextWidth,
-		Height: textHeight,
-	})
+		txt := NewTagged(w, "Passage Segment Text").
+			WithText(component.TextData{
+				Text:           segment.Text,
+				Color:          segmentColor,
+				Streaming:      i == 0,
+				Hidden:         i > 0,
+				StreamingTimer: engine.NewTimer(streamingTime),
+			}).
+			WithParent(passage).
+			With(component.Animator).
+			WithLayerInherit().
+			WithPosition(math.Vec2{
+				X: 10,
+				Y: textY,
+			}).
+			With(component.Bounds).
+			Entry()
 
-	optionColor := color.RGBA{
-		R: 50,
-		G: 50,
-		B: 50,
-		A: 150,
+		if i > 0 {
+			component.Animator.Get(txt).SetAnimation("stream", &component.Animation{
+				Active: true,
+				Timer:  engine.NewTimer(streamingTime * time.Duration(i)),
+				Update: func(e *donburi.Entry, a *component.Animation) {
+					if a.Timer.IsReady() {
+						t := component.Text.Get(e)
+						t.Hidden = false
+						t.Streaming = true
+						a.Stop(e)
+					}
+				},
+			})
+		}
+
+		AdjustTextWidth(txt, passageTextWidth)
+		textHeight := MeasureTextHeight(txt) + LineSpacingPixels
+		textY += textHeight
+		passageHeight += textHeight
+
+		component.Bounds.SetValue(txt, component.BoundsData{
+			Width:  passageTextWidth,
+			Height: textHeight,
+		})
 	}
 
 	game := component.MustFindGame(w)
@@ -470,7 +499,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 
 	optionImageWidth := 400
 	optionWidth := 380
-	currentY := int(float64(screenHeight)*(logHeightPercent)) + int(float64(screenHeight)*(dialogOptionsTopMarginPercent))
+	optionsY := int(float64(screenHeight)*(logHeightPercent)) + int(float64(screenHeight)*(dialogOptionsTopMarginPercent))
 	heightPerLine := 28
 	paddingPerLine := 4
 
@@ -532,7 +561,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 
 		transform.GetTransform(op).LocalPosition = math.Vec2{
 			X: 30,
-			Y: float64(currentY),
+			Y: float64(optionsY),
 		}
 		component.Sprite.Get(op).Image = optionImg
 		component.Collider.SetValue(op, component.ColliderData{
@@ -541,7 +570,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 			Layer:  domain.CollisionLayerButton,
 		})
 
-		currentY += lineHeight + 24
+		optionsY += lineHeight + LineSpacingPixels
 	}
 
 	component.Passage.SetValue(passage, component.PassageData{

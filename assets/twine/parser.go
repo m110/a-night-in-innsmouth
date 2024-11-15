@@ -106,6 +106,11 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 	conditionStarted := false
 
 	for _, segment := range strings.Split(content, "\n") {
+		if segment == "[hint]" {
+			currentSegment.IsHint = true
+			continue
+		}
+
 		if segment == "[else]" {
 			if !conditionStarted {
 				panic("Invalid [else] tag")
@@ -292,8 +297,8 @@ func parseMacroType(str string) domain.MacroType {
 		return domain.MacroTypeAddMoney
 	case "takeMoney":
 		return domain.MacroTypeTakeMoney
-	case "addFact":
-		return domain.MacroTypeAddFact
+	case "setFact":
+		return domain.MacroTypeSetFact
 	default:
 		panic("Invalid macro type: " + str)
 	}

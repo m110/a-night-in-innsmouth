@@ -24,6 +24,7 @@ type RawPassage struct {
 
 type Segment struct {
 	Text       string
+	IsHint     bool
 	Conditions []Condition
 }
 
@@ -177,7 +178,7 @@ func (s *Story) publishInventoryUpdated() {
 	})
 }
 
-func (s *Story) AddFact(fact string) {
+func (s *Story) SetFact(fact string) {
 	s.Facts[fact] = struct{}{}
 }
 
@@ -224,8 +225,9 @@ type Passage struct {
 	Visited   bool
 }
 
-func (p *Passage) Content() string {
-	var content string
+func (p *Passage) AvailableSegments() []Segment {
+	var segments []Segment
+
 	for _, s := range p.Segments {
 		if len(s.Conditions) > 0 {
 			var skip bool
@@ -240,6 +242,17 @@ func (p *Passage) Content() string {
 				continue
 			}
 		}
+
+		segments = append(segments, s)
+	}
+
+	return segments
+}
+
+func (p *Passage) Content() string {
+	var content string
+
+	for _, s := range p.AvailableSegments() {
 		content += s.Text
 	}
 
@@ -265,8 +278,8 @@ func (p *Passage) Visit() {
 			p.story.AddItem(m.Value)
 		case MacroTypeTakeItem:
 			p.story.TakeItem(m.Value)
-		case MacroTypeAddFact:
-			p.story.AddFact(m.Value)
+		case MacroTypeSetFact:
+			p.story.SetFact(m.Value)
 		case MacroTypeAddMoney:
 			money, err := strconv.Atoi(m.Value)
 			if err != nil {
@@ -403,7 +416,7 @@ type MacroType string
 const (
 	MacroTypeAddItem   MacroType = "addItem"
 	MacroTypeTakeItem  MacroType = "takeItem"
-	MacroTypeAddFact   MacroType = "addFact"
+	MacroTypeSetFact   MacroType = "setFact"
 	MacroTypeAddMoney  MacroType = "addMoney"
 	MacroTypeTakeMoney MacroType = "takeMoney"
 )

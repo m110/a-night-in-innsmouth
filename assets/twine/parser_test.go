@@ -3,9 +3,9 @@ package twine
 import (
 	"testing"
 
-	"github.com/m110/secrets/domain"
-
 	"github.com/stretchr/testify/assert"
+
+	"github.com/m110/secrets/domain"
 )
 
 func TestParsePassage(t *testing.T) {

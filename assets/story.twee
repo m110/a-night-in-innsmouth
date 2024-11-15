@@ -73,7 +73,7 @@ You see the bus to Innsmouth.
 :: Buy the ticket to Arkham ($5) {"position":"1875,700","size":"100,100"}
 takeMoney: 500
 addItem: Train Ticket to Arkham
-addFact: hasWayOutOfNewburyport
+setFact: hasWayOutOfNewburyport
 --
 
 You bough the ticket.
@@ -82,8 +82,8 @@ You bough the ticket.
 
 
 :: Cheaper Options {"position":"1550,475","size":"100,100"}
-addFact: learnedAboutInnsmouth
-addFact: hasWayOutOfNewburyport
+setFact: learnedAboutInnsmouth
+setFact: hasWayOutOfNewburyport
 --
 "Well, there is the bus to Innsmouth..."
 
@@ -144,6 +144,15 @@ The hall is full of dust. A strong fish scent is in the air, stronger under some
 
 :: I want to get to Arkham {"position":"1825,500","size":"100,100"}
 "I got you. The train leaves today. It's $5."
+
+[if hasMoney 500]
+"What do you say?"
+[continue]
+
+[if fact readTrainStationNewspaper]
+[hint]
+This ticket is quite expensive. Perhaps you should consider other options.
+[continue]
 
 > [["I'm tight on budget. Any cheaper options?"->Cheaper Options]]
 > [[Buy the ticket to Arkham ($5)]]
@@ -227,7 +236,10 @@ The station is empty except for the agent.
 
 
 :: Train Station Newspaper {"position":"2200,950","size":"100,100"}
-...
+setFact: readTrainStationNewspaper
+--
+
+"Innsmouth is on the way to Arkham."
 
 > {exit} [[Leave.]]
 
