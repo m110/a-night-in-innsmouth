@@ -33,5 +33,6 @@ type POI struct {
 type Object struct {
 	Image    *ebiten.Image
 	Position math.Vec2
+	Scale    math.Vec2
 	Layer    LayerID
 }

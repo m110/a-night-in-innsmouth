@@ -16,6 +16,7 @@ func NewObject(
 	entry := NewTagged(w, "POI").
 		WithParent(parent).
 		WithPosition(obj.Position).
+		WithScale(obj.Scale).
 		WithLayer(obj.Layer).
 		WithSprite(component.SpriteData{
 			Image: obj.Image,

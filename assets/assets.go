@@ -141,11 +141,18 @@ func mustLoadLevel(path string) domain.Level {
 					panic(fmt.Sprintf("object not found: %v", img))
 				}
 
+				objImg := ebiten.NewImageFromImage(Objects[img])
+				bounds := objImg.Bounds()
+
 				domainObj := domain.Object{
-					Image: ebiten.NewImageFromImage(Objects[img]),
+					Image: objImg,
 					Position: math.Vec2{
 						X: obj.X,
 						Y: obj.Y - obj.Height,
+					},
+					Scale: math.Vec2{
+						X: obj.Width / float64(bounds.Dx()),
+						Y: obj.Height / float64(bounds.Dy()),
 					},
 					Layer: domain.LayerID(layer),
 				}
