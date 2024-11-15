@@ -254,7 +254,7 @@ func NextPassage(w donburi.World) {
 		hideDialog(w, nil)
 
 		// Refresh POIs in case the conditions to show the passage changed
-		HidePOIs(w)
+		DeactivatePOIs(w)
 		CheckNextPOI(w)
 
 		levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)

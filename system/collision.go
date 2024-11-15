@@ -26,8 +26,8 @@ func (c *Collision) Init(w donburi.World) {
 	events.JustCollidedEvent.Subscribe(w, func(w donburi.World, event events.JustCollided) {
 		if event.Layer == definitions.CollisionLayerCharacter && event.OtherLayer == definitions.CollisionLayerPOI {
 			if archetype.CanSeePOI(event.Other) {
-				archetype.HidePOIs(w)
-				archetype.ShowPOI(event.Other)
+				archetype.DeactivatePOIs(w)
+				archetype.ActivatePOI(event.Other)
 			}
 		}
 	})
@@ -35,7 +35,7 @@ func (c *Collision) Init(w donburi.World) {
 	events.JustOutOfCollisionEvent.Subscribe(w, func(w donburi.World, event events.JustOutOfCollision) {
 		if event.Layer == definitions.CollisionLayerCharacter && event.OtherLayer == definitions.CollisionLayerPOI {
 			if event.Other.HasComponent(component.ActivePOI) {
-				archetype.HidePOIs(w)
+				archetype.DeactivatePOIs(w)
 				archetype.CheckNextPOI(w)
 			}
 		}

@@ -9,6 +9,8 @@ import (
 	"github.com/m110/secrets/engine"
 )
 
+var PoiVisibleDistance = engine.FloatRange{Min: 400, Max: 800}
+
 type DetectPOI struct {
 	poiQuery       *donburi.Query
 	characterQuery *donburi.Query
@@ -36,16 +38,14 @@ func (d *DetectPOI) Update(w donburi.World) {
 	})
 }
 
-var poiVisibleDistance = engine.FloatRange{Min: 400, Max: 1000}
-
 func distanceToBlendValue(currentDist float64) float64 {
-	if currentDist <= poiVisibleDistance.Min {
+	if currentDist <= PoiVisibleDistance.Min {
 		return 1
 	}
 
-	if currentDist >= poiVisibleDistance.Max {
+	if currentDist >= PoiVisibleDistance.Max {
 		return 0
 	}
 
-	return 1 - (currentDist-poiVisibleDistance.Min)/(poiVisibleDistance.Max-poiVisibleDistance.Min)
+	return 1 - (currentDist-PoiVisibleDistance.Min)/(PoiVisibleDistance.Max-PoiVisibleDistance.Min)
 }

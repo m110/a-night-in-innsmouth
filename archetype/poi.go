@@ -1,7 +1,6 @@
 package archetype
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
@@ -51,31 +50,10 @@ func NewPOI(
 		})
 	}
 
-	width := poi.Rect.Size().Width
-	height := poi.Rect.Size().Height
-
-	// TODO Clean up
-	indicatorImg := ebiten.NewImage(width, height)
-
-	indicator := NewTagged(w, "POIIndicator").
-		WithParent(entry).
-		With(component.Active).
-		With(component.POIIndicator).
-		WithLayerInherit().
-		WithSprite(component.SpriteData{
-			Image: indicatorImg,
-		}).
-		Entry()
-
-	transform.SetWorldPosition(indicator, math.Vec2{
-		X: poi.Rect.X,
-		Y: poi.Rect.Y,
-	})
-
 	return entry
 }
 
-func HidePOIs(w donburi.World) {
+func DeactivatePOIs(w donburi.World) {
 	activePOI, ok := donburi.NewQuery(
 		filter.Contains(
 			component.ActivePOI,
@@ -84,13 +62,6 @@ func HidePOIs(w donburi.World) {
 	if ok {
 		activePOI.RemoveComponent(component.ActivePOI)
 	}
-	indicatorsQuery := donburi.NewQuery(filter.Contains(
-		component.POIIndicator,
-	))
-
-	indicatorsQuery.Each(w, func(entry *donburi.Entry) {
-		component.Active.Get(entry).Active = false
-	})
 }
 
 func CanSeePOI(entry *donburi.Entry) bool {
@@ -105,11 +76,8 @@ func CanSeePOI(entry *donburi.Entry) bool {
 	return passage.ConditionsMet()
 }
 
-func ShowPOI(entry *donburi.Entry) {
+func ActivatePOI(entry *donburi.Entry) {
 	entry.AddComponent(component.ActivePOI)
-
-	poiIndicator := engine.MustFindChildWithComponent(entry, component.POIIndicator)
-	component.Active.Get(poiIndicator).Active = true
 }
 
 func CheckNextPOI(w donburi.World) {
@@ -131,6 +99,6 @@ func CheckNextPOI(w donburi.World) {
 	}
 
 	if nextCollisionEntry != nil && CanSeePOI(nextCollisionEntry) {
-		ShowPOI(nextCollisionEntry)
+		ActivatePOI(nextCollisionEntry)
 	}
 }
