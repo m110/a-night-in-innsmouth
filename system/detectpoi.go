@@ -5,11 +5,9 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 
+	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/component"
-	"github.com/m110/secrets/engine"
 )
-
-var PoiVisibleDistance = engine.FloatRange{Min: 400, Max: 800}
 
 type DetectPOI struct {
 	poiQuery       *donburi.Query
@@ -33,19 +31,21 @@ func (d *DetectPOI) Update(w donburi.World) {
 
 	d.poiQuery.Each(w, func(poi *donburi.Entry) {
 		poiPos := transform.WorldPosition(poi)
+		// TODO Probably should consider width + height and calculate off center
 		distance := characterPos.Distance(poiPos)
 		component.Sprite.Get(poi).ColorBlendOverride.Value = distanceToBlendValue(distance)
 	})
 }
 
 func distanceToBlendValue(currentDist float64) float64 {
-	if currentDist <= PoiVisibleDistance.Min {
+	rng := archetype.PoiVisibleDistance
+	if currentDist <= rng.Min {
 		return 1
 	}
 
-	if currentDist >= PoiVisibleDistance.Max {
+	if currentDist >= rng.Max {
 		return 0
 	}
 
-	return 1 - (currentDist-PoiVisibleDistance.Min)/(PoiVisibleDistance.Max-PoiVisibleDistance.Min)
+	return 1 - (currentDist-rng.Min)/(rng.Max-rng.Min)
 }

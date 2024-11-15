@@ -56,7 +56,7 @@
   <properties>
    <property name="layer" type="int" value="130"/>
   </properties>
-  <object id="12" name="Lantern" class="object" gid="1" x="520" y="1584" width="177" height="1041.75">
+  <object id="12" name="Lantern" class="object" gid="1" x="496" y="1584" width="201" height="1183">
    <properties>
     <property name="image" value="city-lamp"/>
    </properties>

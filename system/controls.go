@@ -142,13 +142,6 @@ func (c *Controls) Update(w donburi.World) {
 		velocity.Velocity.X = 0
 		anim.Stop(character)
 	}
-
-	if inpututil.IsKeyJustPressed(in.ActionKey) {
-		activePOI, ok := c.activePOIQuery.First(w)
-		if ok {
-			selectPOI(activePOI)
-		}
-	}
 }
 
 func selectPOI(entry *donburi.Entry) {
