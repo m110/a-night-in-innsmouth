@@ -17,9 +17,8 @@ type Level struct {
 }
 
 type Entrypoint struct {
-	Index    int
-	Position math.Vec2
-	FlipY    bool
+	Index             int
+	CharacterPosition CharacterPosition
 }
 
 type POI struct {

@@ -12,12 +12,6 @@
    </properties>
   </object>
   <object id="18" name="Entrypoint 0" class="entrypoint" x="176" y="952" width="184" height="256"/>
-  <object id="20" name="Entrypoint 2" class="entrypoint" x="1096" y="952" width="184" height="256">
-   <properties>
-    <property name="flipY" type="bool" value="false"/>
-    <property name="index" type="int" value="2"/>
-   </properties>
-  </object>
  </objectgroup>
  <objectgroup id="4" name="POI">
   <object id="6" name="Hotel" class="poi" gid="3" x="2784" y="1216" width="89" height="92">

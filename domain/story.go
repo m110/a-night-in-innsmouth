@@ -3,6 +3,8 @@ package domain
 import (
 	"strconv"
 
+	"github.com/yohamta/donburi/features/math"
+
 	"github.com/yohamta/donburi"
 )
 
@@ -35,8 +37,14 @@ type RawLink struct {
 }
 
 type TargetLevel struct {
-	Name       string
-	Entrypoint *int
+	Name              string
+	Entrypoint        *int
+	CharacterPosition *CharacterPosition
+}
+
+type CharacterPosition struct {
+	LocalPosition math.Vec2
+	FlipY         bool
 }
 
 type Story struct {

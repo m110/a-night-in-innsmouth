@@ -30,6 +30,10 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 		With(component.Animator).
 		Entry()
 
+	component.Level.SetValue(entry, component.LevelData{
+		Name: targetLevel.Name,
+	})
+
 	spawned := false
 
 	levelCam := engine.MustFindWithComponent(w, component.LevelCamera)
@@ -38,7 +42,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	anim := component.Animator.Get(entry)
 
-	anim.AddAnimation("transition", &component.Animation{
+	anim.SetAnimation("transition", &component.Animation{
 		Active: true,
 		Timer:  engine.NewTimer(LevelTransitionDuration),
 		OnStart: func(e *donburi.Entry) {
@@ -76,9 +80,16 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	}
 
 	var character *donburi.Entry
+
+	var characterPos *domain.CharacterPosition
 	if len(level.Entrypoints) > 0 && targetLevel.Entrypoint != nil {
 		entrypoint := level.Entrypoints[*targetLevel.Entrypoint]
+		characterPos = &entrypoint.CharacterPosition
+	} else if targetLevel.CharacterPosition != nil {
+		characterPos = targetLevel.CharacterPosition
+	}
 
+	if characterPos != nil {
 		bounds := component.MovementBoundsData{
 			Range: engine.FloatRange{
 				Min: levelMovementMargin,
@@ -88,8 +99,8 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 		character = NewCharacter(entry, bounds)
 
-		transform.GetTransform(character).LocalPosition = entrypoint.Position
-		component.Sprite.Get(character).FlipY = entrypoint.FlipY
+		transform.GetTransform(character).LocalPosition = characterPos.LocalPosition
+		component.Sprite.Get(character).FlipY = characterPos.FlipY
 	}
 
 	cam.Root = entry
@@ -117,7 +128,6 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	if character == nil {
 		// Show the "board" on the left of the dialog
-		// TODO: make this more explicit than "level without character"
 		cam.ViewportPosition.X = levelWidth/2.0 - viewportWorldWidth/3.0
 		cam.ViewportTarget = nil
 	} else {
@@ -136,6 +146,25 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 func ChangeLevel(w donburi.World, level domain.TargetLevel) {
 	currentLevel, ok := engine.FindWithComponent(w, component.Level)
 	if ok {
+		lvl := component.Level.Get(currentLevel)
+		game := component.MustFindGame(w)
+
+		var characterPos *domain.CharacterPosition
+		character, found := engine.FindWithComponent(w, component.Character)
+		if found {
+			pos := transform.GetTransform(character).LocalPosition
+			flipY := component.Sprite.Get(character).FlipY
+			characterPos = &domain.CharacterPosition{
+				LocalPosition: pos,
+				FlipY:         flipY,
+			}
+		}
+
+		game.PreviousLevel = &component.PreviousLevel{
+			Name:              lvl.Name,
+			CharacterPosition: characterPos,
+		}
+
 		anim := component.Animator.Get(currentLevel)
 		anim.Start("transition", currentLevel)
 		transition := anim.Animations["transition"]
@@ -143,7 +172,7 @@ func ChangeLevel(w donburi.World, level domain.TargetLevel) {
 			transform.RemoveRecursive(e)
 			NewLevel(w, level)
 		}
-		anim.AddAnimation("transition", transition)
+		anim.SetAnimation("transition", transition)
 		return
 	}
 

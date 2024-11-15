@@ -46,7 +46,7 @@ func NewCharacter(parent *donburi.Entry, movementBounds component.MovementBounds
 
 	anim := component.Animator.Get(character)
 
-	anim.AddAnimation("walk", &component.Animation{
+	anim.SetAnimation("walk", &component.Animation{
 		Timer: engine.NewTimer(200 * time.Millisecond),
 		Update: func(e *donburi.Entry, a *component.Animation) {
 			if a.Timer.IsReady() {

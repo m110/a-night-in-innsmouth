@@ -65,7 +65,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 	input := engine.MustFindComponent[component.InputData](w, component.Input)
 
 	anim := component.Animator.Get(dialogCamera)
-	anim.AddAnimation("fade-in", &component.Animation{
+	anim.SetAnimation("fade-in", &component.Animation{
 		Active: false,
 		Timer:  engine.NewTimer(openDialogDuration),
 		Update: func(e *donburi.Entry, a *component.Animation) {
@@ -91,7 +91,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 			cam.AlphaOverride = nil
 		},
 	})
-	anim.AddAnimation("fade-out", &component.Animation{
+	anim.SetAnimation("fade-out", &component.Animation{
 		Active: false,
 		Timer:  engine.NewTimer(openDialogDuration),
 		Update: func(e *donburi.Entry, a *component.Animation) {
@@ -142,7 +142,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 	logCamera.AddComponent(component.Animator)
 
 	logAnim := component.Animator.Get(logCamera)
-	logAnim.AddAnimation("scroll", &component.Animation{
+	logAnim.SetAnimation("scroll", &component.Animation{
 		Timer: engine.NewTimer(500 * time.Millisecond),
 	})
 
@@ -254,30 +254,50 @@ func NextPassage(w donburi.World) {
 	scroll.Start(cameraEntry)
 
 	if link.IsExit() {
-		hideDialog(w, nil)
+		_, ok := engine.FindWithComponent(w, component.Character)
+		if ok {
+			// Character found: zoom out back on the character
+			hideDialog(w, nil)
 
-		// Refresh POIs in case the conditions to show the passage changed
-		DeactivatePOIs(w)
-		CheckNextPOI(w)
+			// Refresh POIs in case the conditions to show the passage changed
+			DeactivatePOIs(w)
+			CheckNextPOI(w)
 
-		levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
-		lCam := component.Camera.Get(levelCamera)
-		bz := component.BriefZoom.Get(levelCamera)
+			levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
+			lCam := component.Camera.Get(levelCamera)
+			bz := component.BriefZoom.Get(levelCamera)
 
-		zoomAnim := newCameraZoomAnimation(
-			lCam,
-			lCam.ViewportPosition,
-			bz.OriginCamera.ViewportPosition,
-			lCam.ViewportZoom,
-			bz.OriginCamera.ViewportZoom,
-		)
+			zoomAnim := newCameraZoomAnimation(
+				lCam,
+				lCam.ViewportPosition,
+				bz.OriginCamera.ViewportPosition,
+				lCam.ViewportZoom,
+				bz.OriginCamera.ViewportZoom,
+			)
 
-		zoomAnim.OnStop = func(e *donburi.Entry) {
-			lCam.ViewportBounds = bz.OriginCamera.ViewportBounds
-			lCam.ViewportTarget = bz.OriginCamera.ViewportTarget
+			zoomAnim.OnStop = func(e *donburi.Entry) {
+				lCam.ViewportBounds = bz.OriginCamera.ViewportBounds
+				lCam.ViewportTarget = bz.OriginCamera.ViewportTarget
+			}
+
+			component.Animator.Get(levelCamera).SetAnimation("zoom-out", zoomAnim)
+		} else {
+			// Character not found: Go back to the previous level
+			game := component.MustFindGame(w)
+
+			if game.PreviousLevel == nil {
+				panic("no character present and no previous level found")
+			}
+
+			lvl := domain.TargetLevel{
+				Name:              game.PreviousLevel.Name,
+				CharacterPosition: game.PreviousLevel.CharacterPosition,
+			}
+
+			hideDialog(w, func(e *donburi.Entry) {
+				ChangeLevel(w, lvl)
+			})
 		}
-
-		component.Animator.Get(levelCamera).AddAnimation("zoom-out", zoomAnim)
 
 		return
 	}
@@ -357,7 +377,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		}
 
 		animator := component.Animator.Get(levelCamera)
-		animator.AddAnimation("zoom-in", newCameraZoomAnimation(cam, originPosition, targetPosition, originZoom, targetZoom))
+		animator.SetAnimation("zoom-in", newCameraZoomAnimation(cam, originPosition, targetPosition, originZoom, targetZoom))
 	}
 
 	showDialog(w)

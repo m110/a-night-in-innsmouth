@@ -10,7 +10,7 @@ type AnimatorData struct {
 	Animations map[string]*Animation
 }
 
-func (a *AnimatorData) AddAnimation(name string, anim *Animation) {
+func (a *AnimatorData) SetAnimation(name string, anim *Animation) {
 	if a.Animations == nil {
 		a.Animations = make(map[string]*Animation)
 	}

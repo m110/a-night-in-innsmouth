@@ -80,8 +80,6 @@ func ActivatePOI(entry *donburi.Entry) {
 }
 
 func CheckNextPOI(w donburi.World) {
-	// TODO Simple image boards could be used differently from levels
-	// Remember the character pos and return to it? If simply exit
 	character := engine.MustFindWithComponent(w, component.Character)
 	collider := component.Collider.Get(character)
 

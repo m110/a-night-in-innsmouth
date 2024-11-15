@@ -212,16 +212,20 @@ func mustLoadLevel(path string) domain.Level {
 			}
 
 			if obj.Class == "entrypoint" {
-				entrypoint := domain.Entrypoint{
-					Index: obj.Properties.GetInt("index"),
-					Position: math.Vec2{
+				pos := domain.CharacterPosition{
+					LocalPosition: math.Vec2{
 						X: obj.X,
 						Y: obj.Y,
 					},
 				}
 
 				if obj.Properties.GetBool("flipY") {
-					entrypoint.FlipY = true
+					pos.FlipY = true
+				}
+
+				entrypoint := domain.Entrypoint{
+					Index:             obj.Properties.GetInt("index"),
+					CharacterPosition: pos,
 				}
 
 				entrypoints = append(entrypoints, entrypoint)

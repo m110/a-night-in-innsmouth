@@ -15,7 +15,6 @@ var (
 	// InnerCamera means the camera is placed inside another camera.
 	InnerCamera = donburi.NewTag()
 
-	Level       = donburi.NewTag()
 	LevelCamera = donburi.NewTag()
 	Character   = donburi.NewTag()
 
