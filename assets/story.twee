@@ -145,13 +145,13 @@ The hall is full of dust. A strong fish scent is in the air, stronger under some
 :: I want to get to Arkham {"position":"1825,500","size":"100,100"}
 "I got you. The train leaves today. It's $5."
 
-[if hasMoney 500]
-"What do you say?"
-[continue]
-
 [if fact readTrainStationNewspaper]
 [hint]
 This ticket is quite expensive. Perhaps you should consider other options.
+[continue]
+
+[if hasMoney 500]
+"What do you say?"
 [continue]
 
 > [["I'm tight on budget. Any cheaper options?"->Cheaper Options]]
