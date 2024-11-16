@@ -164,9 +164,10 @@ func (c *Controls) Update(w donburi.World) {
 	screenPos := cam.WorldPositionToViewportPosition(character)
 
 	if clicked {
+		bounds := component.Bounds.Get(character)
+		width := bounds.Width * cam.ViewportZoom
 		diff := float64(x) - screenPos.X
-		// TODO Pivot center instead of adding width
-		if diff > 0 && diff > clickMoveThreshold+70 {
+		if diff > 0 && diff > clickMoveThreshold+width {
 			movingRight = true
 		} else if diff < -clickMoveThreshold {
 			movingLeft = true
