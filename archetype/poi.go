@@ -1,6 +1,8 @@
 package archetype
 
 import (
+	math2 "math"
+
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
@@ -42,6 +44,7 @@ func NewPOI(
 					Value: 0,
 				},
 			}).
+			WithSpriteBounds().
 			With(component.POIImage).
 			Entry()
 
@@ -72,11 +75,9 @@ func CanInteractWithPOI(entry *donburi.Entry) bool {
 	if ok {
 		character, found := engine.FindWithComponent(entry.World, component.Character)
 		if found {
-			// TODO Probably should consider width + height and calculate off center
-			// TODO Could be based on just X pos
-			characterPos := transform.WorldPosition(character)
-			poiPos := transform.WorldPosition(poiImage)
-			dist := characterPos.Distance(poiPos)
+			characterPos := HorizontalCenterPosition(character)
+			poiPos := HorizontalCenterPosition(poiImage)
+			dist := math2.Abs(characterPos - poiPos)
 			if dist > PoiVisibleDistance.Max {
 				return false
 			}
@@ -91,6 +92,12 @@ func CanInteractWithPOI(entry *donburi.Entry) bool {
 
 	passage := game.Story.PassageByTitle(poi.POI.Passage)
 	return passage.ConditionsMet()
+}
+
+func HorizontalCenterPosition(entry *donburi.Entry) float64 {
+	pos := transform.WorldPosition(entry)
+	bounds := component.Bounds.Get(entry)
+	return pos.X + bounds.Width/2
 }
 
 func SelectPOI(entry *donburi.Entry) {
