@@ -147,7 +147,9 @@ The hall is full of dust. A strong fish scent is in the air, stronger under some
 
 [if fact readTrainStationNewspaper]
 [hint]
-This ticket is quite expensive. Perhaps you should consider other options.
+This ticket is quite expensive. 
+
+Perhaps you should consider other options.
 [continue]
 
 [if hasMoney 500]

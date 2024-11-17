@@ -25,10 +25,14 @@ const (
 	logHeightPercent              = 0.6
 	dialogOptionsTopMarginPercent = 0.05
 
-	passageMargin = 32
+	passageMarginTop  = 32
+	passageMarginLeft = 20
+	passageTextWidth  = 380
 
 	LevelTransitionDuration = 500 * time.Millisecond
 	openDialogDuration      = 1000 * time.Millisecond
+
+	scrollMaskHeight = 50
 )
 
 var optionColor = color.RGBA{
@@ -164,22 +168,23 @@ func NewDialog(w donburi.World) *donburi.Entry {
 		Max: 0,
 	}
 
+	stackedView := component.StackedView.Get(log)
+	stackedView.CurrentY = float64(logCameraHeight) - float64(scrollMaskHeight)
+
 	return log
 }
 
 func CreateScrollMask(width, height int) *ebiten.Image {
 	img := ebiten.NewImage(width, height)
 
-	fadeHeight := 50
-
 	for y := 0; y < height; y++ {
 		var alpha uint8 = 255
 
-		if y < fadeHeight {
-			alpha = uint8(float64(y) / float64(fadeHeight) * 255)
-		} else if y > height-fadeHeight {
+		if y < scrollMaskHeight {
+			alpha = uint8(float64(y) / float64(scrollMaskHeight) * 255)
+		} else if y > height-scrollMaskHeight {
 			distFromBottom := height - y
-			alpha = uint8(float64(distFromBottom) / float64(fadeHeight) * 255)
+			alpha = uint8(float64(distFromBottom) / float64(scrollMaskHeight) * 255)
 		}
 
 		for x := 0; x < width; x++ {
@@ -199,11 +204,6 @@ func NextPassage(w donburi.World) {
 
 	activePassage.RemoveComponent(component.Passage)
 
-	dialogLog := engine.MustFindWithComponent(w, component.DialogLog)
-	stackedView := component.StackedView.Get(dialogLog)
-
-	height := passage.Height
-
 	for _, txt := range engine.FindChildrenWithComponent(activePassage, component.Text) {
 		component.Text.Get(txt).Color = assets.TextDarkColor
 	}
@@ -213,6 +213,8 @@ func NextPassage(w donburi.World) {
 	q.Each(w, func(e *donburi.Entry) {
 		options = append(options, e)
 	})
+
+	height := 0.0
 
 	for _, e := range options {
 		opt := component.DialogOption.Get(e)
@@ -226,7 +228,7 @@ func NextPassage(w donburi.World) {
 				WithLayerInherit().
 				WithPosition(math.Vec2{
 					X: 2,
-					Y: height + passageMargin,
+					Y: passage.Height + passageMarginTop,
 				}).
 				WithText(component.TextData{
 					Text:  fmt.Sprintf("-> %s", t.Text),
@@ -237,36 +239,19 @@ func NextPassage(w donburi.World) {
 
 			AdjustTextWidth(newOption, passageTextWidth)
 
-			textHeight := MeasureTextHeight(newOption)
-			height += passageMargin + textHeight
+			optionTextHeight := MeasureTextHeight(newOption)
+			height += passageMarginTop + optionTextHeight
+
 			component.Bounds.SetValue(newOption, component.BoundsData{
 				Width:  passageTextWidth,
-				Height: textHeight,
+				Height: optionTextHeight,
 			})
 		}
 
 		component.Destroy(e)
 	}
 
-	cameraEntry := engine.MustFindWithComponent(w, component.DialogLogCamera)
-	cam := component.Camera.Get(cameraEntry)
-
-	stackedView.CurrentY += height
-	cam.ViewportBounds.Y = &engine.FloatRange{
-		Min: 0,
-		Max: stackedView.CurrentY,
-	}
-
-	startY := cam.ViewportPosition.Y
-	anim := component.Animator.Get(cameraEntry)
-	scroll := anim.Animations["scroll"]
-	scroll.Update = func(e *donburi.Entry, a *component.Animation) {
-		cam.ViewportPosition.Y = startY + height*a.Timer.PercentDone()
-		if a.Timer.IsReady() {
-			a.Stop(cameraEntry)
-		}
-	}
-	scroll.Start(cameraEntry)
+	scrollDialogLog(w, height)
 
 	if link.IsExit() {
 		_, ok := engine.FindWithComponent(w, component.Character)
@@ -327,6 +312,41 @@ func NextPassage(w donburi.World) {
 	ShowPassage(w, link.Target, nil)
 }
 
+func scrollDialogLog(w donburi.World, height float64) {
+	dialogLog := engine.MustFindWithComponent(w, component.DialogLog)
+	stackedView := component.StackedView.Get(dialogLog)
+	stackedView.CurrentY += height
+
+	cameraEntry := engine.MustFindWithComponent(w, component.DialogLogCamera)
+	cam := component.Camera.Get(cameraEntry)
+	camHeight := float64(cam.Viewport.Bounds().Dy())
+
+	marginBottom := float64(scrollMaskHeight)
+	endY := stackedView.CurrentY - camHeight + marginBottom
+
+	if endY < 0 {
+		return
+	}
+
+	cam.ViewportBounds.Y = &engine.FloatRange{
+		Min: 0,
+		Max: endY,
+	}
+
+	startY := cam.ViewportPosition.Y
+	scrollValue := endY - startY
+
+	anim := component.Animator.Get(cameraEntry)
+	scroll := anim.Animations["scroll"]
+	scroll.Update = func(e *donburi.Entry, a *component.Animation) {
+		cam.ViewportPosition.Y = startY + scrollValue*a.Timer.PercentDone()
+		if a.Timer.IsReady() {
+			a.Stop(cameraEntry)
+		}
+	}
+	scroll.Start(cameraEntry)
+}
+
 func showDialog(w donburi.World) {
 	dialog := engine.MustFindWithComponent(w, component.Dialog)
 	if component.Active.Get(dialog).Active {
@@ -357,42 +377,9 @@ func hideDialog(w donburi.World, onHide func(e *donburi.Entry)) {
 	anim.Start(dialog)
 }
 
-const (
-	passageMarginLeft = 20
-	passageMarginTop  = 250
-
-	passageTextWidth = 380
-)
-
-func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi.Entry) *donburi.Entry {
-	dialog := engine.MustFindWithComponent(w, component.Dialog)
-
+func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi.Entry) {
 	if source != nil {
-		levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
-		cam := component.Camera.Get(levelCamera)
-		bz := component.BriefZoom.Get(levelCamera)
-		bz.OriginCamera = *cam
-
-		cam.ViewportBounds = component.ViewportBounds{}
-		cam.ViewportTarget = nil
-
-		originPosition := cam.ViewportPosition
-		originZoom := cam.ViewportZoom
-		targetZoom := cam.ViewportZoom * 1.5
-
-		bounds := component.Bounds.Get(source)
-
-		targetWorldPos := transform.WorldPosition(source)
-		viewportWidth := float64(cam.Viewport.Bounds().Dx()) / targetZoom
-		viewportHeight := float64(cam.Viewport.Bounds().Dy()) / targetZoom
-
-		targetPosition := math.Vec2{
-			X: targetWorldPos.X + bounds.Width/2.0 - viewportWidth/4.0,
-			Y: targetWorldPos.Y + bounds.Height/2.0 - viewportHeight/2.0,
-		}
-
-		animator := component.Animator.Get(levelCamera)
-		animator.SetAnimation("zoom-in", newCameraZoomAnimation(cam, originPosition, targetPosition, originZoom, targetZoom))
+		zoomInOnPOI(w, source)
 	}
 
 	showDialog(w)
@@ -405,13 +392,12 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		WithLayer(domain.SpriteUILayerText).
 		WithPosition(math.Vec2{
 			X: passageMarginLeft,
-			// TODO should be always trying to show the bottom
-			Y: stackedView.CurrentY + passageMarginTop,
+			Y: stackedView.CurrentY,
 		}).
 		With(component.Passage).
 		Entry()
 
-	textY := float64(passageMargin)
+	textY := float64(passageMarginTop)
 	passageHeight := textY
 
 	if domainPassage.Header != "" {
@@ -429,17 +415,17 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 			With(component.Bounds).
 			Entry()
 
-		textHeight := MeasureTextHeight(header)
+		headerHeight := MeasureTextHeight(header)
 
 		component.Bounds.SetValue(header, component.BoundsData{
 			Width:  passageTextWidth,
-			Height: textHeight,
+			Height: headerHeight,
 		})
 
 		headerMargin := 20.0
 
-		textY += textHeight + headerMargin
-		passageHeight += textHeight + headerMargin
+		textY += headerHeight + headerMargin
+		passageHeight += headerHeight + headerMargin
 	}
 
 	streamingTime := 500 * time.Millisecond
@@ -484,15 +470,63 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		}
 
 		AdjustTextWidth(txt, passageTextWidth)
-		textHeight := MeasureTextHeight(txt) + LineSpacingPixels
-		textY += textHeight
-		passageHeight += textHeight
+		segmentTextHeight := MeasureTextHeight(txt)
+
+		yIncrease := segmentTextHeight
+		if i != len(domainPassage.AvailableSegments())-1 {
+			yIncrease += LineSpacingPixels
+		}
+
+		textY += yIncrease
+		passageHeight += yIncrease
 
 		component.Bounds.SetValue(txt, component.BoundsData{
 			Width:  passageTextWidth,
-			Height: textHeight,
+			Height: segmentTextHeight,
 		})
 	}
+
+	component.Passage.SetValue(passage, component.PassageData{
+		Passage:      domainPassage,
+		ActiveOption: 0,
+		Height:       passageHeight,
+	})
+
+	scrollDialogLog(w, passageHeight)
+
+	createDialogOptions(w, domainPassage)
+}
+
+func zoomInOnPOI(w donburi.World, source *donburi.Entry) {
+	levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
+	cam := component.Camera.Get(levelCamera)
+	bz := component.BriefZoom.Get(levelCamera)
+	bz.OriginCamera = *cam
+
+	cam.ViewportBounds = component.ViewportBounds{}
+	cam.ViewportTarget = nil
+
+	originPosition := cam.ViewportPosition
+	originZoom := cam.ViewportZoom
+	targetZoom := cam.ViewportZoom * 1.5
+
+	bounds := component.Bounds.Get(source)
+
+	targetWorldPos := transform.WorldPosition(source)
+	viewportWidth := float64(cam.Viewport.Bounds().Dx()) / targetZoom
+	viewportHeight := float64(cam.Viewport.Bounds().Dy()) / targetZoom
+
+	targetPosition := math.Vec2{
+		X: targetWorldPos.X + bounds.Width/2.0 - viewportWidth/4.0,
+		Y: targetWorldPos.Y + bounds.Height/2.0 - viewportHeight/2.0,
+	}
+
+	animator := component.Animator.Get(levelCamera)
+	animator.SetAnimation("zoom-in", newCameraZoomAnimation(cam, originPosition, targetPosition, originZoom, targetZoom))
+}
+
+func createDialogOptions(w donburi.World, domainPassage *domain.Passage) {
+	dialog := engine.MustFindWithComponent(w, component.Dialog)
 
 	game := component.MustFindGame(w)
 	screenHeight := game.Settings.ScreenHeight
@@ -572,14 +606,6 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 
 		optionsY += lineHeight + LineSpacingPixels
 	}
-
-	component.Passage.SetValue(passage, component.PassageData{
-		Passage:      domainPassage,
-		ActiveOption: 0,
-		Height:       passageHeight,
-	})
-
-	return passage
 }
 
 func newCameraZoomAnimation(

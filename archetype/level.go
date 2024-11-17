@@ -112,7 +112,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	cam.Root = entry
 
-	// TODO Review the default
+	// TODO Rework to fit the width based on the screen size
 	if level.CameraZoom != 0 {
 		cam.ViewportZoom = level.CameraZoom
 	} else {
