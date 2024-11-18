@@ -2,7 +2,7 @@
 <map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="13">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <imagelayer id="2" name="Background">
-  <image source="../backgrounds/train-station.jpeg" width="3072" height="1728"/>
+  <image source="../backgrounds/train-station.png" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="3" name="Objects">
   <object id="3" name="Newspaper" class="poi" x="1200" y="1000" width="120" height="72">

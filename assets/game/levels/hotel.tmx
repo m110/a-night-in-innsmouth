@@ -2,7 +2,7 @@
 <map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="27">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
- <tileset firstgid="8" source=":/automap-tiles.tsx"/>
+ <tileset firstgid="37" source=":/automap-tiles.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="../backgrounds/hotel.jpeg" width="3072" height="1728"/>
  </imagelayer>

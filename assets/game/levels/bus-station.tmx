@@ -2,7 +2,7 @@
 <map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="10">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <imagelayer id="3" name="Background">
-  <image source="../backgrounds/bus-station.jpeg" width="3072" height="1728"/>
+  <image source="../backgrounds/bus.png" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="4" name="POI">
   <object id="1" name="Bus" class="poi" x="1552" y="624" width="136" height="112">
@@ -17,12 +17,12 @@
   </object>
  </objectgroup>
  <objectgroup id="5" name="Entrypoints">
-  <object id="5" name="Exit" class="poi" x="-192" y="680" width="160" height="712">
+  <object id="5" name="Exit" class="poi" x="-72" y="912" width="160" height="712">
    <properties>
     <property name="edge" propertytype="edge" value="left"/>
     <property name="level" value="train-station,1"/>
    </properties>
   </object>
-  <object id="9" name="Entrypoint 0" class="entrypoint" gid="1" x="192" y="1208" width="137.673" height="456"/>
+  <object id="9" name="Entrypoint 0" class="entrypoint" gid="1" x="208" y="1560" width="202.887" height="672"/>
  </objectgroup>
 </map>

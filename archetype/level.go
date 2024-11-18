@@ -119,11 +119,18 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	cam.Root = entry
 
-	// TODO Rework to fit the width based on the screen size
 	if level.CameraZoom != 0 {
 		cam.ViewportZoom = level.CameraZoom
 	} else {
-		cam.ViewportZoom = 0.4
+		// Calculate zoom to fit height with margins
+		marginPercent := 0.01
+		screenHeight := float64(game.Settings.ScreenHeight)
+		bgHeight := float64(level.Background.Bounds().Dy())
+
+		totalMarginHeight := screenHeight * marginPercent * 2
+		availableHeight := screenHeight - totalMarginHeight
+
+		cam.ViewportZoom = availableHeight / bgHeight
 	}
 
 	// Multiply by zoom to go from world space to screen space

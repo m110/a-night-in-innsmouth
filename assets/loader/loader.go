@@ -149,6 +149,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 				if err != nil {
 					return domain.Level{}, err
 				}
+
 				tilesetImages[globalID] = img
 			}
 		}
@@ -190,7 +191,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 			if obj.Class == "object" {
 				img, ok := tilesetImages[obj.GID]
 				if !ok {
-					return domain.Level{}, errors.New(fmt.Sprintf("object not found: %v", obj.GID))
+					return domain.Level{}, errors.New(fmt.Sprintf("object not found: %v on level %v", obj.GID, levelPath))
 				}
 
 				objImg := ebiten.NewImageFromImage(img)
