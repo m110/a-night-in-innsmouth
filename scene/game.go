@@ -78,7 +78,7 @@ func (g *Game) loadLevel() {
 func (g *Game) createWorld() donburi.World {
 	world := donburi.NewWorld()
 
-	story := domain.NewStory(world, assets.Story)
+	story := domain.NewStory(world, assets.Assets.Story)
 
 	game := world.Entry(world.Create(component.Game, component.Input))
 	component.Game.SetValue(game, component.GameData{

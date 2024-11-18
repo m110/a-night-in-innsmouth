@@ -18,7 +18,7 @@ const (
 )
 
 func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
-	level, ok := assets.Levels[targetLevel.Name]
+	level, ok := assets.Assets.Levels[targetLevel.Name]
 	if !ok {
 		panic("Name not found: " + targetLevel.Name)
 	}

@@ -26,10 +26,10 @@
                 5
             ],
             "scale": 0.2128,
-            "selectedLayer": 2,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1355.733082706767,
-                "y": 1334.5864661654139
+                "x": 265.5075187969926,
+                "y": 1437.9699248120305
             }
         },
         "city.tmx": {
@@ -39,7 +39,7 @@
                 3
             ],
             "scale": 0.276,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 2697.463768115942,
                 "y": 1083.3333333333335
@@ -57,8 +57,8 @@
             "scale": 0.1716,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1488.9277389277393,
-                "y": 1081.002331002331
+                "x": 2025.058275058275,
+                "y": 1643.3566433566436
             }
         },
         "hotel-room.tmx": {
@@ -66,10 +66,10 @@
                 3
             ],
             "scale": 0.1953,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1861.2391193036356,
-                "y": 1730.6707629288276
+                "x": 2117.2555043522784,
+                "y": 977.9825908858168
             }
         },
         "hotel.tmx": {
@@ -79,7 +79,7 @@
                 2
             ],
             "scale": 0.2027,
-            "selectedLayer": 3,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 352.73803650715354,
                 "y": 1869.7582634435128
@@ -91,11 +91,84 @@
                 3
             ],
             "scale": 0.2675,
-            "selectedLayer": 2,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 1467.2897196261683,
                 "y": 1727.1028037383178
             }
+        },
+        "levels/Character.tsx": {
+            "scaleInDock": 1
+        },
+        "levels/bus-station.tmx": {
+            "scale": 2.1374999999999997,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 155.55555555555557,
+                "y": 112.04678362573102
+            }
+        },
+        "levels/city.tmx": {
+            "scale": 14.8734375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 16.035297825401827,
+                "y": 26.254858703645336
+            }
+        },
+        "levels/grocery-npc.tmx": {
+            "scale": 14.8734375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 16.035297825401827,
+                "y": 26.254858703645336
+            }
+        },
+        "levels/hotel-hall.tmx": {
+            "scale": 14.8734375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 16.035297825401827,
+                "y": 26.254858703645336
+            }
+        },
+        "levels/hotel-room.tmx": {
+            "scale": 14.8734375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 16.035297825401827,
+                "y": 26.254858703645336
+            }
+        },
+        "levels/hotel.tmx": {
+            "scale": 14.8734375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 16.035297825401827,
+                "y": 26.254858703645336
+            }
+        },
+        "levels/innsmouth.tmx": {
+            "scale": 4.1063,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": -8.645252417017744,
+                "y": 55.88973041424152
+            }
+        },
+        "levels/objects/Objects.tsx": {
+            "scaleInDock": 1
+        },
+        "levels/train-station.tmx": {
+            "scale": 14.8734375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 16.035297825401827,
+                "y": 26.254858703645336
+            }
+        },
+        "objects/Objects.tsx": {
+            "dynamicWrapping": true
         },
         "train-station.tmx": {
             "expandedObjectLayers": [
@@ -110,6 +183,7 @@
             }
         }
     },
+    "last.externalTilesetPath": "/Users/milosz/src/gamedev/secrets/assets/game/objects",
     "last.imagePath": "/Users/milosz/src/gamedev/secrets/assets/levels/objects",
     "map.fixedSize": false,
     "map.lastUsedFormat": "tmx",
@@ -120,7 +194,7 @@
         "Character.tsx",
         "city.tmx"
     ],
-    "project": "secrets.tiled-project",
+    "project": "game.tiled-project",
     "property.type": "bool",
     "recentFiles": [
         "innsmouth.tmx",

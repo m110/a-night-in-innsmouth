@@ -5,6 +5,6 @@
   <property name="startPassage" value="Hotel Hall"/>
  </properties>
  <imagelayer id="3" name="Background">
-  <image source="hotel-hall.jpeg" width="3072" height="1728"/>
+  <image source="../backgrounds/hotel-hall.jpeg" width="3072" height="1728"/>
  </imagelayer>
 </map>

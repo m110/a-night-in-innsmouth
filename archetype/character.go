@@ -29,7 +29,7 @@ func NewCharacter(parent *donburi.Entry, scale float64, movementBounds component
 		WithParent(parent).
 		WithLayer(domain.SpriteLayerCharacter).
 		WithSprite(component.SpriteData{
-			Image: assets.Character[2],
+			Image: assets.Assets.Character[2],
 		}).
 		With(component.Velocity).
 		WithSpriteBounds().
@@ -41,10 +41,10 @@ func NewCharacter(parent *donburi.Entry, scale float64, movementBounds component
 
 	sprite := component.Sprite.Get(character)
 	frames := []*ebiten.Image{
-		assets.Character[0],
-		assets.Character[1],
-		assets.Character[2],
-		assets.Character[3],
+		assets.Assets.Character[0],
+		assets.Assets.Character[1],
+		assets.Assets.Character[2],
+		assets.Assets.Character[3],
 	}
 
 	currentFrame := 0
