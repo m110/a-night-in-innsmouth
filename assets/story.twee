@@ -81,6 +81,12 @@ You bough the ticket.
 > [[Fold it and put in the pocket->Agent]]
 
 
+:: Chair {"position":"2800,600","size":"100,100"}
+...
+
+> {exit} [[Leave.->Chair]]
+
+
 :: Cheaper Options {"position":"1550,475","size":"100,100"}
 setFact: learnedAboutInnsmouth
 setFact: hasWayOutOfNewburyport
@@ -180,7 +186,7 @@ Perhaps you should consider other options.
 :: Look for your room {"position":"3925,1350","size":"100,100"}
 There it is. At the end of the corridor, you see the door to your room. The smell isn't so bad in this area.
 
-> [[Enter the room]]
+> {level:hotel-room,0} [[Enter the room]]
 > {level:hotel,1} [[Go back downstairs]]
 
 

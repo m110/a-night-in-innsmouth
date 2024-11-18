@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="18">
+ <tileset firstgid="1" source="Character.tsx"/>
+ <tileset firstgid="2" source="objects/Objects.tsx"/>
+ <tileset firstgid="8" source=":/automap-tiles.tsx"/>
+ <imagelayer id="2" name="Background">
+  <image source="hotel-room.jpeg" width="3072" height="1728"/>
+ </imagelayer>
+ <objectgroup id="3" name="Objects">
+  <object id="5" name="Entrypoint 0" class="entrypoint" gid="2147483649" x="1752" y="1368" width="216" height="715.437">
+   <properties>
+    <property name="flipY" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="7" name="Door" class="poi" gid="7" x="2096" y="936" width="55" height="86">
+   <properties>
+    <property name="image" value="lock"/>
+    <property name="level" value="hotel,0"/>
+   </properties>
+  </object>
+  <object id="8" name="Chair" class="poi" gid="6" x="240" y="1168" width="160" height="236.404">
+   <properties>
+    <property name="image" value="chair"/>
+    <property name="passage" value="Chair"/>
+   </properties>
+  </object>
+  <object id="10" name="Limits" class="limits" x="104" y="448" width="2208" height="944"/>
+ </objectgroup>
+</map>

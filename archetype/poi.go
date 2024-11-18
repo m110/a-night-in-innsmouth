@@ -13,7 +13,7 @@ import (
 	"github.com/m110/secrets/engine"
 )
 
-var PoiVisibleDistance = engine.FloatRange{Min: 200, Max: 400}
+var PoiVisibleDistance = engine.FloatRange{Min: 200, Max: 500}
 
 func NewPOI(
 	parent *donburi.Entry,

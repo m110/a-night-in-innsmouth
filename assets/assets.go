@@ -117,16 +117,14 @@ func mustLoadLevel(path string) domain.Level {
 		panic(err)
 	}
 
-	var imageName string
-	for _, t := range levelMap.ImageLayers {
-		if t.Name == "Background" {
-			imageName = t.Image.Source
 		}
 	}
 
-	if imageName == "" {
-		panic("background image not found")
+	if len(levelMap.ImageLayers) != 1 {
+		panic("expected exactly one image layer")
 	}
+
+	background := mustNewEbitenImage(mustReadFile(fmt.Sprintf("levels/%v", levelMap.ImageLayers[0].Image.Source)))
 
 	var objects []domain.Object
 	var pois []domain.POI
@@ -309,7 +307,7 @@ func mustLoadLevel(path string) domain.Level {
 	}
 
 	return domain.Level{
-		Background:     mustNewEbitenImage(mustReadFile(fmt.Sprintf("levels/%v", imageName))),
+		Background:     background,
 		POIs:           pois,
 		Objects:        objects,
 		StartPassage:   startPassage,
