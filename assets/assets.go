@@ -42,8 +42,6 @@ var (
 
 	levelNames = map[string]struct{}{}
 	Levels     = map[string]domain.Level{}
-
-	Objects = map[string]*ebiten.Image{}
 )
 
 func MustLoadAssets() {
@@ -62,7 +60,6 @@ func MustLoadAssets() {
 		Character[i] = mustNewEbitenImage(mustReadFile(fmt.Sprintf("character/character-%v.png", i+1)))
 	}
 
-	mustLoadObjects()
 	mustLoadLevels()
 
 	for _, l := range Levels {
@@ -79,18 +76,6 @@ func MustLoadAssets() {
 				assertLevelExists(*l.Level)
 			}
 		}
-	}
-}
-
-func mustLoadObjects() {
-	paths, err := fs.Glob(assetsFS, "levels/objects/*.png")
-	if err != nil {
-		panic(err)
-	}
-
-	for _, p := range paths {
-		name := strings.TrimSuffix(path.Base(p), ".png")
-		Objects[name] = mustNewEbitenImage(mustReadFile(p))
 	}
 }
 
@@ -111,10 +96,27 @@ func mustLoadLevels() {
 	}
 }
 
-func mustLoadLevel(path string) domain.Level {
-	levelMap, err := tiled.LoadFile(path, tiled.WithFileSystem(assetsFS))
+func mustLoadLevel(levelPath string) domain.Level {
+	levelMap, err := tiled.LoadFile(levelPath, tiled.WithFileSystem(assetsFS))
 	if err != nil {
 		panic(err)
+	}
+
+	tilesetImages := map[uint32]*ebiten.Image{}
+	for _, ts := range levelMap.Tilesets {
+		if ts.Image != nil {
+			// Only collection of images supported for now
+			continue
+		}
+
+		for _, tile := range ts.Tiles {
+			if tile.Image != nil && tile.Image.Source != "" {
+				p := path.Join("levels", path.Dir(ts.Source), tile.Image.Source)
+				img := mustReadFile(p)
+				globalID := ts.FirstGID + tile.ID
+				tilesetImages[globalID] = mustNewEbitenImage(img)
+			}
+		}
 	}
 
 	if len(levelMap.ImageLayers) != 1 {
@@ -130,15 +132,14 @@ func mustLoadLevel(path string) domain.Level {
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
 			if obj.Class == "object" {
-				img := obj.Properties.GetString("image")
-				layer := o.Properties.GetInt("layer")
-
-				if _, ok := Objects[img]; !ok {
-					panic(fmt.Sprintf("object not found: %v", img))
+				img, ok := tilesetImages[obj.GID]
+				if !ok {
+					panic(fmt.Sprintf("object not found: %v", obj.GID))
 				}
 
-				objImg := ebiten.NewImageFromImage(Objects[img])
+				objImg := ebiten.NewImageFromImage(img)
 				bounds := objImg.Bounds()
+				layer := o.Properties.GetInt("layer")
 
 				domainObj := domain.Object{
 					Image: objImg,
@@ -157,18 +158,17 @@ func mustLoadLevel(path string) domain.Level {
 			}
 
 			if obj.Class == "poi" {
-				img := obj.Properties.GetString("image")
-
 				y := obj.Y
 				var objectImg *ebiten.Image
-				if img != "" {
+				if obj.GID != 0 {
 					// Image-based objects have pivot set to bottom-left
 					// Other objects have pivot set to top-left
 					y -= obj.Height
-					if _, ok := Objects[img]; !ok {
-						panic(fmt.Sprintf("object not found: %v", img))
+					img, ok := tilesetImages[obj.GID]
+					if !ok {
+						panic(fmt.Sprintf("object not found: %v", obj.GID))
 					}
-					objectImg = ebiten.NewImageFromImage(Objects[img])
+					objectImg = ebiten.NewImageFromImage(img)
 				}
 
 				var domainEdge *domain.Direction

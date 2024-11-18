@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="18">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="22">
  <tileset firstgid="1" source="Character.tsx"/>
  <tileset firstgid="2" source="objects/Objects.tsx"/>
  <tileset firstgid="8" source=":/automap-tiles.tsx"/>
@@ -14,16 +14,18 @@
   </object>
   <object id="7" name="Door" class="poi" gid="7" x="2096" y="936" width="55" height="86">
    <properties>
-    <property name="image" value="lock"/>
-    <property name="level" value="hotel,0"/>
+    <property name="level" value="hotel,1"/>
    </properties>
   </object>
   <object id="8" name="Chair" class="poi" gid="6" x="240" y="1168" width="160" height="236.404">
    <properties>
-    <property name="image" value="chair"/>
     <property name="passage" value="Chair"/>
    </properties>
   </object>
   <object id="10" name="Limits" class="limits" x="104" y="448" width="2208" height="944"/>
+  <object id="18" x="536" y="1232"/>
+  <object id="19" x="464" y="1240"/>
+  <object id="20" x="384" y="1248"/>
+  <object id="21" x="2144" y="904"/>
  </objectgroup>
 </map>
