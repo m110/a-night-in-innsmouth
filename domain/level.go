@@ -15,6 +15,7 @@ type Level struct {
 	Entrypoints    []Entrypoint
 	CameraZoom     float64
 	CharacterScale float64
+	Limits         *engine.FloatRange
 }
 
 type Entrypoint struct {

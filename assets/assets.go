@@ -129,8 +129,21 @@ func mustLoadLevel(levelPath string) domain.Level {
 	var pois []domain.POI
 	var entrypoints []domain.Entrypoint
 	var characterScale float64
+	var limits *engine.FloatRange
+
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
+			if obj.Class == "limits" {
+				if limits != nil {
+					panic("multiple limits objects")
+				}
+
+				limits = &engine.FloatRange{
+					Min: obj.X,
+					Max: obj.X + obj.Width,
+				}
+			}
+
 			if obj.Class == "object" {
 				img, ok := tilesetImages[obj.GID]
 				if !ok {
@@ -311,6 +324,7 @@ func mustLoadLevel(levelPath string) domain.Level {
 		Entrypoints:    entrypoints,
 		CameraZoom:     cameraZoom,
 		CharacterScale: characterScale,
+		Limits:         limits,
 	}
 }
 

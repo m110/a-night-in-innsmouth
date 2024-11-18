@@ -97,11 +97,18 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	}
 
 	if characterPos != nil {
+		// Default to the background boundaries
+		boundsRange := engine.FloatRange{
+			Min: levelMovementMargin,
+			Max: float64(level.Background.Bounds().Dx() - levelMovementMargin),
+		}
+
+		if level.Limits != nil {
+			boundsRange = *level.Limits
+		}
+
 		bounds := component.MovementBoundsData{
-			Range: engine.FloatRange{
-				Min: levelMovementMargin,
-				Max: float64(level.Background.Bounds().Dx() - levelMovementMargin),
-			},
+			Range: boundsRange,
 		}
 
 		character = NewCharacter(entry, level.CharacterScale, bounds)
