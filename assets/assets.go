@@ -117,9 +117,6 @@ func mustLoadLevel(path string) domain.Level {
 		panic(err)
 	}
 
-		}
-	}
-
 	if len(levelMap.ImageLayers) != 1 {
 		panic("expected exactly one image layer")
 	}
