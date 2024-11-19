@@ -24,20 +24,22 @@ var (
 	Assets *domain.Assets
 )
 
-func MustLoadAssets() {
+func MustLoadFonts() {
+	SmallFont = mustLoadFont(normalFontData, 10)
+	NormalFont = mustLoadFont(normalFontData, 24)
+}
+
+func MustLoadAssets(progressChan chan string) {
 	if Assets != nil {
 		panic("assets already loaded")
 	}
 
-	assets, err := loader.LoadAssets(assetsFS)
+	assets, err := loader.LoadAssets(assetsFS, progressChan)
 	if err != nil {
 		panic(err)
 	}
 
 	Assets = assets
-
-	SmallFont = mustLoadFont(normalFontData, 10)
-	NormalFont = mustLoadFont(normalFontData, 24)
 }
 
 func mustLoadFont(data []byte, size int) *text.GoTextFace {

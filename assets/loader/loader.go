@@ -25,7 +25,9 @@ var (
 	levelNames = map[string]struct{}{}
 )
 
-func LoadAssets(assetsFS fs.FS) (*domain.Assets, error) {
+func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, error) {
+	progressChan <- "Parsing story"
+
 	twee, err := fs.ReadFile(assetsFS, "game/game.twee")
 	if err != nil {
 		return nil, err
@@ -35,6 +37,8 @@ func LoadAssets(assetsFS fs.FS) (*domain.Assets, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	progressChan <- "Loading character"
 
 	characterFrames := 4
 	character := make([]*ebiten.Image, 4)
@@ -50,12 +54,14 @@ func LoadAssets(assetsFS fs.FS) (*domain.Assets, error) {
 		}
 	}
 
+	progressChan <- "Loading levels"
 	characterHeight := float64(character[2].Bounds().Dy())
-	levels, err := loadLevels(assetsFS, characterHeight)
+	levels, err := loadLevels(assetsFS, characterHeight, progressChan)
 	if err != nil {
 		return nil, err
 	}
 
+	progressChan <- "Validating assets"
 	for _, l := range levels {
 		if l.StartPassage != "" {
 			err = assertPassageExists(story, l.StartPassage)
@@ -99,7 +105,7 @@ func LoadAssets(assetsFS fs.FS) (*domain.Assets, error) {
 }
 
 // TODO Passing characterHeight here seems weird, reconsider?
-func loadLevels(assetsFS fs.FS, characterHeight float64) (map[string]domain.Level, error) {
+func loadLevels(assetsFS fs.FS, characterHeight float64, progressChan chan<- string) (map[string]domain.Level, error) {
 	levelPaths, err := fs.Glob(assetsFS, "game/levels/*.tmx")
 	if err != nil {
 		return nil, err
@@ -113,6 +119,7 @@ func loadLevels(assetsFS fs.FS, characterHeight float64) (map[string]domain.Leve
 	levels := map[string]domain.Level{}
 	for _, p := range levelPaths {
 		name := strings.TrimSuffix(path.Base(p), ".tmx")
+		progressChan <- fmt.Sprintf("Loading level %v", name)
 		l, err := loadLevel(assetsFS, p, characterHeight)
 		if err != nil {
 			return nil, err

@@ -1,9 +1,13 @@
 package game
 
 import (
+	"fmt"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/m110/secrets/assets"
+
 	"github.com/m110/secrets/scene"
 )
 
@@ -16,6 +20,8 @@ type Game struct {
 	scene        Scene
 	screenWidth  int
 	screenHeight int
+
+	loadingLines []string
 }
 
 type Config struct {
@@ -25,18 +31,30 @@ type Config struct {
 }
 
 func NewGame(config Config) *Game {
-	assets.MustLoadAssets()
-
 	g := &Game{
 		screenWidth:  config.ScreenWidth,
 		screenHeight: config.ScreenHeight,
 	}
 
-	if config.Quick {
-		g.switchToGame()
-	} else {
-		g.switchToTitle()
-	}
+	assets.MustLoadFonts()
+
+	progressChan := make(chan string)
+	go func() {
+		assets.MustLoadAssets(progressChan)
+		close(progressChan)
+	}()
+
+	go func() {
+		for line := range progressChan {
+			g.loadingLines = append(g.loadingLines, line)
+		}
+
+		if config.Quick {
+			g.switchToGame()
+		} else {
+			g.switchToTitle()
+		}
+	}()
 
 	return g
 }
@@ -50,11 +68,23 @@ func (g *Game) switchToGame() {
 }
 
 func (g *Game) Update() error {
+	if g.scene == nil {
+		return nil
+	}
 	g.scene.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	if g.scene == nil {
+		for i, line := range g.loadingLines {
+			op := &text.DrawOptions{}
+			op.LineSpacing = 1.5
+			op.GeoM.Translate(10, float64(20+20*i))
+			text.Draw(screen, fmt.Sprintf("%v...", line), assets.NormalFont, op)
+		}
+		return
+	}
 	g.scene.Draw(screen)
 }
 
