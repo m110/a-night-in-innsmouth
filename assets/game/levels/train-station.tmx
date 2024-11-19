@@ -1,51 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="13">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="23">
  <tileset firstgid="1" source="../character/Character.tsx"/>
+ <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="../backgrounds/train-station.png" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="3" name="Objects">
-  <object id="3" name="Newspaper" class="poi" x="1200" y="1000" width="120" height="72">
+  <object id="3" name="Trigger: Newspaper" class="trigger" x="1519" y="1263" width="120" height="72">
    <properties>
-    <property name="passage" value="Train Station Newspaper"/>
+    <property name="poi" type="object" value="21"/>
    </properties>
   </object>
-  <object id="4" name="Bottle" class="poi" x="1664" y="968" width="40" height="56">
+  <object id="4" name="Trigger: Bottle" class="trigger" x="2085" y="1231" width="40" height="56">
    <properties>
-    <property name="image" value=""/>
-    <property name="passage" value="Train Station Bottle"/>
+    <property name="poi" type="object" value="20"/>
    </properties>
   </object>
-  <object id="5" name="Train Sheet" class="poi" x="2000" y="856" width="72" height="72">
+  <object id="5" name="Trigger: Train Sheet" class="trigger" x="2517" y="1080" width="72" height="93">
    <properties>
-    <property name="image" value=""/>
-    <property name="passage" value="Train Sheet"/>
+    <property name="poi" type="object" value="18"/>
    </properties>
   </object>
-  <object id="6" name="Clock" class="poi" x="2088" y="728" width="80" height="80">
+  <object id="6" name="Trigger: Clock" class="trigger" x="2623" y="922" width="80" height="80">
+   <properties>
+    <property name="poi" type="object" value="16"/>
+   </properties>
+  </object>
+  <object id="7" name="Trigger: Station" class="trigger" x="1831" y="1027" width="88" height="245">
+   <properties>
+    <property name="poi" type="object" value="22"/>
+   </properties>
+  </object>
+  <object id="13" name="Limits" class="limits" x="624" y="272" width="2568" height="1256"/>
+  <object id="16" name="Clock" class="poi" gid="29" x="2643" y="979" width="61" height="52">
    <properties>
     <property name="passage" value="Train Station Clock"/>
    </properties>
   </object>
-  <object id="7" name="Station" class="poi" x="1456" y="832" width="88" height="176">
+  <object id="18" name="Train Sheet" class="poi" gid="36" x="2518" y="1138" width="77" height="60">
+   <properties>
+    <property name="passage" value="Train Sheet"/>
+   </properties>
+  </object>
+  <object id="20" name="Bottle" class="poi" gid="26" x="2087" y="1284" width="38" height="46">
+   <properties>
+    <property name="passage" value="Train Station Bottle"/>
+   </properties>
+  </object>
+  <object id="21" name="Newspaper" class="poi" gid="32" x="1529" y="1328" width="110" height="48">
+   <properties>
+    <property name="passage" value="Train Station Newspaper"/>
+   </properties>
+  </object>
+  <object id="22" name="Station" class="poi" gid="4" x="1888" y="1173" width="38" height="39.2809">
    <properties>
     <property name="passage" value="Train Station"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="4" name="Entrypoints">
-  <object id="2" name="Exit" class="poi" x="2560" y="744" width="104" height="344">
+  <object id="2" name="Exit" class="poi" x="2960" y="1024" width="104" height="344">
    <properties>
     <property name="level" value="bus-station,0"/>
     <property name="touchTrigger" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="8" name="Entrypoint 1" class="entrypoint" x="2344" y="816" width="120" height="272">
+  <object id="8" name="Entrypoint 1" class="entrypoint" x="2800" y="1096" width="120" height="272">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>
    </properties>
   </object>
-  <object id="10" name="Entrypoint 0" class="entrypoint" gid="1" x="776" y="1096" width="104" height="344.469"/>
+  <object id="10" name="Entrypoint 0" class="entrypoint" gid="1" x="816" y="1376" width="104" height="344.469"/>
  </objectgroup>
 </map>

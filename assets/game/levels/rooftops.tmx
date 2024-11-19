@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="6">
+ <tileset firstgid="1" source="../objects/Objects.tsx"/>
+ <tileset firstgid="36" source="../character/Character.tsx"/>
+ <imagelayer id="2" name="Background">
+  <image source="../backgrounds/rooftops.png" width="3840" height="2160"/>
+ </imagelayer>
+ <objectgroup id="3" name="Objects">
+  <properties>
+   <property name="layer" type="int" value="130"/>
+  </properties>
+  <object id="2" name="Chimney" class="object" gid="27" x="1645" y="1961" width="334" height="713"/>
+  <object id="3" name="Entrypoint" class="entrypoint" gid="36" x="387" y="1579" width="166" height="549.826"/>
+  <object id="4" name="Limits" class="limits" x="333" y="640" width="2595" height="1230"/>
+  <object id="5" name="Roof Window" class="poi" x="1952" y="1624" width="257" height="200">
+   <properties>
+    <property name="passage" value="Roof Window"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

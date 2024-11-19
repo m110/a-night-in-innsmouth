@@ -104,6 +104,10 @@ A fish carcass rots on the ground. The smell makes your eyes watery.
 > {exit} [[Move away.]]
 
 
+:: Enter {"position":"4775,2600","size":"100,100"}
+
+
+
 :: Enter the room {"position":"3800,1525","size":"100,100"}
 
 
@@ -198,6 +202,12 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 
 
 
+:: Roof Window {"position":"4775,2475","size":"100,100"}
+...
+
+> {level:innsmouth,2} [[Enter]]
+
+
 :: Start {"position":"800,775","size":"100,100"}
 
 
@@ -266,3 +276,9 @@ The house is in ruin.
 
 > [[Go inside]]
 > {exit} [[Leave it be]]
+
+
+:: Zadok Allen {"position":"4975,2475","size":"100,100"}
+...
+
+> {exit} [[Leave.]]

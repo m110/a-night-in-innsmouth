@@ -196,6 +196,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 
 				objImg := ebiten.NewImageFromImage(img)
 				bounds := objImg.Bounds()
+				// TODO Replace by separate layers
 				layer := o.Properties.GetInt("layer")
 
 				domainObj := domain.Object{
@@ -215,17 +216,27 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 			}
 
 			if obj.Class == "poi" {
-				y := obj.Y
-				var objectImg *ebiten.Image
+				object := domain.Object{
+					Position: math.Vec2{
+						X: obj.X,
+						Y: obj.Y,
+					},
+				}
+
 				if obj.GID != 0 {
 					// Image-based objects have pivot set to bottom-left
 					// Other objects have pivot set to top-left
-					y -= obj.Height
+					object.Position.Y -= obj.Height
 					img, ok := tilesetImages[obj.GID]
 					if !ok {
 						return domain.Level{}, fmt.Errorf("object not found: %v", obj.GID)
 					}
-					objectImg = ebiten.NewImageFromImage(img)
+					object.Image = ebiten.NewImageFromImage(img)
+
+					object.Scale = math.Vec2{
+						X: obj.Width / float64(img.Bounds().Dx()),
+						Y: obj.Height / float64(img.Bounds().Dy()),
+					}
 				}
 
 				var domainEdge *domain.Direction
@@ -238,12 +249,11 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 					domainEdge = &edge
 				}
 
-				rect := engine.NewRect(obj.X, y, obj.Width, obj.Height)
+				rect := engine.NewRect(object.Position.X, object.Position.Y, obj.Width, obj.Height)
 				poi := domain.POI{
 					ID:           fmt.Sprint(obj.ID),
-					Image:        objectImg,
+					Object:       object,
 					TriggerRect:  rect,
-					Rect:         rect,
 					EdgeTrigger:  domainEdge,
 					TouchTrigger: obj.Properties.GetBool("touchTrigger"),
 				}

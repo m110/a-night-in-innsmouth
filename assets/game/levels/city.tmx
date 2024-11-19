@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="30">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="31">
  <tileset firstgid="1" source="../objects/Objects.tsx"/>
  <tileset firstgid="36" source="../character/Character.tsx"/>
  <imagelayer id="2" name="Background">
@@ -12,10 +12,10 @@
     <property name="index" type="int" value="1"/>
    </properties>
   </object>
-  <object id="28" name="Entrypoint 0" class="entrypoint" gid="36" x="536" y="1856" width="144" height="476.958"/>
+  <object id="28" name="Entrypoint 0" class="entrypoint" gid="36" x="424" y="1872" width="187" height="619.383"/>
  </objectgroup>
  <objectgroup id="4" name="POI">
-  <object id="6" name="Hotel" class="poi" gid="3" x="3432" y="1504" width="89" height="92">
+  <object id="6" name="Hotel" class="poi" gid="3" x="3472" y="1512" width="89" height="92">
    <properties>
     <property name="level" value="hotel,0"/>
    </properties>
@@ -63,5 +63,6 @@
     <property name="layer" type="int" value="130"/>
    </properties>
   </object>
+  <object id="30" x="624" y="1464"/>
  </objectgroup>
 </map>

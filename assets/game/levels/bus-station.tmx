@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="10">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="12">
  <tileset firstgid="1" source="../character/Character.tsx"/>
+ <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="../backgrounds/bus.png" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="4" name="POI">
-  <object id="1" name="Bus" class="poi" x="1552" y="624" width="136" height="112">
+  <object id="1" name="Trigger: Sign" class="trigger" x="1984" y="832" width="136" height="112">
    <properties>
-    <property name="passage" value="Bus"/>
+    <property name="poi" type="object" value="11"/>
    </properties>
   </object>
-  <object id="2" name="Driver" class="poi" x="1760" y="784" width="128" height="176">
+  <object id="2" name="Trigger: Driver" class="trigger" x="2208" y="976" width="128" height="176">
+   <properties>
+    <property name="poi" type="object" value="10"/>
+   </properties>
+  </object>
+  <object id="10" name="Driver" class="poi" gid="35" x="2240" y="1128" width="45" height="57">
    <properties>
     <property name="passage" value="Bus Driver"/>
+   </properties>
+  </object>
+  <object id="11" name="Sign" class="poi" gid="34" x="2000" y="920" width="113" height="57">
+   <properties>
+    <property name="passage" value="Bus"/>
    </properties>
   </object>
  </objectgroup>

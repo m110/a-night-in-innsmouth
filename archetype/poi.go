@@ -34,12 +34,13 @@ func NewPOI(
 		POI: poi,
 	})
 
-	if poi.Image != nil {
+	if poi.Object.Image != nil {
 		poiImage := NewTagged(w, "POIImage").
 			WithParent(entry).
 			WithLayerInherit().
+			WithScale(poi.Object.Scale).
 			WithSprite(component.SpriteData{
-				Image: poi.Image,
+				Image: poi.Object.Image,
 				ColorBlendOverride: &component.ColorBlendOverride{
 					Value: 0,
 				},
@@ -49,8 +50,8 @@ func NewPOI(
 			Entry()
 
 		transform.SetWorldPosition(poiImage, math.Vec2{
-			X: poi.Rect.X,
-			Y: poi.Rect.Y,
+			X: poi.Object.Position.X,
+			Y: poi.Object.Position.Y,
 		})
 	}
 

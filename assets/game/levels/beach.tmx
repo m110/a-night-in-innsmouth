@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="11">
+ <tileset firstgid="1" source="../objects/Objects.tsx"/>
+ <tileset firstgid="36" source="../character/Character.tsx"/>
+ <imagelayer id="3" name="Background">
+  <image source="../backgrounds/beach.png" width="3840" height="2160"/>
+ </imagelayer>
+ <objectgroup id="2" name="Objects">
+  <properties>
+   <property name="layer" type="int" value="130"/>
+  </properties>
+  <object id="4" name="Breaker" class="object" gid="26" x="1157" y="2118" width="251" height="360"/>
+  <object id="5" name="Breaker" class="object" gid="26" x="1683" y="2142" width="251" height="360"/>
+  <object id="6" name="Entrypoint" class="entrypoint" gid="2147483684" x="3561" y="1874" width="138.276" height="458">
+   <properties>
+    <property name="flipY" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="7" name="Exit to Innsmouth" class="poi" x="3776" y="1409" width="148" height="473">
+   <properties>
+    <property name="edge" propertytype="edge" value="right"/>
+    <property name="level" value="innsmouth,0"/>
+    <property name="touchTrigger" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="9" name="Zadok" class="poi" gid="30" x="2338" y="1637" width="160" height="78">
+   <properties>
+    <property name="passage" value="Zadok Allen"/>
+   </properties>
+  </object>
+  <object id="10" name="Trigger: Zadok" class="trigger" x="2323" y="1551" width="171" height="305">
+   <properties>
+    <property name="poi" type="object" value="9"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
