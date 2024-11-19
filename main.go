@@ -15,12 +15,10 @@ func main() {
 	_ = quickFlag
 
 	config := game.Config{
-		Quick:        true,
-		ScreenWidth:  1024,
-		ScreenHeight: 768,
+		Quick: true,
 	}
 
-	ebiten.SetWindowSize(config.ScreenWidth, config.ScreenHeight)
+	ebiten.SetWindowSize(1920, 1080)
 
 	err := ebiten.RunGame(game.NewGame(config))
 	if err != nil {

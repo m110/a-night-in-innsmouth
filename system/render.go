@@ -42,13 +42,17 @@ func NewRender() *Render {
 }
 
 func (r *Render) Init(w donburi.World) {
+	r.UpdateLayout(w)
+	r.debug = component.Debug.Get(engine.MustFindWithComponent(w, component.Debug))
+}
+
+// TODO Rework into events
+func (r *Render) UpdateLayout(w donburi.World) {
 	game := component.MustFindGame(w)
 
 	imageWidth := game.Settings.ScreenWidth
 	imageHeight := game.Settings.ScreenHeight
 	r.offscreen = ebiten.NewImage(imageWidth, imageHeight)
-
-	r.debug = component.Debug.Get(engine.MustFindWithComponent(w, component.Debug))
 }
 
 func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {

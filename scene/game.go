@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"image/color"
 
+	"github.com/yohamta/donburi/filter"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	donburievents "github.com/yohamta/donburi/features/events"
@@ -27,6 +29,10 @@ type System interface {
 
 type Drawable interface {
 	Draw(w donburi.World, screen *ebiten.Image)
+}
+
+type LayoutUpdater interface {
+	UpdateLayout(w donburi.World)
 }
 
 type Game struct {
@@ -126,6 +132,34 @@ func (g *Game) createWorld() donburi.World {
 	})
 
 	return world
+}
+
+func (g *Game) OnLayoutChange(width, height int) {
+	g.screenWidth = width
+	g.screenHeight = height
+
+	if g.world == nil {
+		return
+	}
+
+	gameEntry, ok := donburi.NewQuery(filter.Contains(component.Game)).First(g.world)
+	if ok {
+		game := component.Game.Get(gameEntry)
+		game.Settings.ScreenWidth = width
+		game.Settings.ScreenHeight = height
+
+		for _, s := range g.systems {
+			if init, ok := s.(LayoutUpdater); ok {
+				init.UpdateLayout(g.world)
+			}
+		}
+
+		for _, d := range g.drawables {
+			if init, ok := d.(LayoutUpdater); ok {
+				init.UpdateLayout(g.world)
+			}
+		}
+	}
 }
 
 func (g *Game) init() {

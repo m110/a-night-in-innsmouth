@@ -4,16 +4,17 @@ import (
 	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/m110/secrets/assets"
-
 	"github.com/m110/secrets/scene"
 )
 
 type Scene interface {
 	Update()
 	Draw(screen *ebiten.Image)
+	OnLayoutChange(width, height int)
 }
 
 type Game struct {
@@ -25,16 +26,11 @@ type Game struct {
 }
 
 type Config struct {
-	Quick        bool
-	ScreenWidth  int
-	ScreenHeight int
+	Quick bool
 }
 
 func NewGame(config Config) *Game {
-	g := &Game{
-		screenWidth:  config.ScreenWidth,
-		screenHeight: config.ScreenHeight,
-	}
+	g := &Game{}
 
 	assets.MustLoadFonts()
 
@@ -68,14 +64,26 @@ func (g *Game) switchToGame() {
 }
 
 func (g *Game) Update() error {
+	if g.screenWidth == 0 || g.screenHeight == 0 {
+		return nil
+	}
 	if g.scene == nil {
 		return nil
 	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyF) {
+		ebiten.SetFullscreen(!ebiten.IsFullscreen())
+	}
+
 	g.scene.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	if g.screenWidth == 0 || g.screenHeight == 0 {
+		return
+	}
+
 	if g.scene == nil {
 		for i, line := range g.loadingLines {
 			op := &text.DrawOptions{}
@@ -89,8 +97,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(width, height int) (int, int) {
-	if g.screenWidth == 0 || g.screenHeight == 0 {
-		return width, height
+	if g.screenWidth != width || g.screenHeight != height {
+		g.screenWidth = width
+		g.screenHeight = height
+		if g.scene != nil {
+			g.scene.OnLayoutChange(width, height)
+		}
 	}
 	return g.screenWidth, g.screenHeight
 }

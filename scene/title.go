@@ -34,3 +34,7 @@ func (t *Title) Update() {
 
 func (t *Title) Draw(screen *ebiten.Image) {
 }
+
+func (t *Title) OnLayoutChange(width, height int) {
+	// TODO implement me
+}
