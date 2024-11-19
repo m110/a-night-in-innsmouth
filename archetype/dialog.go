@@ -339,7 +339,7 @@ func scrollDialogLog(w donburi.World, height float64) {
 	anim := component.Animator.Get(cameraEntry)
 	scroll := anim.Animations["scroll"]
 	scroll.Update = func(e *donburi.Entry, a *component.Animation) {
-		cam.ViewportPosition.Y = startY + scrollValue*a.Timer.PercentDone()
+		cam.ViewportPosition.Y = startY + scrollValue*engine.EaseInOut(a.Timer.PercentDone())
 		if a.Timer.IsReady() {
 			a.Stop(cameraEntry)
 		}

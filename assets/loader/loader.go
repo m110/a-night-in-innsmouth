@@ -159,7 +159,12 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 		return domain.Level{}, fmt.Errorf("expected one image layer, got: %v", len(levelMap.ImageLayers))
 	}
 
-	bgBytes, err := fs.ReadFile(assetsFS, path.Join("game/levels", levelMap.ImageLayers[0].Image.Source))
+	bgLayer := levelMap.ImageLayers[0]
+	if bgLayer.OffsetX != 0 || bgLayer.OffsetY != 0 {
+		return domain.Level{}, errors.New("background layer offset is not (0,0)")
+	}
+
+	bgBytes, err := fs.ReadFile(assetsFS, path.Join("game/levels", bgLayer.Image.Source))
 	if err != nil {
 		return domain.Level{}, err
 	}
