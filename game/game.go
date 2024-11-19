@@ -18,9 +18,12 @@ type Scene interface {
 }
 
 type Game struct {
-	scene        Scene
-	screenWidth  int
-	screenHeight int
+	scene Scene
+
+	rawScreenWidth  int
+	rawScreenHeight int
+	screenWidth     int
+	screenHeight    int
 
 	loadingLines []string
 }
@@ -76,7 +79,7 @@ func (g *Game) switchToGame() {
 }
 
 func (g *Game) Update() error {
-	if g.screenWidth == 0 || g.screenHeight == 0 {
+	if g.rawScreenWidth == 0 || g.rawScreenHeight == 0 {
 		return nil
 	}
 	if g.scene == nil {
@@ -92,7 +95,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	if g.screenWidth == 0 || g.screenHeight == 0 {
+	if g.rawScreenWidth == 0 || g.rawScreenHeight == 0 {
 		return
 	}
 
@@ -109,12 +112,21 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(width, height int) (int, int) {
-	if g.screenWidth != width || g.screenHeight != height {
-		g.screenWidth = width
-		g.screenHeight = height
+	if g.rawScreenWidth != width || g.rawScreenHeight != height {
+		g.rawScreenWidth = width
+		g.rawScreenHeight = height
+
+		scale := ebiten.Monitor().DeviceScaleFactor()
+
+		g.screenWidth = int(float64(width) * scale)
+		g.screenHeight = int(float64(height) * scale)
+
+		g.loadingLines = append(g.loadingLines, fmt.Sprintf("layout change: %dx%d -> %dx%d (scale: %v)", width, height, g.screenWidth, g.screenHeight, scale))
+
 		if g.scene != nil {
-			g.scene.OnLayoutChange(width, height)
+			g.scene.OnLayoutChange(g.screenWidth, g.screenHeight)
 		}
 	}
+
 	return g.screenWidth, g.screenHeight
 }
