@@ -4,7 +4,7 @@
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <tileset firstgid="37" source=":/automap-tiles.tsx"/>
  <imagelayer id="3" name="Background">
-  <image source="../backgrounds/hotel.jpeg" width="3072" height="1728"/>
+  <image source="../backgrounds/hotel.jpg" width="3072" height="1728"/>
  </imagelayer>
  <objectgroup color="#85c78d" id="2" name="Objects">
   <object id="1" name="Fish" class="poi" x="1248" y="144" width="584" height="320">

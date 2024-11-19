@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="12">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="14">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="3" name="Background">
-  <image source="../backgrounds/bus.png" width="3840" height="2160"/>
+  <image source="../backgrounds/bus.jpg" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="4" name="POI">
   <object id="1" name="Trigger: Sign" class="trigger" x="1984" y="832" width="136" height="112">

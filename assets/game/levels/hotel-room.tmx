@@ -4,7 +4,7 @@
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <tileset firstgid="37" source=":/automap-tiles.tsx"/>
  <imagelayer id="2" name="Background">
-  <image source="../backgrounds/hotel-room.jpeg" width="3072" height="1728"/>
+  <image source="../backgrounds/hotel-room.jpg" width="3072" height="1728"/>
  </imagelayer>
  <objectgroup id="3" name="Objects">
   <properties>

@@ -105,10 +105,10 @@
                 2
             ],
             "scale": 0.33,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1769.6969696969695,
-                "y": 1477.2727272727275
+                "x": 1651.5151515151513,
+                "y": 1765.151515151515
             }
         },
         "levels/bus-station.tmx": {
@@ -117,7 +117,7 @@
                 4
             ],
             "scale": 0.2388,
-            "selectedLayer": 2,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 2537.688442211055,
                 "y": 1505.4438860971522
@@ -130,9 +130,9 @@
                 4
             ],
             "scale": 0.33,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 2151.515151515151,
+                "x": 2148.484848484848,
                 "y": 1068.1818181818185
             }
         },
@@ -160,7 +160,7 @@
                 3
             ],
             "scale": 0.5,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 752,
                 "y": 901
@@ -180,7 +180,7 @@
                 5
             ],
             "scale": 0.5,
-            "selectedLayer": 2,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 2532,
                 "y": 1275
@@ -194,7 +194,7 @@
                 3
             ],
             "scale": 0.33,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 1587.878787878788,
                 "y": 1795.4545454545453
@@ -206,10 +206,10 @@
                 4
             ],
             "scale": 0.75,
-            "selectedLayer": 2,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1305.3333333333333,
-                "y": 967.3333333333333
+                "x": 1304,
+                "y": 966
             }
         },
         "objects/Objects.tsx": {

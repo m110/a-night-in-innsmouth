@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="2" name="Background">
-  <image source="../backgrounds/train-station.png" width="3840" height="2160"/>
+  <image source="../backgrounds/train-station.jpg" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="3" name="Objects">
   <object id="3" name="Trigger: Newspaper" class="trigger" x="1519" y="1263" width="120" height="72">
