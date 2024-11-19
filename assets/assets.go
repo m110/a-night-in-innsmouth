@@ -3,6 +3,7 @@ package assets
 import (
 	"bytes"
 	"embed"
+	"errors"
 
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"golang.org/x/text/language"
@@ -29,17 +30,20 @@ func MustLoadFonts() {
 	NormalFont = mustLoadFont(normalFontData, 24)
 }
 
-func MustLoadAssets(progressChan chan string) {
+func LoadAssets(progressChan chan<- string, errorChan chan<- error) {
 	if Assets != nil {
-		panic("assets already loaded")
+		errorChan <- errors.New("assets already loaded")
+		return
 	}
 
 	assets, err := loader.LoadAssets(assetsFS, progressChan)
 	if err != nil {
-		panic(err)
+		errorChan <- err
+		return
 	}
 
 	Assets = assets
+	errorChan <- nil
 }
 
 func mustLoadFont(data []byte, size int) *text.GoTextFace {

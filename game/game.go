@@ -35,20 +35,32 @@ func NewGame(config Config) *Game {
 	assets.MustLoadFonts()
 
 	progressChan := make(chan string)
-	go func() {
-		assets.MustLoadAssets(progressChan)
-		close(progressChan)
-	}()
+	errorChan := make(chan error)
+
+	go assets.LoadAssets(progressChan, errorChan)
 
 	go func() {
-		for line := range progressChan {
-			g.loadingLines = append(g.loadingLines, line)
+		defer func() {
+			close(progressChan)
+			close(errorChan)
+		}()
+
+		err := <-errorChan
+		if err != nil {
+			g.loadingLines = append(g.loadingLines, fmt.Sprintf("ERROR: %v", err))
+			return
 		}
 
 		if config.Quick {
 			g.switchToGame()
 		} else {
 			g.switchToTitle()
+		}
+	}()
+
+	go func() {
+		for line := range progressChan {
+			g.loadingLines = append(g.loadingLines, line)
 		}
 	}()
 
