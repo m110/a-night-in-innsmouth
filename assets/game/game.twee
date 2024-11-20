@@ -40,7 +40,7 @@ Zadok takes a sip.
 > [["Nevermind."->Train Station]]
 
 
-:: Arkham {"position":"2550,225","size":"200,200"}
+:: Arkham {"position":"2600,200","size":"200,200"}
 setTitle: Arkham
 --
 You arrive safely at Arkham.
@@ -135,12 +135,6 @@ A fish carcass rots on the ground. The smell makes your eyes watery.
 > {back} [[Nothing to do here->Vacant House]]
 
 
-:: Grocery {"position":"2325,2425","size":"100,100"}
-"Hello, mister!"
-
-> {exit} [[I'll see you later.]]
-
-
 :: Hat on a Hook {"position":"3925,725","size":"100,100"}
 unless: hasItem hat
 --
@@ -152,14 +146,6 @@ An old hat hangs on the hook in the hotel lobby.
 
 :: Hotel {"position":"3550,925","size":"100,100"}
 [[Hat on a Hook]]
-
-
-:: Hotel Hall {"position":"3925,1175","size":"100,100"}
-setTitle: Hotel Hall
---
-The hall is full of dust. A strong fish scent is in the air, stronger under some doors.
-
-> [[Look for your room]]
 
 
 :: I want to get to Arkham {"position":"1825,500","size":"100,100"}
@@ -336,7 +322,21 @@ The house is in ruin.
 
 
 
-:: Zadok Allen {"position":"5375,1925","size":"100,100"}
+:: grocery-npc {"position":"2325,2425","size":"100,100"}
+"Hello, mister!"
+
+> {exit} [[I'll see you later.]]
+
+
+:: hotel-hall {"position":"3925,1175","size":"100,100"}
+setTitle: Hotel Hall
+--
+The hall is full of dust. A strong fish scent is in the air, stronger under some doors.
+
+> [[Look for your room]]
+
+
+:: zadok {"position":"5375,1925","size":"100,100"}
 setTitle: Zadok Allen
 --
 [if hasMoney 1]
@@ -350,7 +350,7 @@ You recognize this man as Zadok, the drunk who the boy told you about.
 > {exit} [["Nothing."]]
 
 
-:: Zadok Allen Freaks Out {"position":"5725,2125","size":"100,100"}
+:: zadok-freaked-out {"position":"5725,2125","size":"100,100"}
 "GOD HELP US! RUN!"
 
 > {exit} [[What...?]]

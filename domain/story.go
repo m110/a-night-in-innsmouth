@@ -125,6 +125,11 @@ func (s *Story) AddMoney(amount int) {
 	s.publishInventoryUpdated()
 }
 
+func (s *Story) PassageExists(title string) bool {
+	_, ok := s.Passages[title]
+	return ok
+}
+
 func (s *Story) PassageByTitle(title string) *Passage {
 	p, ok := s.Passages[title]
 	if !ok {

@@ -79,8 +79,8 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	game := component.MustFindGame(w)
 
-	if level.StartPassage != "" {
-		ShowPassage(w, game.Story.PassageByTitle(level.StartPassage), nil)
+	if level.Name != "" && game.Story.PassageExists(level.Name) {
+		ShowPassage(w, game.Story.PassageByTitle(level.Name), nil)
 	}
 
 	var character *donburi.Entry

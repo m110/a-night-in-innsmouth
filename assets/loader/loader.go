@@ -63,8 +63,8 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 
 	progressChan <- "Validating assets"
 	for _, l := range levels {
-		if l.StartPassage != "" {
-			err = assertPassageExists(story, l.StartPassage)
+		if len(l.Entrypoints) == 0 {
+			err = assertPassageExists(story, l.Name)
 			if err != nil {
 				return nil, err
 			}
@@ -135,6 +135,8 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 	if err != nil {
 		return domain.Level{}, err
 	}
+
+	levelName := strings.TrimSuffix(path.Base(levelPath), ".tmx")
 
 	tilesetImages := map[uint32]*ebiten.Image{}
 	for _, ts := range levelMap.Tilesets {
@@ -382,18 +384,16 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 		}
 	}
 
-	var startPassage string
 	var cameraZoom float64
 	if levelMap.Properties != nil {
-		startPassage = levelMap.Properties.GetString("startPassage")
 		cameraZoom = levelMap.Properties.GetFloat("cameraZoom")
 	}
 
 	return domain.Level{
+		Name:           levelName,
 		Background:     loadBackground,
 		POIs:           pois,
 		Objects:        objects,
-		StartPassage:   startPassage,
 		Entrypoints:    entrypoints,
 		CameraZoom:     cameraZoom,
 		CharacterScale: characterScale,

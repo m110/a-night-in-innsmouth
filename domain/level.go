@@ -8,10 +8,10 @@ import (
 )
 
 type Level struct {
+	Name           string
 	Background     func() *ebiten.Image
 	POIs           []POI
 	Objects        []Object
-	StartPassage   string
 	Entrypoints    []Entrypoint
 	CameraZoom     float64
 	CharacterScale float64
