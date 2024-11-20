@@ -4,6 +4,6 @@
   <image source="../backgrounds/zadok-freaked-out.jpg" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="4" name="Objects">
-  <object id="1" name="Center" class="center" x="1649" y="-136" width="121" height="2478"/>
+  <object id="1" name="Fadepoint" class="fadepoint" x="3422" y="-11" width="121" height="2478"/>
  </objectgroup>
 </map>

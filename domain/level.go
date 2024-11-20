@@ -16,6 +16,7 @@ type Level struct {
 	CameraZoom     float64
 	CharacterScale float64
 	Limits         *engine.FloatRange
+	Fadepoint      *math.Vec2
 }
 
 type Entrypoint struct {

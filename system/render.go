@@ -134,6 +134,10 @@ func (r *Render) renderCamera(entry *donburi.Entry, offscreen *ebiten.Image) int
 				if child.entry.HasComponent(component.Collider) {
 					renderColliderDebug(child.entry, camera)
 				}
+
+				if child.entry.HasComponent(component.Tag) {
+					renderTagDebug(child.entry, camera)
+				}
 			}
 		}
 	}
@@ -188,6 +192,15 @@ func renderBoundsDebug(entry *donburi.Entry, camera *component.CameraData) {
 	w := bounds.Width * zoom
 	h := bounds.Height * zoom
 	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(w), float32(h), 1, colornames.Magenta, false)
+}
+
+func renderTagDebug(entry *donburi.Entry, camera *component.CameraData) {
+	tag := component.Tag.Get(entry)
+	pos := camera.WorldPositionToViewportPosition(entry)
+	op := &text.DrawOptions{}
+	op.ColorScale.ScaleWithColor(colornames.Magenta)
+	op.GeoM.Translate(pos.X, pos.Y)
+	text.Draw(camera.Viewport, tag.Tag, assets.SmallFont, op)
 }
 
 func renderColliderDebug(entry *donburi.Entry, camera *component.CameraData) {

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="1">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="2">
  <imagelayer id="3" name="Background">
   <image source="../backgrounds/hotel-hall.jpg" width="3072" height="1728"/>
  </imagelayer>
+ <objectgroup id="4" name="Objects">
+  <object id="1" name="Fadepoint" class="fadepoint" x="2176" y="44" width="56" height="1816"/>
+ </objectgroup>
 </map>

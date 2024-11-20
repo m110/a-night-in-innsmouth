@@ -25,8 +25,7 @@ const (
 
 	scrollMaskHeightPercent = 0.05
 
-	LevelTransitionDuration = 500 * time.Millisecond
-	openDialogDuration      = 1000 * time.Millisecond
+	openDialogDuration = 1000 * time.Millisecond
 )
 
 func NewDialog(w donburi.World) *donburi.Entry {

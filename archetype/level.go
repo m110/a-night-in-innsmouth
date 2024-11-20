@@ -1,6 +1,9 @@
 package archetype
 
 import (
+	math2 "math"
+	"time"
+
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
@@ -15,6 +18,12 @@ const (
 	levelMovementMargin               = 100
 	levelCameraMarginPercent          = 0.2
 	scrollingLevelCameraMarginPercent = 0.45
+
+	levelTransitionDuration = 500 * time.Millisecond
+
+	backgroundFadeDuration   = 1000 * time.Millisecond
+	backgroundScrollSpeed    = 1
+	backgroundScrollDistance = 100
 )
 
 func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
@@ -48,7 +57,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	anim.SetAnimation("transition", &component.Animation{
 		Active: true,
-		Timer:  engine.NewTimer(LevelTransitionDuration),
+		Timer:  engine.NewTimer(levelTransitionDuration),
 		OnStart: func(e *donburi.Entry) {
 			input.Disabled = true
 		},
@@ -153,6 +162,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	viewportWorldWidth := float64(cam.Viewport.Bounds().Dx()) / cam.ViewportZoom
 
 	if character == nil {
+		// No character - make the background scroll horizontally
 		targetPos := math.Vec2{
 			X: levelWidth / 2.0,
 			Y: cam.ViewportPosition.Y,
@@ -169,15 +179,50 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 			Entry()
 
 		component.Velocity.Get(target).Velocity = math.Vec2{
-			X: 1,
+			X: backgroundScrollSpeed,
 		}
 
 		cam.ViewportTarget = target
 
+		maxX := levelWidth
+		if level.Fadepoint != nil {
+			maxX = level.Fadepoint.X
+		}
+
 		cam.ViewportBounds.X = &engine.FloatRange{
 			Min: float64(-scrollingLevelCameraMargin(w)),
-			Max: levelWidth + float64(scrollingLevelCameraMargin(w)) - viewportWorldWidth,
+			Max: maxX + float64(scrollingLevelCameraMargin(w)) - viewportWorldWidth,
 		}
+
+		visible := true
+		animating := false
+		anim.SetAnimation("fade", &component.Animation{
+			Active: true,
+			Timer:  engine.NewTimer(backgroundFadeDuration),
+			Update: func(e *donburi.Entry, a *component.Animation) {
+				if animating {
+					if visible {
+						cam.TransitionAlpha = a.Timer.PercentDone()
+						if a.Timer.IsReady() {
+							a.Timer.Reset()
+							visible = false
+							transform.GetTransform(target).LocalPosition = targetPos
+						}
+					} else {
+						cam.TransitionAlpha = 1 - a.Timer.PercentDone()
+						if a.Timer.IsReady() {
+							visible = true
+							animating = false
+						}
+					}
+				} else {
+					if math2.Abs(cam.ViewportPosition.X-cam.ViewportBounds.X.Max) < backgroundScrollDistance {
+						animating = true
+						a.Timer.Reset()
+					}
+				}
+			},
+		})
 	} else {
 		cam.ViewportPosition.X = levelWidth/2.0 - screenWorldWidth/2.0
 		cam.ViewportTarget = character

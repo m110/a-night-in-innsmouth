@@ -4,7 +4,6 @@
   <image source="../backgrounds/grocery-npc.jpg" width="3072" height="1728"/>
  </imagelayer>
  <objectgroup id="4" name="Objects">
-  <object id="1" name="Center" class="center" x="1408" y="-192" width="48" height="1920"/>
-  <object id="2" x="1512" y="-792"/>
+  <object id="1" name="Fadepoint" class="fadepoint" x="2281" y="-14" width="48" height="1920"/>
  </objectgroup>
 </map>

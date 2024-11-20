@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="4">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="7">
  <imagelayer id="3" name="Background">
   <image source="../backgrounds/zadok.jpg" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="4" name="Objects">
-  <object id="1" name="Center" class="center" x="1685" y="-118" width="3" height="2460"/>
+  <object id="1" name="Fadepoint" class="fadepoint" x="3455" y="129" width="114" height="2465"/>
  </objectgroup>
 </map>

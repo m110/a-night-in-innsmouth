@@ -198,9 +198,20 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 	var entrypoints []domain.Entrypoint
 	var characterScale float64
 	var limits *engine.FloatRange
+	var fadepoint *math.Vec2
 
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
+			if obj.Class == "fadepoint" {
+				if fadepoint != nil {
+					return domain.Level{}, errors.New("multiple fadepoint objects")
+				}
+
+				fadepoint = &math.Vec2{
+					X: obj.X,
+					Y: obj.Y,
+				}
+			}
 			if obj.Class == "limits" {
 				if limits != nil {
 					return domain.Level{}, errors.New("multiple limits objects")
@@ -398,6 +409,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 		CameraZoom:     cameraZoom,
 		CharacterScale: characterScale,
 		Limits:         limits,
+		Fadepoint:      fadepoint,
 	}, nil
 }
 
