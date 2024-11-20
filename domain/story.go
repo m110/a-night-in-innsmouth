@@ -24,9 +24,17 @@ type RawPassage struct {
 
 type Segment struct {
 	Text       string
-	IsHint     bool
+	Type       SegmentType
 	Conditions []Condition
 }
+
+type SegmentType int
+
+const (
+	SegmentTypeStandard SegmentType = iota
+	SegmentTypeHint
+	SegmentTypeFear
+)
 
 type RawLink struct {
 	Text       string

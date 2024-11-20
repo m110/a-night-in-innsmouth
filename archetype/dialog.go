@@ -446,8 +446,11 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 
 	for i, segment := range domainPassage.AvailableSegments() {
 		segmentColor := assets.TextColor
-		if segment.IsHint {
+		switch segment.Type {
+		case domain.SegmentTypeHint:
 			segmentColor = assets.TextOrangeColor
+		case domain.SegmentTypeFear:
+			segmentColor = assets.TextPurpleColor
 		}
 
 		txt := NewTagged(w, "Passage Segment Text").

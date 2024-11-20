@@ -107,7 +107,26 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 
 	for _, segment := range strings.Split(content, "\n") {
 		if segment == "[hint]" {
-			currentSegment.IsHint = true
+			if !conditionStarted {
+				if currentSegment.Text != "" {
+					segments = append(segments, currentSegment)
+				}
+				currentSegment = domain.Segment{}
+				conditionStarted = true
+			}
+			currentSegment.Type = domain.SegmentTypeHint
+			continue
+		}
+
+		if segment == "[fear]" {
+			if !conditionStarted {
+				if currentSegment.Text != "" {
+					segments = append(segments, currentSegment)
+				}
+				currentSegment = domain.Segment{}
+				conditionStarted = true
+			}
+			currentSegment.Type = domain.SegmentTypeFear
 			continue
 		}
 

@@ -27,6 +27,12 @@ var (
 		B: 199,
 		A: 255,
 	}
+	TextPurpleColor = color.RGBA{
+		R: 199,
+		G: 199,
+		B: 247,
+		A: 255,
+	}
 
 	UIBackgroundColor = color.RGBA{
 		R: 25,

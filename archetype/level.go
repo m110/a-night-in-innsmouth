@@ -189,6 +189,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 			maxX = level.Fadepoint.X
 		}
 
+		// TODO Review these calculations, don't work well on smaller displays
 		cam.ViewportBounds.X = &engine.FloatRange{
 			Min: float64(-scrollingLevelCameraMargin(w)),
 			Max: maxX + float64(scrollingLevelCameraMargin(w)) - viewportWorldWidth,

@@ -22,7 +22,7 @@ Zadok takes a sip.
 > [[Wait.->Wait for Zadok]]
 
 
-:: "Nothing." {"position":"5375,2050","size":"100,100"}
+:: "Nothing." {"position":"5350,2125","size":"100,100"}
 
 
 
@@ -135,7 +135,7 @@ A fish carcass rots on the ground. The smell makes your eyes watery.
 > {back} [[Nothing to do here->Vacant House]]
 
 
-:: Hat on a Hook {"position":"3925,725","size":"100,100"}
+:: Hat on a Hook {"position":"3625,425","size":"100,100"}
 unless: hasItem hat
 --
 An old hat hangs on the hook in the hotel lobby.
@@ -144,7 +144,7 @@ An old hat hangs on the hook in the hotel lobby.
 > {exit} [[Leave.]]
 
 
-:: Hotel {"position":"3550,925","size":"100,100"}
+:: Hotel {"position":"3850,300","size":"100,100"}
 [[Hat on a Hook]]
 
 
@@ -194,7 +194,7 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 
 
 
-:: Option 1 {"position":"4275,2600","size":"100,100"}
+:: Option 1 {"position":"4450,2500","size":"100,100"}
 
 
 
@@ -234,7 +234,7 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 
 
 
-:: Take it. {"position":"4125,725","size":"100,100"}
+:: Take it. {"position":"4125,625","size":"100,100"}
 addItem: hat
 --
 You took the hat.
@@ -249,10 +249,16 @@ This is a test.
 
 Lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet.
 
-[if hasMoney 100]
 [hint]
-A hint looks like this, right?
+This is what the boy in the grocery store has been talking about.
 [continue]
+
+[if hasMoney 100]
+[fear]
+This seems like a bad idea. People disappear here.
+[continue]
+
+More normal text
 
 > {exit} [[Option 1]]
 > {exit} [[Option 2]]
@@ -281,9 +287,12 @@ The station is empty except for the agent.
 > {exit} [[Leave.]]
 
 
-:: Train Station Clock {"position":"2200,500","size":"100,100"}
+:: Train Station Clock {"position":"2200,450","size":"100,100"}
 
+[if hasItem Train Ticket to Arkham]
 > [[Wait for the train and board it->Train to Arkham]]
+[continue]
+
 > {exit} [[Leave.]]
 
 
@@ -296,7 +305,7 @@ setFact: readTrainStationNewspaper
 > {exit} [[Leave.]]
 
 
-:: Train to Arkham {"position":"2350,350","size":"100,100"}
+:: Train to Arkham {"position":"2400,300","size":"100,100"}
 setTitle: Train to Arkham
 takeItem: Train Ticket to Arkham
 --
@@ -346,7 +355,10 @@ You recognize this man as Zadok, the drunk who the boy told you about.
 
 "What do you want?"
 
+[if hasItem Quart of Whisky]
 > [["Here, have a sip." - hand him the whisky bottle]]
+[continue]
+
 > {exit} [["Nothing."]]
 
 
