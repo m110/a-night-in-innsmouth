@@ -9,8 +9,8 @@
   <properties>
    <property name="layer" type="int" value="130"/>
   </properties>
-  <object id="2" name="Chimney" class="object" gid="27" x="1645" y="1961" width="334" height="713"/>
-  <object id="3" name="Entrypoint" class="entrypoint" gid="36" x="387" y="1579" width="166" height="549.826"/>
+  <object id="2" name="Chimney" class="object" gid="27" x="1661" y="1917" width="334" height="713"/>
+  <object id="3" name="Entrypoint" class="entrypoint" gid="36" x="458" y="1586" width="166" height="549.826"/>
   <object id="4" name="Limits" class="limits" x="333" y="640" width="2595" height="1230"/>
   <object id="5" name="Roof Window" class="poi" x="1952" y="1624" width="257" height="200">
    <properties>

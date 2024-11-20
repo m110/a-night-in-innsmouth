@@ -196,20 +196,20 @@ func ChangeLevel(w donburi.World, level domain.TargetLevel) {
 		lvl.Changing = true
 		game := component.MustFindGame(w)
 
-		var characterPos *domain.CharacterPosition
-		character, found := engine.FindWithComponent(w, component.Character)
-		if found {
+		character, characterFound := engine.FindWithComponent(w, component.Character)
+		if characterFound {
+			var characterPos *domain.CharacterPosition
 			pos := transform.GetTransform(character).LocalPosition
 			flipY := component.Sprite.Get(character).FlipY
 			characterPos = &domain.CharacterPosition{
 				LocalPosition: pos,
 				FlipY:         flipY,
 			}
-		}
 
-		game.PreviousLevel = &component.PreviousLevel{
-			Name:              lvl.Name,
-			CharacterPosition: characterPos,
+			game.PreviousLevel = &component.PreviousLevel{
+				Name:              lvl.Name,
+				CharacterPosition: characterPos,
+			}
 		}
 
 		anim := component.Animator.Get(currentLevel)

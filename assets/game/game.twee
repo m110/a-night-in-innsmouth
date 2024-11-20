@@ -16,6 +16,16 @@ game
 }
 
 
+:: "Here, have a sip." - hand him the whisky bottle {"position":"5625,1925","size":"100,100"}
+Zadok takes a sip.
+
+> [[Wait.->Wait for Zadok]]
+
+
+:: "Nothing." {"position":"5375,2050","size":"100,100"}
+
+
+
 :: ... {"position":"3800,2450","size":"100,100"}
 
 
@@ -234,6 +244,10 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 > {exit} [[...]]
 
 
+:: Take a look {"position":"6050,1900","size":"100,100"}
+
+
+
 :: Take it. {"position":"4125,725","size":"100,100"}
 addItem: hat
 --
@@ -312,7 +326,31 @@ The house is in ruin.
 > {exit} [[Leave it be]]
 
 
-:: Zadok Allen {"position":"4975,2475","size":"100,100"}
-...
+:: Wait for Zadok {"position":"5825,1875","size":"100,100"}
+"Look at the ocean..."
 
-> {exit} [[Leave.]]
+> {level:zadok-freaked-out} [[Take a look]]
+
+
+:: What...? {"position":"5725,2250","size":"100,100"}
+
+
+
+:: Zadok Allen {"position":"5375,1925","size":"100,100"}
+setTitle: Zadok Allen
+--
+[if hasMoney 1]
+[hint]
+You recognize this man as Zadok, the drunk who the boy told you about.
+[continue]
+
+"What do you want?"
+
+> [["Here, have a sip." - hand him the whisky bottle]]
+> {exit} [["Nothing."]]
+
+
+:: Zadok Allen Freaks Out {"position":"5725,2125","size":"100,100"}
+"GOD HELP US! RUN!"
+
+> {exit} [[What...?]]

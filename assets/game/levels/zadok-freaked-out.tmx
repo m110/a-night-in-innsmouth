@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="4">
+ <properties>
+  <property name="startPassage" value="Zadok Allen Freaks Out"/>
+ </properties>
+ <imagelayer id="3" name="Background">
+  <image source="../backgrounds/zadok-freaked-out.jpg" width="3840" height="2160"/>
+ </imagelayer>
+ <objectgroup id="4" name="Objects">
+  <object id="1" name="Center" class="center" x="1649" y="-136" width="121" height="2478"/>
+ </objectgroup>
+</map>

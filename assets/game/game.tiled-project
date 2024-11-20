@@ -8,6 +8,24 @@
     ],
     "propertyTypes": [
         {
+            "color": "#ffa0a0a4",
+            "id": 10,
+            "members": [
+            ],
+            "name": "center",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset"
+            ]
+        },
+        {
             "id": 7,
             "name": "edge",
             "storageType": "string",

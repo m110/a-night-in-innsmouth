@@ -101,14 +101,11 @@
             "scaleInDock": 1
         },
         "levels/beach.tmx": {
-            "expandedObjectLayers": [
-                2
-            ],
             "scale": 0.33,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 1651.5151515151513,
-                "y": 1765.151515151515
+                "x": 2418.1818181818185,
+                "y": 1677.2727272727275
             }
         },
         "levels/bus-station.tmx": {
@@ -151,7 +148,7 @@
             "scale": 0.1464,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1427.5956284153008,
+                "x": 1420.7650273224044,
                 "y": 529.3715846994537
             }
         },
@@ -160,10 +157,10 @@
                 3
             ],
             "scale": 0.5,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 752,
-                "y": 901
+                "x": 1404,
+                "y": 923
             }
         },
         "levels/hotel.tmx": {
@@ -193,11 +190,11 @@
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 0.33,
-            "selectedLayer": 0,
+            "scale": 0.75,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 1587.878787878788,
-                "y": 1795.4545454545453
+                "x": 1536,
+                "y": 1483.3333333333335
             }
         },
         "levels/train-station.tmx": {
@@ -205,11 +202,30 @@
                 3,
                 4
             ],
-            "scale": 0.75,
-            "selectedLayer": 0,
+            "scale": 0.5,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 1304,
-                "y": 966
+                "x": 1302,
+                "y": 1027
+            }
+        },
+        "levels/zadok-freaked-out.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 0.33,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1493.9393939393935,
+                "y": 1113.6363636363635
+            }
+        },
+        "levels/zadok.tmx": {
+            "scale": 0.42428385416666664,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1583.8453276047262,
+                "y": 1139.567285560841
             }
         },
         "objects/Objects.tsx": {
@@ -230,6 +246,7 @@
     },
     "last.externalTilesetPath": "/Users/milosz/src/gamedev/secrets/assets/game/objects",
     "last.imagePath": "/Users/milosz/src/gamedev/secrets/assets/game/objects",
+    "last.objectTypesPath": "/Users/milosz/src/gamedev/secrets/assets/game/propertytypes.json",
     "map.fixedSize": false,
     "map.lastUsedFormat": "tmx",
     "openFiles": [
@@ -240,7 +257,7 @@
         "city.tmx"
     ],
     "project": "game.tiled-project",
-    "property.type": "int",
+    "property.type": "string",
     "recentFiles": [
         "levels/innsmouth.tmx",
         "levels/hotel-room.tmx",
