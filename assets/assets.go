@@ -21,13 +21,19 @@ var (
 
 	SmallFont  *text.GoTextFace
 	NormalFont *text.GoTextFace
+	LargeFont  *text.GoTextFace
 
 	Assets *domain.Assets
 )
 
 func MustLoadFonts() {
-	SmallFont = mustLoadFont(normalFontData, 10)
-	NormalFont = mustLoadFont(normalFontData, 24)
+	UpdateFonts(14)
+}
+
+func UpdateFonts(size int) {
+	SmallFont = mustLoadFont(normalFontData, int(float64(size)*0.6))
+	NormalFont = mustLoadFont(normalFontData, size)
+	LargeFont = mustLoadFont(normalFontData, int(float64(size)*1.4))
 }
 
 func LoadAssets(progressChan chan<- string, errorChan chan<- error) {

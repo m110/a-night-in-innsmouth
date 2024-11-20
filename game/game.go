@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -63,7 +64,7 @@ func NewGame(config Config) *Game {
 
 	go func() {
 		for line := range progressChan {
-			g.loadingLines = append(g.loadingLines, line)
+			g.loadingLines = append(g.loadingLines, fmt.Sprintf("%v...", line))
 		}
 	}()
 
@@ -100,12 +101,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	if g.scene == nil {
-		for i, line := range g.loadingLines {
-			op := &text.DrawOptions{}
-			op.LineSpacing = 1.5
-			op.GeoM.Translate(10, float64(20+20*i))
-			text.Draw(screen, fmt.Sprintf("%v...", line), assets.NormalFont, op)
-		}
+		op := &text.DrawOptions{}
+		op.LineSpacing = assets.NormalFont.Size
+		op.GeoM.Translate(10, 10)
+		lines := strings.Join(g.loadingLines, "\n")
+		text.Draw(screen, lines, assets.NormalFont, op)
 		return
 	}
 	g.scene.Draw(screen)

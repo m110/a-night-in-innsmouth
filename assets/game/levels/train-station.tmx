@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="23">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="25">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="2" name="Background">
@@ -55,6 +55,11 @@
   <object id="22" name="Station" class="poi" gid="4" x="1888" y="1173" width="38" height="39.2809">
    <properties>
     <property name="passage" value="Train Station"/>
+   </properties>
+  </object>
+  <object id="24" name="Test" class="poi" gid="31" x="956" y="1363" width="160" height="78">
+   <properties>
+    <property name="passage" value="Test"/>
    </properties>
   </object>
  </objectgroup>

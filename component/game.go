@@ -13,7 +13,7 @@ type GameData struct {
 	// Can be saved to go "back" to the previous level, keeping the player's position
 	PreviousLevel *PreviousLevel
 
-	Settings Settings
+	Dimensions Dimensions
 }
 
 type PreviousLevel struct {
@@ -21,9 +21,18 @@ type PreviousLevel struct {
 	CharacterPosition *domain.CharacterPosition
 }
 
-type Settings struct {
+type Dimensions struct {
+	Updated bool
+
 	ScreenWidth  int
 	ScreenHeight int
+
+	InventoryWidth int
+
+	DialogWidth            int
+	DialogLogHeight        int
+	DialogOptionsHeight    int
+	DialogOptionsRowHeight int
 }
 
 var Game = donburi.NewComponentType[GameData]()

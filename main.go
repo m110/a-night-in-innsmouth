@@ -19,6 +19,7 @@ func main() {
 	}
 
 	ebiten.SetVsyncEnabled(true)
+	//ebiten.SetWindowSize(1080, 720)
 	ebiten.SetWindowSize(1920, 1080)
 
 	err := ebiten.RunGame(game.NewGame(config))

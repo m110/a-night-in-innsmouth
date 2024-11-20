@@ -42,21 +42,24 @@ func NewRender() *Render {
 }
 
 func (r *Render) Init(w donburi.World) {
-	r.UpdateLayout(w)
+	game := component.MustFindGame(w)
+	width := game.Dimensions.ScreenWidth
+	height := game.Dimensions.ScreenHeight
+	r.offscreen = ebiten.NewImage(width, height)
 	r.debug = component.Debug.Get(engine.MustFindWithComponent(w, component.Debug))
 }
 
-// TODO Rework into events
-func (r *Render) UpdateLayout(w donburi.World) {
-	game := component.MustFindGame(w)
-
-	imageWidth := game.Settings.ScreenWidth
-	imageHeight := game.Settings.ScreenHeight
-	r.offscreen = ebiten.NewImage(imageWidth, imageHeight)
-}
-
 func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
-	r.offscreen.Clear()
+	game := component.MustFindGame(w)
+	width := game.Dimensions.ScreenWidth
+	height := game.Dimensions.ScreenHeight
+	bounds := r.offscreen.Bounds()
+	if width != bounds.Dx() || height != bounds.Dy() {
+		// Window size changed
+		r.offscreen = ebiten.NewImage(width, height)
+	} else {
+		r.offscreen.Clear()
+	}
 
 	count := 0
 	r.camerasQuery.EachOrdered(w, component.Camera, func(entry *donburi.Entry) {
@@ -332,7 +335,7 @@ func renderText(entry *donburi.Entry, camera *component.CameraData) {
 	textToDraw := t.Text[:length]
 
 	op := &text.DrawOptions{}
-	op.LineSpacing = archetype.LineSpacingPixels
+	op.LineSpacing = font.Size
 	op.PrimaryAlign = t.Align
 	op.GeoM.Scale(camera.ViewportZoom, camera.ViewportZoom)
 	op.GeoM.Translate(pos.X, pos.Y)

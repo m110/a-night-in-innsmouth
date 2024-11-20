@@ -37,8 +37,8 @@ func NewDebug(restartLevelCallback func()) *Debug {
 func (d *Debug) Init(w donburi.World) {
 	game := component.MustFindGame(w)
 
-	imageWidth := game.Settings.ScreenWidth
-	imageHeight := game.Settings.ScreenHeight
+	imageWidth := game.Dimensions.ScreenWidth
+	imageHeight := game.Dimensions.ScreenHeight
 	d.offscreen = ebiten.NewImage(imageWidth, imageHeight)
 }
 

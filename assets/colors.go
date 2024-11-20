@@ -10,9 +10,9 @@ var (
 		A: 255,
 	}
 	TextDarkColor = color.RGBA{
-		R: 100,
-		G: 100,
-		B: 100,
+		R: 130,
+		G: 130,
+		B: 130,
 		A: 255,
 	}
 	TextBlueColor = color.RGBA{
@@ -33,5 +33,11 @@ var (
 		G: 25,
 		B: 25,
 		A: 200,
+	}
+	OptionColor = color.RGBA{
+		R: 50,
+		G: 50,
+		B: 50,
+		A: 255,
 	}
 )

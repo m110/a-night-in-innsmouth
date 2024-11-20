@@ -31,10 +31,6 @@ type Drawable interface {
 	Draw(w donburi.World, screen *ebiten.Image)
 }
 
-type LayoutUpdater interface {
-	UpdateLayout(w donburi.World)
-}
-
 type Game struct {
 	world donburi.World
 
@@ -70,6 +66,7 @@ func (g *Game) loadLevel() {
 		system.NewTimeToLive(),
 		system.NewDestroy(),
 		system.NewDebug(g.loadLevel),
+		system.NewDimensions(),
 	}
 
 	g.drawables = []Drawable{
@@ -88,11 +85,8 @@ func (g *Game) createWorld() donburi.World {
 
 	game := world.Entry(world.Create(component.Game, component.Input))
 	component.Game.SetValue(game, component.GameData{
-		Story: story,
-		Settings: component.Settings{
-			ScreenWidth:  g.screenWidth,
-			ScreenHeight: g.screenHeight,
-		},
+		Story:      story,
+		Dimensions: system.CalculateDimensions(g.screenWidth, g.screenHeight),
 	})
 	component.Input.SetValue(game, component.InputData{
 		Disabled:      false,
@@ -145,20 +139,9 @@ func (g *Game) OnLayoutChange(width, height int) {
 	gameEntry, ok := donburi.NewQuery(filter.Contains(component.Game)).First(g.world)
 	if ok {
 		game := component.Game.Get(gameEntry)
-		game.Settings.ScreenWidth = width
-		game.Settings.ScreenHeight = height
-
-		for _, s := range g.systems {
-			if init, ok := s.(LayoutUpdater); ok {
-				init.UpdateLayout(g.world)
-			}
-		}
-
-		for _, d := range g.drawables {
-			if init, ok := d.(LayoutUpdater); ok {
-				init.UpdateLayout(g.world)
-			}
-		}
+		game.Dimensions.ScreenWidth = width
+		game.Dimensions.ScreenHeight = height
+		game.Dimensions.Updated = true
 	}
 }
 
@@ -190,13 +173,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 }
 
-const (
-	inventoryWidth  = 250
-	inventoryHeight = 50
-)
-
 func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
-	inventoryButtonImg := ebiten.NewImage(inventoryWidth, inventoryHeight)
+	game := component.MustFindGame(w)
+
+	inventoryWidth := game.Dimensions.InventoryWidth
+	inventoryButtonHeight := int(assets.NormalFont.Size * 2)
+	marginLeft := int(float64(inventoryWidth) * 0.05)
+
+	inventoryButtonImg := ebiten.NewImage(inventoryWidth, inventoryButtonHeight)
 	inventoryButtonImg.Fill(assets.UIBackgroundColor)
 
 	inventoryButton := archetype.NewTagged(w, "Inventory Button").
@@ -213,9 +197,14 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 
 	component.Collider.SetValue(inventoryButton, component.ColliderData{
 		Width:  float64(inventoryWidth),
-		Height: float64(inventoryHeight),
+		Height: float64(inventoryButtonHeight),
 		Layer:  domain.CollisionLayerButton,
 	})
+
+	textPos := math.Vec2{
+		X: float64(marginLeft),
+		Y: float64(inventoryButtonHeight-int(assets.NormalFont.Size)) / 2.0,
+	}
 
 	archetype.NewTagged(w, "Inventory Button Text").
 		WithParent(inventoryButton).
@@ -223,10 +212,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 		WithText(component.TextData{
 			Text: "Inventory (e)",
 		}).
-		WithPosition(math.Vec2{
-			X: 10,
-			Y: 10,
-		})
+		WithPosition(textPos)
 
 	inventoryImg := ebiten.NewImage(inventoryWidth, g.screenHeight)
 	inventoryImg.Fill(assets.UIBackgroundColor)
@@ -251,10 +237,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 	inventoryText := archetype.NewTagged(w, "Inventory Text").
 		WithParent(inventory).
 		WithLayerInherit().
-		WithPosition(math.Vec2{
-			X: 10,
-			Y: 10,
-		}).
+		WithPosition(textPos).
 		WithText(component.TextData{
 			Text: "Inventory (e)",
 		}).
@@ -270,7 +253,7 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 			text += fmt.Sprintf("- %v%v\n", item.Name, count)
 		}
 		component.Text.Get(inventoryText).Text = text
-		archetype.AdjustTextWidth(inventoryText, inventoryWidth-20)
+		archetype.AdjustTextWidth(inventoryText, inventoryWidth-marginLeft*2)
 	})
 }
 

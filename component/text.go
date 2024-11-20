@@ -12,9 +12,9 @@ import (
 type TextSize int
 
 const (
-	TextSizeL TextSize = iota
 	TextSizeM TextSize = iota
 	TextSizeS
+	TextSizeL
 )
 
 type TextData struct {

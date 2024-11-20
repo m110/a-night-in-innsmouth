@@ -10,13 +10,18 @@ import (
 	"github.com/m110/secrets/component"
 )
 
-const LineSpacingPixels = 24
-
 func MeasureTextHeight(entry *donburi.Entry) float64 {
 	txt := component.Text.Get(entry)
 	font := FontFromSize(txt.Size)
-	_, h := text.Measure(txt.Text, font, LineSpacingPixels)
+	_, h := text.Measure(txt.Text, font, font.Size)
 	return h
+}
+
+func MeasureTextWidth(entry *donburi.Entry) float64 {
+	txt := component.Text.Get(entry)
+	font := FontFromSize(txt.Size)
+	w, _ := text.Measure(txt.Text, font, font.Size)
+	return w
 }
 
 func AdjustTextWidth(entry *donburi.Entry, width int) string {
@@ -67,6 +72,7 @@ func FontFromSize(size component.TextSize) *text.GoTextFace {
 
 	switch size {
 	case component.TextSizeL:
+		font = assets.LargeFont
 	case component.TextSizeM:
 		font = assets.NormalFont
 	case component.TextSizeS:

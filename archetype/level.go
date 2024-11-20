@@ -124,7 +124,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	} else {
 		// Calculate zoom to fit height with margins
 		marginPercent := 0.01
-		screenHeight := float64(game.Settings.ScreenHeight)
+		screenHeight := float64(game.Dimensions.ScreenHeight)
 		bgHeight := float64(level.Background.Bounds().Dy())
 
 		totalMarginHeight := screenHeight * marginPercent * 2
@@ -135,7 +135,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	// Multiply by zoom to go from world space to screen space
 	// Divide by zoom to go from screen space to world space
-	heightDiff := (float64(game.Settings.ScreenHeight) - float64(level.Background.Bounds().Dy())*cam.ViewportZoom) / cam.ViewportZoom
+	heightDiff := (float64(game.Dimensions.ScreenHeight) - float64(level.Background.Bounds().Dy())*cam.ViewportZoom) / cam.ViewportZoom
 	if heightDiff > 0 {
 		cam.ViewportPosition.Y = -heightDiff / 2
 	} else {
@@ -146,7 +146,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	bounds := component.Sprite.Get(entry).Image.Bounds()
 	levelWidth := float64(bounds.Dx())
 
-	screenWidth := float64(game.Settings.ScreenWidth)
+	screenWidth := float64(game.Dimensions.ScreenWidth)
 	screenWorldWidth := screenWidth / cam.ViewportZoom
 	viewportWorldWidth := float64(cam.Viewport.Bounds().Dx()) / cam.ViewportZoom
 
@@ -226,10 +226,10 @@ func ChangeLevel(w donburi.World, level domain.TargetLevel) {
 
 func levelCameraMargin(w donburi.World) int {
 	game := component.MustFindGame(w)
-	return int(float64(game.Settings.ScreenWidth) * levelCameraMarginPercent)
+	return int(float64(game.Dimensions.ScreenWidth) * levelCameraMarginPercent)
 }
 
 func scrollingLevelCameraMargin(w donburi.World) int {
 	game := component.MustFindGame(w)
-	return int(float64(game.Settings.ScreenWidth) * scrollingLevelCameraMarginPercent)
+	return int(float64(game.Dimensions.ScreenWidth) * scrollingLevelCameraMarginPercent)
 }

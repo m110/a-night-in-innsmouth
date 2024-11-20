@@ -198,6 +198,22 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 
 
 
+:: Option 1 {"position":"4275,2600","size":"100,100"}
+
+
+
+:: Option 2 {"position":"4150,2725","size":"100,100"}
+
+
+
+:: Option 3 {"position":"4275,2725","size":"100,100"}
+
+
+
+:: Option 4 that has a very long description that should probably fit two lines. {"position":"4400,2725","size":"100,100"}
+
+
+
 :: Perhaps later. {"position":"1750,2375","size":"100,100"}
 
 
@@ -224,6 +240,24 @@ addItem: hat
 You took the hat.
 
 > {exit} [[Leave.]]
+
+
+:: Test {"position":"4275,2475","size":"100,100"}
+setTitle: Title of the Passage
+--
+This is a test.
+
+Lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet.
+
+[if hasMoney 100]
+[hint]
+A hint looks like this, right?
+[continue]
+
+> {exit} [[Option 1]]
+> {exit} [[Option 2]]
+> {exit} [[Option 3]]
+> {exit} [[Option 4 that has a very long description that should probably fit two lines.]]
 
 
 :: Train Sheet {"position":"2200,650","size":"100,100"}

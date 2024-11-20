@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
@@ -21,36 +20,24 @@ import (
 )
 
 const (
-	dialogWidthPercent            = 0.5
-	logHeightPercent              = 0.6
-	dialogOptionsTopMarginPercent = 0.05
+	passageMarginTopPercent  = 0.05
+	passageMarginLeftPercent = 0.05
 
-	passageMarginTop  = 32
-	passageMarginLeft = 20
-	passageTextWidth  = 380
+	scrollMaskHeightPercent = 0.05
 
 	LevelTransitionDuration = 500 * time.Millisecond
 	openDialogDuration      = 1000 * time.Millisecond
-
-	scrollMaskHeight = 50
 )
-
-var optionColor = color.RGBA{
-	R: 50,
-	G: 50,
-	B: 50,
-	A: 150,
-}
 
 func NewDialog(w donburi.World) *donburi.Entry {
 	game := component.MustFindGame(w)
-	dialogWidth := dialogWidth(w)
+	dialogWidth := game.Dimensions.DialogWidth
 
 	pos := math.Vec2{
-		X: float64(game.Settings.ScreenWidth - dialogWidth),
+		X: float64(game.Dimensions.ScreenWidth - dialogWidth),
 		Y: 0,
 	}
-	screenHeight := game.Settings.ScreenHeight
+	screenHeight := game.Dimensions.ScreenHeight
 
 	backgroundImage := ebiten.NewImage(dialogWidth, screenHeight)
 	backgroundImage.Fill(assets.UIBackgroundColor)
@@ -142,7 +129,7 @@ func NewDialog(w donburi.World) *donburi.Entry {
 		With(component.StackedView).
 		Entry()
 
-	logCameraHeight := int(float64(screenHeight) * logHeightPercent)
+	logCameraHeight := game.Dimensions.DialogLogHeight
 	logCamera := NewCamera(
 		w,
 		math.Vec2{},
@@ -162,20 +149,23 @@ func NewDialog(w donburi.World) *donburi.Entry {
 	})
 
 	logCam := component.Camera.Get(logCamera)
-	logCam.Mask = CreateScrollMask(dialogWidth, logCameraHeight)
+	logCam.Mask = CreateScrollMask(w, dialogWidth, logCameraHeight)
 	logCam.ViewportBounds.Y = &engine.FloatRange{
 		Min: 0,
 		Max: 0,
 	}
 
 	stackedView := component.StackedView.Get(log)
-	stackedView.CurrentY = float64(logCameraHeight) - float64(scrollMaskHeight)
+	stackedView.CurrentY = float64(logCameraHeight) - float64(engine.IntPercent(game.Dimensions.DialogLogHeight, scrollMaskHeightPercent))
 
 	return log
 }
 
-func CreateScrollMask(width, height int) *ebiten.Image {
+func CreateScrollMask(w donburi.World, width, height int) *ebiten.Image {
+	game := component.MustFindGame(w)
 	img := ebiten.NewImage(width, height)
+
+	scrollMaskHeight := engine.IntPercent(game.Dimensions.DialogLogHeight, scrollMaskHeightPercent)
 
 	for y := 0; y < height; y++ {
 		var alpha uint8 = 255
@@ -214,7 +204,15 @@ func NextPassage(w donburi.World) {
 		options = append(options, e)
 	})
 
+	game := component.MustFindGame(w)
+
 	height := 0.0
+	passageMarginLeft := engine.IntPercent(game.Dimensions.DialogWidth, passageMarginLeftPercent)
+	passageTextWidth := game.Dimensions.DialogWidth - passageMarginLeft*2
+
+	logCamera := engine.MustFindWithComponent(w, component.DialogLogCamera)
+	logHeight := component.Camera.Get(logCamera).Viewport.Bounds().Dy()
+	passageMarginTop := float64(int(float64(logHeight) * passageMarginTopPercent))
 
 	for _, e := range options {
 		opt := component.DialogOption.Get(e)
@@ -227,7 +225,7 @@ func NextPassage(w donburi.World) {
 				WithParent(activePassage).
 				WithLayerInherit().
 				WithPosition(math.Vec2{
-					X: 2,
+					X: 0,
 					Y: passage.Height + passageMarginTop,
 				}).
 				WithText(component.TextData{
@@ -243,7 +241,7 @@ func NextPassage(w donburi.World) {
 			height += passageMarginTop + optionTextHeight
 
 			component.Bounds.SetValue(newOption, component.BoundsData{
-				Width:  passageTextWidth,
+				Width:  float64(passageTextWidth),
 				Height: optionTextHeight,
 			})
 		}
@@ -321,6 +319,10 @@ func scrollDialogLog(w donburi.World, height float64) {
 	cam := component.Camera.Get(cameraEntry)
 	camHeight := float64(cam.Viewport.Bounds().Dy())
 
+	game := component.MustFindGame(w)
+
+	scrollMaskHeight := engine.IntPercent(game.Dimensions.DialogLogHeight, scrollMaskHeightPercent)
+
 	marginBottom := float64(scrollMaskHeight)
 	endY := stackedView.CurrentY - camHeight + marginBottom
 
@@ -387,45 +389,58 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 	log := engine.MustFindWithComponent(w, component.DialogLog)
 	stackedView := component.StackedView.Get(log)
 
+	game := component.MustFindGame(w)
+	// TODO deduplicate
+	passageMarginLeft := engine.IntPercent(game.Dimensions.DialogWidth, passageMarginLeftPercent)
+	passageTextWidth := game.Dimensions.DialogWidth - passageMarginLeft*2
+
+	// TODO deduplicate
+	logCamera := engine.MustFindWithComponent(w, component.DialogLogCamera)
+	logHeight := component.Camera.Get(logCamera).Viewport.Bounds().Dy()
+	passageMarginTop := float64(int(float64(logHeight) * passageMarginTopPercent))
+
 	passage := NewTagged(w, "Passage").
 		WithParent(log).
 		WithLayer(domain.SpriteUILayerText).
 		WithPosition(math.Vec2{
-			X: passageMarginLeft,
+			X: float64(passageMarginLeft),
 			Y: stackedView.CurrentY,
 		}).
 		With(component.Passage).
 		Entry()
 
-	textY := float64(passageMarginTop)
+	textY := passageMarginTop
 	passageHeight := textY
 
 	if domainPassage.Header != "" {
 		header := NewTagged(w, "Header").
 			WithParent(passage).
 			WithLayerInherit().
-			WithPosition(math.Vec2{
-				X: 220,
-				Y: 20,
-			}).
 			WithText(component.TextData{
-				Text:  domainPassage.Header,
-				Align: text.AlignCenter,
+				Text: fmt.Sprintf("- %v -", domainPassage.Header),
+				Size: component.TextSizeL,
 			}).
 			With(component.Bounds).
 			Entry()
 
+		headerWidth := MeasureTextWidth(header)
+
+		transform.GetTransform(header).LocalPosition = math.Vec2{
+			X: (float64(passageTextWidth) - headerWidth) / 2.0,
+			Y: passageMarginTop,
+		}
+
 		headerHeight := MeasureTextHeight(header)
 
 		component.Bounds.SetValue(header, component.BoundsData{
-			Width:  passageTextWidth,
+			Width:  headerWidth,
 			Height: headerHeight,
 		})
 
-		headerMargin := 20.0
+		headerHeight += passageMarginTop
 
-		textY += headerHeight + headerMargin
-		passageHeight += headerHeight + headerMargin
+		textY += headerHeight
+		passageHeight += headerHeight
 	}
 
 	streamingTime := 500 * time.Millisecond
@@ -448,7 +463,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 			With(component.Animator).
 			WithLayerInherit().
 			WithPosition(math.Vec2{
-				X: 10,
+				X: 0,
 				Y: textY,
 			}).
 			With(component.Bounds).
@@ -474,14 +489,14 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 
 		yIncrease := segmentTextHeight
 		if i != len(domainPassage.AvailableSegments())-1 {
-			yIncrease += LineSpacingPixels
+			yIncrease += assets.NormalFont.Size
 		}
 
 		textY += yIncrease
 		passageHeight += yIncrease
 
 		component.Bounds.SetValue(txt, component.BoundsData{
-			Width:  passageTextWidth,
+			Width:  float64(passageTextWidth),
 			Height: segmentTextHeight,
 		})
 	}
@@ -529,17 +544,35 @@ func createDialogOptions(w donburi.World, domainPassage *domain.Passage) {
 	dialog := engine.MustFindWithComponent(w, component.Dialog)
 
 	game := component.MustFindGame(w)
-	screenHeight := game.Settings.ScreenHeight
 
-	optionImageWidth := 400
-	optionWidth := 380
-	optionsY := int(float64(screenHeight)*(logHeightPercent)) + int(float64(screenHeight)*(dialogOptionsTopMarginPercent))
-	heightPerLine := 28
-	paddingPerLine := 4
+	optionImageWidthPercent := 1 - passageMarginLeftPercent*2
+	optionWidthPercent := 0.9
+
+	marginLeft := engine.IntPercent(game.Dimensions.DialogWidth, passageMarginLeftPercent)
+	optionImageWidth := engine.IntPercent(game.Dimensions.DialogWidth, optionImageWidthPercent) - marginLeft
+	optionTextWidth := engine.IntPercent(optionImageWidth, optionWidthPercent)
+	textMarginLeft := float64(optionImageWidth-optionTextWidth) / 2
+	indicatorWidth := int(textMarginLeft / 2)
+
+	// One row is one space between buttons or margin
+	// Two rows are one button
+	rowHeight := game.Dimensions.DialogOptionsRowHeight
+	buttonHeight := rowHeight * 2
+
+	optionsParent := New(w).
+		WithParent(dialog).
+		WithLayerInherit().
+		WithPosition(math.Vec2{
+			X: float64(marginLeft),
+			Y: float64(game.Dimensions.DialogLogHeight),
+		}).
+		Entry()
+
+	optionsY := rowHeight
 
 	for i, link := range domainPassage.Links() {
 		op := NewTagged(w, "Option").
-			WithParent(dialog).
+			WithParent(optionsParent).
 			WithLayer(domain.SpriteUILayerButtons).
 			WithSprite(component.SpriteData{}).
 			With(component.Collider).
@@ -547,54 +580,51 @@ func createDialogOptions(w donburi.World, domainPassage *domain.Passage) {
 			Entry()
 
 		if i == 0 {
-			indicatorImg := ebiten.NewImage(10, heightPerLine+paddingPerLine)
+			indicatorImg := ebiten.NewImage(indicatorWidth, buttonHeight)
 			indicatorImg.Fill(colornames.Lightyellow)
 
 			NewTagged(w, "Indicator").
 				WithParent(op).
 				WithLayerInherit().
-				WithPosition(math.Vec2{
-					X: -20,
-					Y: 0,
-				}).
 				WithSprite(component.SpriteData{
 					Image: indicatorImg,
 				}).
 				With(component.ActiveOptionIndicator)
 		}
 
-		color := assets.TextBlueColor
+		textColor := assets.TextBlueColor
 		if link.AllVisited() {
-			color = assets.TextDarkColor
+			textColor = assets.TextDarkColor
 		}
 
 		opText := NewTagged(w, "Option Text").
 			WithParent(op).
 			WithLayerInherit().
-			WithPosition(math.Vec2{
-				X: 10,
-				Y: 2,
-			}).
 			WithText(component.TextData{
 				Text:  link.Text,
-				Color: color,
+				Color: textColor,
 			}).
 			Entry()
 
-		newText := AdjustTextWidth(opText, optionWidth)
+		newText := AdjustTextWidth(opText, optionTextWidth)
 		lines := strings.Count(newText, "\n") + 1
+
+		textMarginTop := (float64(buttonHeight) - assets.NormalFont.Size*float64(lines)) / 2.0
+		transform.GetTransform(opText).LocalPosition = math.Vec2{
+			X: textMarginLeft,
+			Y: textMarginTop,
+		}
 
 		component.DialogOption.SetValue(op, component.DialogOptionData{
 			Index: i,
 			Lines: lines,
 		})
 
-		lineHeight := heightPerLine*lines + paddingPerLine
-		optionImg := ebiten.NewImage(optionImageWidth, lineHeight)
-		optionImg.Fill(optionColor)
+		lineHeight := buttonHeight * lines
+		optionImg := ebiten.NewImage(optionImageWidth, buttonHeight)
+		optionImg.Fill(assets.OptionColor)
 
 		transform.GetTransform(op).LocalPosition = math.Vec2{
-			X: 30,
 			Y: float64(optionsY),
 		}
 		component.Sprite.Get(op).Image = optionImg
@@ -604,7 +634,7 @@ func createDialogOptions(w donburi.World, domainPassage *domain.Passage) {
 			Layer:  domain.CollisionLayerButton,
 		})
 
-		optionsY += lineHeight + LineSpacingPixels
+		optionsY += lineHeight + int(assets.NormalFont.Size)
 	}
 }
 
@@ -632,9 +662,4 @@ func newCameraZoomAnimation(
 			}
 		},
 	}
-}
-
-func dialogWidth(w donburi.World) int {
-	game := component.MustFindGame(w)
-	return int(float64(game.Settings.ScreenWidth) * dialogWidthPercent)
 }
