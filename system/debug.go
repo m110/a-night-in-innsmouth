@@ -3,6 +3,7 @@ package system
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -23,6 +24,11 @@ type Debug struct {
 	pausedCameraVelocity math.Vec2
 
 	restartLevelCallback func()
+
+	// 0 for short press, 1 for long
+	clickedSequence    []int
+	longClickTimer     *engine.Timer
+	betweenClicksTimer *engine.Timer
 }
 
 func NewDebug(restartLevelCallback func()) *Debug {
@@ -31,6 +37,8 @@ func NewDebug(restartLevelCallback func()) *Debug {
 			filter.Contains(transform.Transform, component.Sprite),
 		),
 		restartLevelCallback: restartLevelCallback,
+		longClickTimer:       engine.NewTimer(1 * time.Second),
+		betweenClicksTimer:   engine.NewTimer(500 * time.Millisecond),
 	}
 }
 
@@ -52,7 +60,55 @@ func (d *Debug) Update(w donburi.World) {
 		d.debug = component.Debug.Get(debug)
 	}
 
-	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
+	var clicked bool
+	var released bool
+
+	d.longClickTimer.Update()
+	d.betweenClicksTimer.Update()
+
+	pressedTouchIDs := inpututil.AppendJustPressedTouchIDs(nil)
+	if len(pressedTouchIDs) == 1 {
+		clicked = true
+	}
+
+	releasedTouchIDs := inpututil.AppendJustReleasedTouchIDs(nil)
+	if len(releasedTouchIDs) == 1 {
+		released = true
+	}
+
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		clicked = true
+	}
+
+	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+		released = true
+	}
+
+	var toggleDebug bool
+	if released {
+		if d.betweenClicksTimer.IsReady() {
+			d.clickedSequence = []int{}
+			d.betweenClicksTimer.Reset()
+		}
+
+		if d.longClickTimer.IsReady() {
+			d.clickedSequence = append(d.clickedSequence, 1)
+		} else {
+			d.clickedSequence = append(d.clickedSequence, 0)
+		}
+
+		if len(d.clickedSequence) == 3 {
+			if d.clickedSequence[0] == 1 && d.clickedSequence[1] == 0 && d.clickedSequence[2] == 0 {
+				toggleDebug = true
+			}
+		}
+	}
+
+	if clicked {
+		d.longClickTimer.Reset()
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeySlash) || toggleDebug {
 		d.debug.Enabled = !d.debug.Enabled
 
 		game := engine.MustFindWithComponent(w, component.Game)

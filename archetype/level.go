@@ -23,10 +23,12 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 		panic("Name not found: " + targetLevel.Name)
 	}
 
+	background := level.Background()
+
 	entry := NewTagged(w, "Level").
 		WithLayer(domain.SpriteLayerBackground).
 		WithSprite(component.SpriteData{
-			Image: level.Background,
+			Image: background,
 		}).
 		With(component.Level).
 		With(component.Animator).
@@ -100,7 +102,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 		// Default to the background boundaries
 		boundsRange := engine.FloatRange{
 			Min: levelMovementMargin,
-			Max: float64(level.Background.Bounds().Dx() - levelMovementMargin),
+			Max: float64(background.Bounds().Dx() - levelMovementMargin),
 		}
 
 		if level.Limits != nil {
@@ -125,7 +127,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 		// Calculate zoom to fit height with margins
 		marginPercent := 0.01
 		screenHeight := float64(game.Dimensions.ScreenHeight)
-		bgHeight := float64(level.Background.Bounds().Dy())
+		bgHeight := float64(background.Bounds().Dy())
 
 		totalMarginHeight := screenHeight * marginPercent * 2
 		availableHeight := screenHeight - totalMarginHeight
@@ -135,7 +137,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 	// Multiply by zoom to go from world space to screen space
 	// Divide by zoom to go from screen space to world space
-	heightDiff := (float64(game.Dimensions.ScreenHeight) - float64(level.Background.Bounds().Dy())*cam.ViewportZoom) / cam.ViewportZoom
+	heightDiff := (float64(game.Dimensions.ScreenHeight) - float64(background.Bounds().Dy())*cam.ViewportZoom) / cam.ViewportZoom
 	if heightDiff > 0 {
 		cam.ViewportPosition.Y = -heightDiff / 2
 	} else {

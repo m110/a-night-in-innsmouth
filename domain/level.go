@@ -8,7 +8,7 @@ import (
 )
 
 type Level struct {
-	Background     *ebiten.Image
+	Background     func() *ebiten.Image
 	POIs           []POI
 	Objects        []Object
 	StartPassage   string

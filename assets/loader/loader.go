@@ -171,14 +171,24 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 		return domain.Level{}, errors.New("background layer offset is not (0,0)")
 	}
 
-	bgBytes, err := fs.ReadFile(assetsFS, path.Join("game/levels", bgLayer.Image.Source))
+	bgPath := path.Join("game/levels", bgLayer.Image.Source)
+
+	_, err = fs.Stat(assetsFS, bgPath)
 	if err != nil {
 		return domain.Level{}, err
 	}
 
-	background, err := newImageFromBytes(bgBytes)
-	if err != nil {
-		return domain.Level{}, err
+	loadBackground := func() *ebiten.Image {
+		bgBytes, err := fs.ReadFile(assetsFS, bgPath)
+		if err != nil {
+			panic(err)
+		}
+		background, err := newImageFromBytes(bgBytes)
+		if err != nil {
+			panic(err)
+		}
+
+		return background
 	}
 
 	var objects []domain.Object
@@ -380,7 +390,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 	}
 
 	return domain.Level{
-		Background:     background,
+		Background:     loadBackground,
 		POIs:           pois,
 		Objects:        objects,
 		StartPassage:   startPassage,

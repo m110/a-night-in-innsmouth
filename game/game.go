@@ -80,6 +80,13 @@ func (g *Game) switchToGame() {
 }
 
 func (g *Game) Update() error {
+	defer func() {
+		if r := recover(); r != nil {
+			g.loadingLines = append(g.loadingLines, fmt.Sprintf("PANIC (Update): %v", r))
+			g.scene = nil
+		}
+	}()
+
 	if g.rawScreenWidth == 0 || g.rawScreenHeight == 0 {
 		return nil
 	}
@@ -96,6 +103,13 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	defer func() {
+		if r := recover(); r != nil {
+			g.loadingLines = append(g.loadingLines, fmt.Sprintf("PANIC (Draw): %v", r))
+			g.scene = nil
+		}
+	}()
+
 	if g.rawScreenWidth == 0 || g.rawScreenHeight == 0 {
 		return
 	}
