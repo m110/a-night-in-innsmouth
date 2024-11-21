@@ -261,23 +261,26 @@ func NextPassage(w donburi.World) {
 			CheckNextPOI(w)
 
 			levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
-			lCam := component.Camera.Get(levelCamera)
 			bz := component.BriefZoom.Get(levelCamera)
 
-			zoomAnim := newCameraZoomAnimation(
-				lCam,
-				lCam.ViewportPosition,
-				bz.OriginCamera.ViewportPosition,
-				lCam.ViewportZoom,
-				bz.OriginCamera.ViewportZoom,
-			)
+			if bz.OriginCamera != nil {
+				lCam := component.Camera.Get(levelCamera)
 
-			zoomAnim.OnStop = func(e *donburi.Entry) {
-				lCam.ViewportBounds = bz.OriginCamera.ViewportBounds
-				lCam.ViewportTarget = bz.OriginCamera.ViewportTarget
+				zoomAnim := newCameraZoomAnimation(
+					lCam,
+					lCam.ViewportPosition,
+					bz.OriginCamera.ViewportPosition,
+					lCam.ViewportZoom,
+					bz.OriginCamera.ViewportZoom,
+				)
+
+				zoomAnim.OnStop = func(e *donburi.Entry) {
+					lCam.ViewportBounds = bz.OriginCamera.ViewportBounds
+					lCam.ViewportTarget = bz.OriginCamera.ViewportTarget
+				}
+
+				component.Animator.Get(levelCamera).SetAnimation("zoom-out", zoomAnim)
 			}
-
-			component.Animator.Get(levelCamera).SetAnimation("zoom-out", zoomAnim)
 		} else {
 			// Character not found: Go back to the previous level
 			game := component.MustFindGame(w)
@@ -518,7 +521,9 @@ func zoomInOnPOI(w donburi.World, source *donburi.Entry) {
 	levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
 	cam := component.Camera.Get(levelCamera)
 	bz := component.BriefZoom.Get(levelCamera)
-	bz.OriginCamera = *cam
+
+	camCopy := *cam
+	bz.OriginCamera = &camCopy
 
 	cam.ViewportBounds = component.ViewportBounds{}
 	cam.ViewportTarget = nil

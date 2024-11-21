@@ -5,7 +5,7 @@ import (
 )
 
 type BriefZoomData struct {
-	OriginCamera CameraData
+	OriginCamera *CameraData
 }
 
 var BriefZoom = donburi.NewComponentType[BriefZoomData]()
