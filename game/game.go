@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hajimehoshi/ebiten/v2/audio"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -37,6 +39,7 @@ func NewGame(config Config) *Game {
 	g := &Game{}
 
 	assets.MustLoadFonts()
+	audio.NewContext(44100)
 
 	progressChan := make(chan string)
 	errorChan := make(chan error)

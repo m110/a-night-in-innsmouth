@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"image"
 	_ "image/png"
+	"io"
 	"io/fs"
 	"path"
 	"sort"
@@ -13,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
 	"github.com/lafriks/go-tiled"
 	"github.com/yohamta/donburi/features/math"
 
@@ -100,6 +102,11 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		}
 	}
 
+	sounds, err := loadSounds(assetsFS)
+	if err != nil {
+		return nil, err
+	}
+
 	if characterCollider == nil {
 		return nil, errors.New("character collider not found")
 	}
@@ -111,6 +118,7 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 			Frames:   character,
 			Collider: *characterCollider,
 		},
+		Sounds: sounds,
 	}, nil
 }
 
@@ -435,6 +443,19 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 	}, nil
 }
 
+func loadSounds(assetsFS fs.FS) (domain.Sounds, error) {
+	sounds := domain.Sounds{}
+
+	var err error
+	sounds.Click1, err = loadMP3Stream(assetsFS, "audio/sounds/click-1.mp3")
+	if err != nil {
+		return sounds, err
+	}
+
+	return sounds, nil
+
+}
+
 func assertPassageExists(story domain.RawStory, name string) error {
 	for _, p := range story.Passages {
 		if p.Title == name {
@@ -466,4 +487,23 @@ func newImageFromBytes(data []byte) (*ebiten.Image, error) {
 	}
 
 	return ebiten.NewImageFromImage(img), nil
+}
+
+func loadMP3Stream(fileSystem fs.FS, path string) ([]byte, error) {
+	data, err := fs.ReadFile(fileSystem, path)
+	if err != nil {
+		return nil, err
+	}
+
+	stream, err := mp3.DecodeWithoutResampling(bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+
+	streamBytes, err := io.ReadAll(stream)
+	if err != nil {
+		return nil, err
+	}
+
+	return streamBytes, nil
 }

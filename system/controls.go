@@ -321,6 +321,7 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 	}
 
 	if next && !stackedView.Scrolled {
+		domain.ButtonClickedEvent.Publish(w, domain.ButtonClicked{})
 		archetype.NextPassage(w)
 	}
 

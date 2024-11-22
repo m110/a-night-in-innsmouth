@@ -16,7 +16,8 @@ var (
 	//go:embed fonts/UndeadPixelLight.ttf
 	normalFontData []byte
 
-	//go:embed game/*
+	// TODO reconsider the directory structure
+	//go:embed *
 	assetsFS embed.FS
 
 	SmallFont  *text.GoTextFace

@@ -63,6 +63,7 @@ func (g *Game) loadLevel() {
 		system.NewHierarchyValidator(),
 		system.NewDetectPOI(),
 		system.NewText(),
+		system.NewAudio(),
 		system.NewTimeToLive(),
 		system.NewDestroy(),
 		system.NewDebug(g.loadLevel),

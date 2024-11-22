@@ -34,3 +34,7 @@ type JustOutOfCollision struct {
 }
 
 var JustOutOfCollisionEvent = events.NewEventType[JustOutOfCollision]()
+
+type ButtonClicked struct{}
+
+var ButtonClickedEvent = events.NewEventType[ButtonClicked]()

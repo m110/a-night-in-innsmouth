@@ -10,6 +10,11 @@ type Assets struct {
 	Story     RawStory
 	Levels    map[string]Level
 	Character Character
+	Sounds    Sounds
+}
+
+type Sounds struct {
+	Click1 []byte
 }
 
 type Character struct {
