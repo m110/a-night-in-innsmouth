@@ -93,9 +93,8 @@ func (b EntryBuilder) WithBoundsAsCollider(layer domain.ColliderLayer) EntryBuil
 	bounds := component.Bounds.Get(b.entry)
 
 	component.Collider.SetValue(b.entry, component.ColliderData{
-		Width:  bounds.Width,
-		Height: bounds.Height,
-		Layer:  layer,
+		Rect:  engine.NewRect(0, 0, bounds.Width, bounds.Height),
+		Layer: layer,
 	})
 
 	return b

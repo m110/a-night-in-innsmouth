@@ -2,7 +2,7 @@
 <map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="39">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
- <tileset firstgid="45" source=":/automap-tiles.tsx"/>
+ <tileset firstgid="52" source=":/automap-tiles.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="../backgrounds/hotel.jpg" width="3072" height="1728"/>
  </imagelayer>
@@ -100,12 +100,12 @@
   </object>
  </objectgroup>
  <objectgroup id="5" name="Entrypoints">
-  <object id="18" name="Entry Point 0" class="entrypoint" gid="1" x="248" y="1536" width="200" height="662.441">
+  <object id="18" name="Entry Point 0" class="entrypoint" gid="1" x="200" y="1524" width="432" height="742.144">
    <properties>
     <property name="index" type="int" value="0"/>
    </properties>
   </object>
-  <object id="19" name="Entry Point 1" class="entrypoint" gid="2147483649" x="2600" y="1504" width="234" height="775.056">
+  <object id="19" name="Entry Point 1" class="entrypoint" gid="2147483649" x="2594" y="1510" width="432" height="742.144">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>

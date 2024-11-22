@@ -4,12 +4,12 @@ import (
 	"github.com/yohamta/donburi"
 
 	"github.com/m110/secrets/domain"
+	"github.com/m110/secrets/engine"
 )
 
 type ColliderData struct {
-	Width  float64
-	Height float64
-	Layer  domain.ColliderLayer
+	Rect  engine.Rect
+	Layer domain.ColliderLayer
 
 	CollidesWith           map[CollisionKey]Collision
 	JustCollidedWith       map[CollisionKey]struct{}

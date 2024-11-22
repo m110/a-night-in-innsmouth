@@ -8,7 +8,6 @@ import (
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/domain"
-	"github.com/m110/secrets/engine"
 )
 
 type Collision struct {
@@ -92,8 +91,8 @@ func (c *Collision) Update(w donburi.World) {
 
 			// TODO The current approach doesn't take rotation into account
 			// TODO The current approach doesn't take scale into account
-			rect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
-			otherRect := engine.NewRect(otherPos.X, otherPos.Y, otherCollider.Width, otherCollider.Height)
+			rect := collider.Rect.Move(pos)
+			otherRect := otherCollider.Rect.Move(otherPos)
 
 			if rect.Intersects(otherRect) {
 				key := component.CollisionKey{

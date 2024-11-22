@@ -29,22 +29,30 @@ func NewCharacter(parent *donburi.Entry, scale float64, movementBounds component
 		WithParent(parent).
 		WithLayer(domain.SpriteLayerCharacter).
 		WithSprite(component.SpriteData{
-			Image: assets.Assets.Character[2],
+			Image: assets.Assets.Character.Frames[2],
 		}).
 		With(component.Velocity).
 		WithSpriteBounds().
-		WithBoundsAsCollider(domain.CollisionLayerCharacter).
+		With(component.Collider).
 		With(component.Animator).
 		With(component.Character).
 		With(component.MovementBounds).
 		Entry()
 
+	colliderRect := assets.Assets.Character.Collider.Scale(scale)
+
+	component.Collider.SetValue(character, component.ColliderData{
+		Rect:  colliderRect,
+		Layer: domain.CollisionLayerCharacter,
+	})
+
 	sprite := component.Sprite.Get(character)
 	frames := []*ebiten.Image{
-		assets.Assets.Character[0],
-		assets.Assets.Character[1],
-		assets.Assets.Character[2],
-		assets.Assets.Character[3],
+		assets.Assets.Character.Frames[0],
+		assets.Assets.Character.Frames[1],
+		assets.Assets.Character.Frames[2],
+		assets.Assets.Character.Frames[3],
+		assets.Assets.Character.Frames[4],
 	}
 
 	currentFrame := 0
@@ -74,7 +82,7 @@ func NewCharacter(parent *donburi.Entry, scale float64, movementBounds component
 	})
 
 	r := movementBounds.Range
-	r.Max -= float64(sprite.Image.Bounds().Dx()) / 2.0
+	r.Max -= colliderRect.Width
 	movementBounds.Range = r
 
 	component.MovementBounds.SetValue(character, movementBounds)

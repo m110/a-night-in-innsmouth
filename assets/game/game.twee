@@ -7,7 +7,7 @@ game
   "ifid": "D53E6B8D-8F81-4B7F-A6AC-8DD985B2B85E",
   "format": "Chapbook",
   "format-version": "2.2.0",
-  "start": "Start",
+  "start": "train-station",
   "tag-colors": {
     "aaa": "red",
     "once": "red",
@@ -58,6 +58,10 @@ This... Looks odd.
 > {exit} [[Look away.]]
 
 
+:: Beach {"position":"2200,1600","size":"100,100"}
+
+
+
 :: Board {"position":"4600,3450","size":"100,100"}
 "Campbell's Tomato Soup - 10 cents"
 
@@ -83,6 +87,7 @@ You see the bus to Innsmouth.
 
 :: Buy a Quart of Whisky ($1) {"position":"4350,3675","size":"100,100"}
 takeMoney: 100
+addItem: Quart of Whisky
 --
 
 "Here you go."
@@ -200,6 +205,10 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 
 
 
+:: Nothing to do here. {"position":"3025,4250","size":"100,100"}
+
+
+
 :: Option 1 {"position":"850,3475","size":"100,100"}
 
 
@@ -224,6 +233,12 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 ...
 
 > {level:innsmouth,2} [[Enter]]
+
+
+:: Slums Crossroads {"position":"2200,1475","size":"100,100"}
+...
+
+> {level:beach,0} [[Beach]]
 
 
 :: Start {"position":"500,3275","size":"100,100"}
@@ -325,6 +340,12 @@ The house is in ruin.
 
 > [[Go inside]]
 > {exit} [[Leave it be]]
+
+
+:: Vacant House 2 {"position":"3025,4125","size":"100,100"}
+...
+
+> {exit} [[Nothing to do here.]]
 
 
 :: Wait for Zadok {"position":"5125,4350","size":"100,100"}

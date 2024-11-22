@@ -66,6 +66,24 @@
         },
         {
             "color": "#ffa0a0a4",
+            "id": 11,
+            "members": [
+            ],
+            "name": "fadepoint",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
             "id": 8,
             "members": [
             ],
@@ -164,10 +182,10 @@
         },
         {
             "color": "#ffa0a0a4",
-            "id": 11,
+            "id": 12,
             "members": [
             ],
-            "name": "fadepoint",
+            "name": "collider",
             "type": "class",
             "useAs": [
                 "property",

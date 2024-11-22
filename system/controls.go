@@ -118,7 +118,7 @@ func (c *Controls) Update(w donburi.World) {
 
 			pos := transform.WorldPosition(entry)
 			collider := component.Collider.Get(entry)
-			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
+			colliderRect := collider.Rect.Move(pos)
 
 			if colliderRect.Intersects(clickRect) {
 				if characterFound {
@@ -159,13 +159,14 @@ func (c *Controls) Update(w donburi.World) {
 		x, _ = ebiten.TouchPosition(touchIDs[0])
 	}
 
-	levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
-	cam := component.Camera.Get(levelCamera)
-	screenPos := cam.WorldPositionToViewportPosition(character)
-
 	if clicked {
-		bounds := component.Bounds.Get(character)
-		width := bounds.Width * cam.ViewportZoom
+		levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
+		cam := component.Camera.Get(levelCamera)
+		collider := component.Collider.Get(character)
+
+		screenPos := cam.WorldPositionToViewportPosition(character)
+		screenPos.X += collider.Rect.X
+		width := collider.Rect.Width * cam.ViewportZoom
 		diff := float64(x) - screenPos.X
 		if diff > 0 && diff > clickMoveThreshold+width {
 			movingRight = true
@@ -180,22 +181,25 @@ func (c *Controls) Update(w donburi.World) {
 	anim := animator.Animations["walk"]
 	movementBounds := component.MovementBounds.Get(character)
 	sprite := component.Sprite.Get(character)
+	collider := component.Collider.Get(character)
+
+	colliderPos := collider.Rect.Move(pos)
 
 	var moving bool
-	if pos.X <= movementBounds.Range.Max && movingRight {
+	if colliderPos.X <= movementBounds.Range.Max && movingRight {
 		velocity.Velocity.X = in.MoveSpeed
 		sprite.FlipY = false
 		anim.Start(character)
 		moving = true
 	}
-	if pos.X >= movementBounds.Range.Min && movingLeft {
+	if colliderPos.X >= movementBounds.Range.Min && movingLeft {
 		velocity.Velocity.X = -in.MoveSpeed
 		sprite.FlipY = true
 		anim.Start(character)
 		moving = true
 	}
 
-	if pos.X >= movementBounds.Range.Max && movingRight {
+	if colliderPos.X >= movementBounds.Range.Max && movingRight {
 		for p := range c.poiQuery.Iter(w) {
 			edge := component.POI.Get(p).POI.EdgeTrigger
 			if edge != nil && *edge == domain.EdgeRight {
@@ -204,7 +208,7 @@ func (c *Controls) Update(w donburi.World) {
 				break
 			}
 		}
-	} else if pos.X <= movementBounds.Range.Min && movingLeft {
+	} else if colliderPos.X <= movementBounds.Range.Min && movingLeft {
 		for p := range c.poiQuery.Iter(w) {
 			edge := component.POI.Get(p).POI.EdgeTrigger
 			if edge != nil && *edge == domain.EdgeLeft {
@@ -284,7 +288,7 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 			dialogCamera := engine.MustFindWithComponent(w, component.DialogCamera)
 			pos := transform.WorldPosition(entry).Add(transform.WorldPosition(dialogCamera))
 			collider := component.Collider.Get(entry)
-			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
+			colliderRect := collider.Rect.Move(pos)
 			if colliderRect.Intersects(clickRect) {
 				passage.ActiveOption = component.DialogOption.Get(entry).Index
 				optionUpdated = true

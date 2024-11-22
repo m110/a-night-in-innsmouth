@@ -23,6 +23,9 @@ import (
 
 var (
 	levelNames = map[string]struct{}{}
+
+	// TODO could refactor into struct instead of a global variable
+	characterCollider *engine.Rect
 )
 
 func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, error) {
@@ -40,8 +43,8 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 
 	progressChan <- "Loading character"
 
-	characterFrames := 4
-	character := make([]*ebiten.Image, 4)
+	characterFrames := 5
+	character := make([]*ebiten.Image, characterFrames)
 	for i := range characterFrames {
 		charFile, err := fs.ReadFile(assetsFS, fmt.Sprintf("game/character/character-%v.png", i+1))
 		if err != nil {
@@ -97,10 +100,17 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		}
 	}
 
+	if characterCollider == nil {
+		return nil, errors.New("character collider not found")
+	}
+
 	return &domain.Assets{
-		Story:     story,
-		Levels:    levels,
-		Character: character,
+		Story:  story,
+		Levels: levels,
+		Character: domain.Character{
+			Frames:   character,
+			Collider: *characterCollider,
+		},
 	}, nil
 }
 
@@ -147,6 +157,18 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 
 		for _, tile := range ts.Tiles {
 			if tile.Image != nil && tile.Image.Source != "" {
+				// TODO Probably not the best approach here
+				if characterCollider == nil && ts.Name == "Character" {
+					for _, og := range tile.ObjectGroups {
+						for _, o := range og.Objects {
+							if o.Class == "collider" {
+								r := engine.NewRect(o.X, o.Y, o.Width, o.Height)
+								characterCollider = &r
+							}
+						}
+					}
+				}
+
 				p := path.Join("game/levels", path.Dir(ts.Source), tile.Image.Source)
 				imgBytes, err := fs.ReadFile(assetsFS, p)
 				if err != nil {
@@ -196,7 +218,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 	var objects []domain.Object
 	var pois []domain.POI
 	var entrypoints []domain.Entrypoint
-	var characterScale float64
+	var character domain.LevelCharacter
 	var limits *engine.FloatRange
 	var fadepoint *math.Vec2
 
@@ -333,14 +355,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 				pos := domain.CharacterPosition{
 					LocalPosition: math.Vec2{
 						X: obj.X,
-						Y: obj.Y,
 					},
-				}
-
-				if obj.GID != 0 {
-					// Image-based entrypoints have pivot set to bottom-left
-					// Other entrypoints have pivot set to top-left
-					pos.LocalPosition.Y -= obj.Height
 				}
 
 				if obj.Properties.GetBool("flipY") {
@@ -352,9 +367,16 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 					CharacterPosition: pos,
 				}
 
-				// The first entrypoint's scale is used for all entrypoint
+				// The first entrypoint's scale and Y position is used for all entrypoints
 				if entrypoint.Index == 0 {
-					characterScale = obj.Height / characterHeight
+					character.Scale = obj.Height / characterHeight
+					character.PosY = obj.Y
+
+					if obj.GID != 0 {
+						// Image-based entrypoints have pivot set to bottom-left
+						// Other entrypoints have pivot set to top-left
+						character.PosY -= obj.Height
+					}
 				}
 
 				entrypoints = append(entrypoints, entrypoint)
@@ -401,15 +423,15 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 	}
 
 	return domain.Level{
-		Name:           levelName,
-		Background:     loadBackground,
-		POIs:           pois,
-		Objects:        objects,
-		Entrypoints:    entrypoints,
-		CameraZoom:     cameraZoom,
-		CharacterScale: characterScale,
-		Limits:         limits,
-		Fadepoint:      fadepoint,
+		Name:        levelName,
+		Background:  loadBackground,
+		POIs:        pois,
+		Objects:     objects,
+		Entrypoints: entrypoints,
+		CameraZoom:  cameraZoom,
+		Character:   character,
+		Limits:      limits,
+		Fadepoint:   fadepoint,
 	}, nil
 }
 

@@ -59,3 +59,21 @@ func (r Rect) ToImageRectangle() image.Rectangle {
 		int(r.MaxY()),
 	)
 }
+
+func (r Rect) Move(pos math.Vec2) Rect {
+	return Rect{
+		X:      r.X + pos.X,
+		Y:      r.Y + pos.Y,
+		Width:  r.Width,
+		Height: r.Height,
+	}
+}
+
+func (r Rect) Scale(scale float64) Rect {
+	return Rect{
+		X:      r.X * scale,
+		Y:      r.Y * scale,
+		Width:  r.Width * scale,
+		Height: r.Height * scale,
+	}
+}

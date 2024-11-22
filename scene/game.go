@@ -196,9 +196,8 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 	component.Active.Get(inventoryButton).Active = true
 
 	component.Collider.SetValue(inventoryButton, component.ColliderData{
-		Width:  float64(inventoryWidth),
-		Height: float64(inventoryButtonHeight),
-		Layer:  domain.CollisionLayerButton,
+		Rect:  engine.NewRect(0, 0, float64(inventoryWidth), float64(inventoryButtonHeight)),
+		Layer: domain.CollisionLayerButton,
 	})
 
 	textPos := math.Vec2{
@@ -229,9 +228,8 @@ func (g *Game) createInventory(w donburi.World, ui *donburi.Entry) {
 		Entry()
 
 	component.Collider.SetValue(inventory, component.ColliderData{
-		Width:  float64(inventoryWidth),
-		Height: float64(g.screenHeight),
-		Layer:  domain.CollisionLayerButton,
+		Rect:  engine.NewRect(0, 0, float64(inventoryWidth), float64(g.screenHeight)),
+		Layer: domain.CollisionLayerButton,
 	})
 
 	inventoryText := archetype.NewTagged(w, "Inventory Text").

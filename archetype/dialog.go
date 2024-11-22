@@ -636,9 +636,8 @@ func createDialogOptions(w donburi.World, domainPassage *domain.Passage) {
 		}
 		component.Sprite.Get(op).Image = optionImg
 		component.Collider.SetValue(op, component.ColliderData{
-			Width:  float64(optionImageWidth),
-			Height: float64(lineHeight),
-			Layer:  domain.CollisionLayerButton,
+			Rect:  engine.NewRect(0, 0, float64(optionImageWidth), float64(lineHeight)),
+			Layer: domain.CollisionLayerButton,
 		})
 
 		optionsY += lineHeight + int(assets.NormalFont.Size)

@@ -21,7 +21,7 @@
     <property name="passage" value="Bus Driver"/>
    </properties>
   </object>
-  <object id="11" name="Sign" class="poi" gid="34" x="2000" y="920" width="113" height="57">
+  <object id="11" name="Sign" class="poi" gid="34" x="2000" y="920" width="113" height="57" visible="0">
    <properties>
     <property name="passage" value="Bus"/>
    </properties>
@@ -34,6 +34,6 @@
     <property name="level" value="train-station,1"/>
    </properties>
   </object>
-  <object id="9" name="Entrypoint 0" class="entrypoint" gid="1" x="208" y="1560" width="202.887" height="672"/>
+  <object id="9" name="Entrypoint 0" class="entrypoint" gid="1" x="208" y="1560" width="405" height="695.76"/>
  </objectgroup>
 </map>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="11">
  <tileset firstgid="1" source="../objects/Objects.tsx"/>
- <tileset firstgid="36" source="../character/Character.tsx"/>
+ <tileset firstgid="51" source="../character/Character.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="../backgrounds/beach.jpg" width="3840" height="2160"/>
  </imagelayer>
@@ -11,7 +11,7 @@
   </properties>
   <object id="4" name="Breaker" class="object" gid="26" x="1157" y="2118" width="251" height="360"/>
   <object id="5" name="Breaker" class="object" gid="26" x="1683" y="2142" width="251" height="360"/>
-  <object id="6" name="Entrypoint" class="entrypoint" gid="2147483684" x="3561" y="1874" width="138.276" height="458">
+  <object id="6" name="Entrypoint" class="entrypoint" gid="2147483699" x="3561" y="1874" width="283" height="486.173">
    <properties>
     <property name="flipY" type="bool" value="true"/>
    </properties>
@@ -19,7 +19,7 @@
   <object id="7" name="Exit to Innsmouth" class="poi" x="3776" y="1409" width="148" height="473">
    <properties>
     <property name="edge" propertytype="edge" value="right"/>
-    <property name="level" value="innsmouth,0"/>
+    <property name="level" value="slums-2,0"/>
     <property name="touchTrigger" type="bool" value="false"/>
    </properties>
   </object>

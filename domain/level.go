@@ -8,15 +8,20 @@ import (
 )
 
 type Level struct {
-	Name           string
-	Background     func() *ebiten.Image
-	POIs           []POI
-	Objects        []Object
-	Entrypoints    []Entrypoint
-	CameraZoom     float64
-	CharacterScale float64
-	Limits         *engine.FloatRange
-	Fadepoint      *math.Vec2
+	Name        string
+	Background  func() *ebiten.Image
+	POIs        []POI
+	Objects     []Object
+	Entrypoints []Entrypoint
+	CameraZoom  float64
+	Character   LevelCharacter
+	Limits      *engine.FloatRange
+	Fadepoint   *math.Vec2
+}
+
+type LevelCharacter struct {
+	PosY  float64
+	Scale float64
 }
 
 type Entrypoint struct {

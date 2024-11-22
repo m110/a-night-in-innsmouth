@@ -51,7 +51,7 @@ func (i *Inventory) Update(w donburi.World) {
 
 			collider := component.Collider.Get(entry)
 			pos := transform.WorldPosition(entry)
-			colliderRect := engine.NewRect(pos.X, pos.Y, collider.Width, collider.Height)
+			colliderRect := collider.Rect.Move(pos)
 
 			if colliderRect.Intersects(clickRect) {
 				inventoryClicked = true

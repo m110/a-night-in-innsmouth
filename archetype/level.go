@@ -101,9 +101,9 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 
 		// For now, all levels have only one Y position for the character
 		// For convenience, the first entrypoint's Y position is used
-		firstEntrypoint := level.Entrypoints[0]
-		characterPos.LocalPosition.Y = firstEntrypoint.CharacterPosition.LocalPosition.Y
+		characterPos.LocalPosition.Y = level.Character.PosY
 	} else if targetLevel.CharacterPosition != nil {
+		// If coming back to the previous level, use the previous character position
 		characterPos = targetLevel.CharacterPosition
 	}
 
@@ -122,7 +122,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 			Range: boundsRange,
 		}
 
-		character = NewCharacter(entry, level.CharacterScale, bounds)
+		character = NewCharacter(entry, level.Character.Scale, bounds)
 
 		transform.GetTransform(character).LocalPosition = characterPos.LocalPosition
 		component.Sprite.Get(character).FlipY = characterPos.FlipY

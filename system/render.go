@@ -207,10 +207,12 @@ func renderColliderDebug(entry *donburi.Entry, camera *component.CameraData) {
 	collider := component.Collider.Get(entry)
 	pos := camera.WorldPositionToViewportPosition(entry)
 	zoom := camera.ViewportZoom
-	w := collider.Width * zoom
-	h := collider.Height * zoom
 
-	vector.StrokeRect(camera.Viewport, float32(pos.X), float32(pos.Y), float32(w), float32(h), 1, colornames.Lime, false)
+	rect := collider.Rect.Move(pos)
+	w := rect.Width * zoom
+	h := rect.Height * zoom
+
+	vector.StrokeRect(camera.Viewport, float32(rect.X), float32(rect.Y), float32(w), float32(h), 1, colornames.Lime, false)
 }
 
 func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer domain.LayerID) []entryWithLayer {

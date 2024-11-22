@@ -3,8 +3,9 @@ package domain
 import (
 	"strconv"
 
-	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
+
+	"github.com/yohamta/donburi"
 )
 
 type RawStory struct {

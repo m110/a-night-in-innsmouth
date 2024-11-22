@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="6">
  <tileset firstgid="1" source="../objects/Objects.tsx"/>
- <tileset firstgid="36" source="../character/Character.tsx"/>
+ <tileset firstgid="51" source="../character/Character.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="../backgrounds/rooftops.jpg" width="3840" height="2160"/>
  </imagelayer>
@@ -10,7 +10,7 @@
    <property name="layer" type="int" value="130"/>
   </properties>
   <object id="2" name="Chimney" class="object" gid="27" x="1661" y="1917" width="334" height="713"/>
-  <object id="3" name="Entrypoint" class="entrypoint" gid="36" x="458" y="1586" width="166" height="549.826"/>
+  <object id="3" name="Entrypoint" class="entrypoint" gid="51" x="458" y="1586" width="284.646" height="489"/>
   <object id="4" name="Limits" class="limits" x="333" y="640" width="2595" height="1230"/>
   <object id="5" name="Roof Window" class="poi" x="1952" y="1624" width="257" height="200">
    <properties>
