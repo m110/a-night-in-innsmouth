@@ -83,6 +83,10 @@ func (a *Audio) onMusicChanged(w donburi.World, event domain.MusicChanged) {
 		return
 	}
 
+	a.mix(event.Track)
+}
+
+func (a *Audio) mix(newTrack string) {
 	a.mixInProgress = true
 	a.musicMixTimer.Reset()
 
@@ -90,13 +94,13 @@ func (a *Audio) onMusicChanged(w donburi.World, event domain.MusicChanged) {
 		a.fadingMusicPlayer = a.currentMusicPlayer
 	}
 
-	a.currentTrack = event.Track
+	a.currentTrack = newTrack
 
-	if event.Track == "" {
+	if newTrack == "" {
 		// Stop the music
 		a.currentMusicPlayer = nil
 	} else {
-		a.currentMusicPlayer = a.audioContext.NewPlayerFromBytes(assets.Assets.Music[event.Track])
+		a.currentMusicPlayer = a.audioContext.NewPlayerFromBytes(assets.Assets.Music[newTrack])
 		a.currentMusicPlayer.SetVolume(0)
 		a.currentMusicPlayer.Play()
 	}
