@@ -11,6 +11,7 @@ type Assets struct {
 	Levels    map[string]Level
 	Character Character
 	Sounds    Sounds
+	Music     map[string][]byte
 }
 
 type Sounds struct {

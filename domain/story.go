@@ -274,6 +274,10 @@ func (p *Passage) Content() string {
 }
 
 func (p *Passage) ConditionsMet() bool {
+	if p.IsOneTime && p.Visited {
+		return false
+	}
+
 	for _, c := range p.Conditions {
 		if !p.story.TestCondition(c) {
 			return false
@@ -306,6 +310,10 @@ func (p *Passage) Visit() {
 				panic(err)
 			}
 			p.story.AddMoney(-money)
+		case MacroTypePlayMusic:
+			MusicChangedEvent.Publish(p.story.world, MusicChanged{
+				Track: m.Value,
+			})
 		default:
 			panic("Unknown macro type: " + m.Type)
 		}
@@ -316,7 +324,11 @@ func (p *Passage) Links() []*Link {
 	var links []*Link
 	for _, l := range p.AllLinks {
 		if l.Target.IsOneTime && l.Target.Visited {
-			continue
+			// Edge case scenario: allow the link if it points back to the same passage
+			// This is useful for "exit" links in the Twine editor
+			if !l.IsExit() || l.Target != p {
+				continue
+			}
 		}
 
 		var skip bool
@@ -349,6 +361,9 @@ type Link struct {
 }
 
 func (l *Link) Visit() {
+	if l.IsExit() {
+		return
+	}
 	l.Visited = true
 	l.Target.Visit()
 }
@@ -433,6 +448,7 @@ const (
 	MacroTypeSetFact   MacroType = "setFact"
 	MacroTypeAddMoney  MacroType = "addMoney"
 	MacroTypeTakeMoney MacroType = "takeMoney"
+	MacroTypePlayMusic MacroType = "playMusic"
 )
 
 type Macro struct {

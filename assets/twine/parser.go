@@ -66,6 +66,11 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 		titleLine = metadataRegex.ReplaceAllString(titleLine, "")
 	}
 
+	if strings.HasSuffix(content, "\n--") {
+		// Special case: passage with no content, just macros
+		content += "\n"
+	}
+
 	parts := strings.Split(content, "\n--\n")
 	if len(parts) > 1 {
 		macros := strings.Split(parts[0], "\n")
@@ -318,6 +323,8 @@ func parseMacroType(str string) domain.MacroType {
 		return domain.MacroTypeTakeMoney
 	case "setFact":
 		return domain.MacroTypeSetFact
+	case "playMusic":
+		return domain.MacroTypePlayMusic
 	default:
 		panic("Invalid macro type: " + str)
 	}

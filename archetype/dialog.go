@@ -250,33 +250,33 @@ func NextPassage(w donburi.World) {
 
 	scrollDialogLog(w, height)
 
+	levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
+	briefZoom := component.BriefZoom.Get(levelCamera)
+
 	if link.IsExit() {
 		_, ok := engine.FindWithComponent(w, component.Character)
+		// Character found: zoom out back on the character
 		if ok {
-			// Character found: zoom out back on the character
 			hideDialog(w, nil)
 
 			// Refresh POIs in case the conditions to show the passage changed
 			DeactivatePOIs(w)
 			CheckNextPOI(w)
 
-			levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
-			bz := component.BriefZoom.Get(levelCamera)
-
-			if bz.OriginCamera != nil {
+			if briefZoom.OriginCamera != nil {
 				lCam := component.Camera.Get(levelCamera)
 
 				zoomAnim := newCameraZoomAnimation(
 					lCam,
 					lCam.ViewportPosition,
-					bz.OriginCamera.ViewportPosition,
+					briefZoom.OriginCamera.ViewportPosition,
 					lCam.ViewportZoom,
-					bz.OriginCamera.ViewportZoom,
+					briefZoom.OriginCamera.ViewportZoom,
 				)
 
 				zoomAnim.OnStop = func(e *donburi.Entry) {
-					lCam.ViewportBounds = bz.OriginCamera.ViewportBounds
-					lCam.ViewportTarget = bz.OriginCamera.ViewportTarget
+					lCam.ViewportBounds = briefZoom.OriginCamera.ViewportBounds
+					lCam.ViewportTarget = briefZoom.OriginCamera.ViewportTarget
 				}
 
 				component.Animator.Get(levelCamera).SetAnimation("zoom-out", zoomAnim)
@@ -303,6 +303,9 @@ func NextPassage(w donburi.World) {
 	}
 
 	if link.Level != nil {
+		// When switching levels, the camera should be reset
+		briefZoom.OriginCamera = nil
+
 		hideDialog(w, func(e *donburi.Entry) {
 			ChangeLevel(w, *link.Level)
 		})
@@ -382,6 +385,12 @@ func hideDialog(w donburi.World, onHide func(e *donburi.Entry)) {
 }
 
 func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi.Entry) {
+	if len(domainPassage.Segments) == 0 && len(domainPassage.Links()) == 0 {
+		// In rare cases, a passage might have no segments or links, so we skip it
+		// (e.g. when a passage is only used for macros)
+		return
+	}
+
 	if source != nil {
 		zoomInOnPOI(w, source)
 	}

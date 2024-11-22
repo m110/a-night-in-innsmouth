@@ -66,6 +66,17 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		return nil, err
 	}
 
+	progressChan <- "Loading audio"
+	sounds, err := loadSounds(assetsFS)
+	if err != nil {
+		return nil, err
+	}
+
+	music, err := loadMusic(assetsFS)
+	if err != nil {
+		return nil, err
+	}
+
 	progressChan <- "Validating assets"
 	for _, l := range levels {
 		if len(l.Entrypoints) == 0 {
@@ -92,6 +103,14 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 	}
 
 	for _, p := range story.Passages {
+		for _, m := range p.Macros {
+			if m.Type == domain.MacroTypePlayMusic && m.Value != "" {
+				if _, ok := music[m.Value]; !ok {
+					return nil, fmt.Errorf("music not found: %v", m.Value)
+				}
+			}
+		}
+
 		for _, l := range p.Links {
 			if l.Level != nil {
 				err = assertLevelExists(levels, *l.Level)
@@ -100,11 +119,6 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 				}
 			}
 		}
-	}
-
-	sounds, err := loadSounds(assetsFS)
-	if err != nil {
-		return nil, err
 	}
 
 	if characterCollider == nil {
@@ -119,6 +133,7 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 			Collider: *characterCollider,
 		},
 		Sounds: sounds,
+		Music:  music,
 	}, nil
 }
 
@@ -453,7 +468,37 @@ func loadSounds(assetsFS fs.FS) (domain.Sounds, error) {
 	}
 
 	return sounds, nil
+}
 
+func loadMusic(assetsFS fs.FS) (map[string][]byte, error) {
+	music := map[string][]byte{}
+
+	files, err := fs.ReadDir(assetsFS, "audio/music")
+	if err != nil {
+		return nil, err
+	}
+
+	for _, f := range files {
+		if f.IsDir() {
+			continue
+		}
+
+		fileName := f.Name()
+		ext := path.Ext(fileName)
+		if ext == ".mp3" {
+			data, err := loadMP3Stream(assetsFS, path.Join("audio/music", fileName))
+			if err != nil {
+				return nil, err
+			}
+
+			name := strings.TrimSuffix(fileName, ext)
+			music[name] = data
+		} else {
+			return nil, fmt.Errorf("unsupported music format: %v", fileName)
+		}
+	}
+
+	return music, nil
 }
 
 func assertPassageExists(story domain.RawStory, name string) error {

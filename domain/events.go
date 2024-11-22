@@ -38,3 +38,9 @@ var JustOutOfCollisionEvent = events.NewEventType[JustOutOfCollision]()
 type ButtonClicked struct{}
 
 var ButtonClickedEvent = events.NewEventType[ButtonClicked]()
+
+type MusicChanged struct {
+	Track string
+}
+
+var MusicChangedEvent = events.NewEventType[MusicChanged]()

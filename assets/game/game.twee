@@ -10,7 +10,7 @@ game
   "start": "train-station",
   "tag-colors": {
     "aaa": "red",
-    "once": "red",
+    "once": "orange",
     "Level": "green"
   },
   "zoom": 0.6
@@ -58,7 +58,7 @@ This... Looks odd.
 > {exit} [[Look away.]]
 
 
-:: Beach {"position":"2200,1600","size":"100,100"}
+:: Beach {"position":"2175,1600","size":"100,100"}
 
 
 
@@ -235,7 +235,7 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 > {level:innsmouth,2} [[Enter]]
 
 
-:: Slums Crossroads {"position":"2200,1475","size":"100,100"}
+:: Slums Crossroads {"position":"2175,1425","size":"100,100"}
 ...
 
 > {level:beach,0} [[Beach]]
@@ -358,6 +358,16 @@ The house is in ruin.
 
 
 
+:: beach [Level] {"position":"2350,4125","size":"200,100"}
+playMusic: waves
+--
+
+
+:: city [Level] {"position":"1825,3900","size":"200,100"}
+playMusic:
+--
+
+
 :: grocery-npc [Level] {"position":"4225,3325","size":"200,100"}
 "Hello, mister!"
 
@@ -376,7 +386,19 @@ The hall is full of dust. A strong fish scent is in the air, stronger under some
 > [[Look for your room]]
 
 
-:: train-station [Level] {"position":"600,325","size":"200,100"}
+:: innsmouth [Level] {"position":"2200,3900","size":"200,100"}
+playMusic: crackle
+--
+
+
+:: slums-2 [Level] {"position":"2200,4050","size":"100,100"}
+playMusic: crackle
+--
+
+
+:: train-station [Level once] {"position":"600,325","size":"200,100"}
+playMusic: kitchen
+--
 You arrive to Newsburyport on your way to Arkham, where your relative lives.
 
 You were told the best way there is taking the steam train.
