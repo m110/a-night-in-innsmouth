@@ -131,6 +131,15 @@ func (s *Story) AddMoney(amount int) {
 	if s.Money < 0 {
 		panic("Negative money")
 	}
+	if amount > 0 {
+		MoneyReceivedEvent.Publish(s.world, MoneyReceived{
+			Amount: amount,
+		})
+	} else if amount < 0 {
+		MoneySpentEvent.Publish(s.world, MoneySpent{
+			Amount: -amount,
+		})
+	}
 	s.publishInventoryUpdated()
 }
 
@@ -161,6 +170,12 @@ func (s *Story) AddItem(item string) {
 		Count: 1,
 	})
 
+	ItemReceivedEvent.Publish(s.world, ItemReceived{
+		Item: InventoryItem{
+			Name:  item,
+			Count: 1,
+		},
+	})
 	s.publishInventoryUpdated()
 }
 
@@ -172,6 +187,14 @@ func (s *Story) TakeItem(item string) {
 			} else {
 				s.Items[i].Count--
 			}
+
+			ItemLostEvent.Publish(s.world, ItemLost{
+				Item: InventoryItem{
+					Name:  item,
+					Count: 1,
+				},
+			})
+
 			s.publishInventoryUpdated()
 			return
 		}

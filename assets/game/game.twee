@@ -113,7 +113,7 @@ takeMoney: 500
 addItem: Train Ticket to Arkham
 --
 
-You bough the ticket.
+You bought the ticket.
 
 > [[Fold it and put in the pocket->Agent]]
 

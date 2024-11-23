@@ -203,52 +203,16 @@ func NextPassage(w donburi.World) {
 		options = append(options, e)
 	})
 
-	game := component.MustFindGame(w)
-
-	height := 0.0
-	passageMarginLeft := engine.IntPercent(game.Dimensions.DialogWidth, passageMarginLeftPercent)
-	passageTextWidth := game.Dimensions.DialogWidth - passageMarginLeft*2
-
-	logCamera := engine.MustFindWithComponent(w, component.DialogLogCamera)
-	logHeight := component.Camera.Get(logCamera).Viewport.Bounds().Dy()
-	passageMarginTop := float64(int(float64(logHeight) * passageMarginTopPercent))
-
 	for _, e := range options {
 		opt := component.DialogOption.Get(e)
 		if passage.ActiveOption == opt.Index {
 			txt := engine.MustFindChildWithComponent(e, component.Text)
-
 			t := component.Text.Get(txt)
-
-			newOption := NewTagged(w, "Option Selected").
-				WithParent(activePassage).
-				WithLayerInherit().
-				WithPosition(math.Vec2{
-					X: 0,
-					Y: passage.Height + passageMarginTop,
-				}).
-				WithText(component.TextData{
-					Text:  fmt.Sprintf("-> %s", t.Text),
-					Color: assets.TextDarkColor,
-				}).
-				With(component.Bounds).
-				Entry()
-
-			AdjustTextWidth(newOption, passageTextWidth)
-
-			optionTextHeight := MeasureTextHeight(newOption)
-			height += passageMarginTop + optionTextHeight
-
-			component.Bounds.SetValue(newOption, component.BoundsData{
-				Width:  float64(passageTextWidth),
-				Height: optionTextHeight,
-			})
+			AddLogEventSegment(w, fmt.Sprintf("-> %s", t.Text), assets.TextDarkColor)
 		}
 
 		component.Destroy(e)
 	}
-
-	scrollDialogLog(w, height)
 
 	levelCamera := engine.MustFindWithComponent(w, component.LevelCamera)
 	briefZoom := component.BriefZoom.Get(levelCamera)
@@ -313,6 +277,46 @@ func NextPassage(w donburi.World) {
 	}
 
 	ShowPassage(w, link.Target, nil)
+}
+
+func AddLogEventSegment(w donburi.World, text string, color color.Color) {
+	game := component.MustFindGame(w)
+
+	log := engine.MustFindWithComponent(w, component.DialogLog)
+	stackedView := component.StackedView.Get(log)
+
+	// TODO Deduplicate
+	passageMarginLeft := engine.IntPercent(game.Dimensions.DialogWidth, passageMarginLeftPercent)
+	passageTextWidth := game.Dimensions.DialogWidth - passageMarginLeft*2
+	logCamera := engine.MustFindWithComponent(w, component.DialogLogCamera)
+	logHeight := component.Camera.Get(logCamera).Viewport.Bounds().Dy()
+	passageMarginTop := float64(int(float64(logHeight) * passageMarginTopPercent))
+
+	segment := NewTagged(w, "Log Segment").
+		WithParent(log).
+		WithLayerInherit().
+		WithPosition(math.Vec2{
+			X: float64(passageMarginLeft),
+			Y: stackedView.CurrentY + passageMarginTop,
+		}).
+		WithText(component.TextData{
+			Text:  text,
+			Color: color,
+		}).
+		With(component.Bounds).
+		Entry()
+
+	AdjustTextWidth(segment, passageTextWidth)
+
+	optionTextHeight := MeasureTextHeight(segment)
+	height := passageMarginTop + optionTextHeight
+
+	component.Bounds.SetValue(segment, component.BoundsData{
+		Width:  float64(passageTextWidth),
+		Height: optionTextHeight,
+	})
+
+	scrollDialogLog(w, height)
 }
 
 func scrollDialogLog(w donburi.World, height float64) {

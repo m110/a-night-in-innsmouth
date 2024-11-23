@@ -108,6 +108,7 @@ func (g *Game) createWorld() donburi.World {
 	g.createInventory(world, ui)
 
 	story.AddMoney(1000)
+	story.Money = 1000
 
 	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, nil)
 	levelCam.AddComponent(component.LevelCamera)
@@ -124,6 +125,25 @@ func (g *Game) createWorld() donburi.World {
 	archetype.ChangeLevel(world, domain.TargetLevel{
 		Name:       "train-station",
 		Entrypoint: &entrypoint,
+	})
+
+	// TODO a hack to not show the initial money received event
+	domain.MoneyReceivedEvent.ProcessEvents(world)
+
+	domain.MoneyReceivedEvent.Subscribe(world, func(w donburi.World, event domain.MoneyReceived) {
+		archetype.AddLogEventSegment(w, fmt.Sprintf("[Received %v]", formatAsDollars(event.Amount)), assets.TextGreenColor)
+	})
+
+	domain.MoneySpentEvent.Subscribe(world, func(w donburi.World, event domain.MoneySpent) {
+		archetype.AddLogEventSegment(w, fmt.Sprintf("[Spent %v]", formatAsDollars(event.Amount)), assets.TextRedColor)
+	})
+
+	domain.ItemReceivedEvent.Subscribe(world, func(w donburi.World, event domain.ItemReceived) {
+		archetype.AddLogEventSegment(w, fmt.Sprintf("[Received %v]", event.Item.Name), assets.TextGreenColor)
+	})
+
+	domain.ItemLostEvent.Subscribe(world, func(w donburi.World, event domain.ItemLost) {
+		archetype.AddLogEventSegment(w, fmt.Sprintf("[Lost %v]", event.Item.Name), assets.TextRedColor)
 	})
 
 	return world

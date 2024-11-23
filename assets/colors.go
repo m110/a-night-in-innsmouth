@@ -33,7 +33,18 @@ var (
 		B: 247,
 		A: 255,
 	}
-
+	TextGreenColor = color.RGBA{
+		R: 199,
+		G: 247,
+		B: 199,
+		A: 255,
+	}
+	TextRedColor = color.RGBA{
+		R: 247,
+		G: 199,
+		B: 199,
+		A: 255,
+	}
 	UIBackgroundColor = color.RGBA{
 		R: 25,
 		G: 25,
