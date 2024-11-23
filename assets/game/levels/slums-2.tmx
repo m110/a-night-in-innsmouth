@@ -14,7 +14,7 @@
   <object id="12" name="Exit" class="poi" x="3812" y="1103" width="273" height="885">
    <properties>
     <property name="edge" propertytype="edge" value="right"/>
-    <property name="level" value="innsmouth,0"/>
+    <property name="level" value="slums-1,0"/>
    </properties>
   </object>
  </objectgroup>

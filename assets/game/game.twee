@@ -7,7 +7,7 @@ game
   "ifid": "D53E6B8D-8F81-4B7F-A6AC-8DD985B2B85E",
   "format": "Chapbook",
   "format-version": "2.2.0",
-  "start": "train-station",
+  "start": "Start",
   "tag-colors": {
     "aaa": "red",
     "once": "orange",
@@ -17,7 +17,7 @@ game
 }
 
 
-:: "Here, have a sip." - hand him the whisky bottle {"position":"4925,4400","size":"100,100"}
+:: "Here, have a sip." - hand him the whisky bottle {"position":"4900,4275","size":"100,100"}
 Zadok takes a sip.
 
 > [[Wait.->Wait for Zadok]]
@@ -58,23 +58,19 @@ You feel like you missed something, but you don't know what it is.
 THE END
 
 
-:: Barnacles {"position":"3100,3400","size":"100,100"}
+:: Barnacles {"position":"3050,3375","size":"100,100"}
 This... Looks odd.
 
-> {exit} [[Look away.]]
+> {exit} [[Look away.->Barnacles]]
 
 
-:: Beach {"position":"2025,3675","size":"100,100"}
-
-
-
-:: Board {"position":"4600,3450","size":"100,100"}
+:: Board {"position":"4675,3325","size":"100,100"}
 "Campbell's Tomato Soup - 10 cents"
 
-> {exit} [[Perhaps later.]]
+> {exit} [[Perhaps later.->Board]]
 
 
-:: Board the Bus {"position":"2100,1525","size":"100,100"}
+:: Board the Bus {"position":"2300,1350","size":"100,100"}
 
 
 
@@ -96,13 +92,13 @@ The weird looking man must be the bus' driver.
 He gives you a lazy stare.
 
 [if fact learnedAboutInnsmouth]
-> {level:city,0} [[Board the Bus]]
+> [[Hand him money for the ticket.]]
 [continue]
 
 > {exit} [[Leave.->Bus Driver]]
 
 
-:: Buy a Quart of Whisky ($1) {"position":"4350,3675","size":"100,100"}
+:: Buy a Quart of Whisky ($1) {"position":"4300,3550","size":"100,100"}
 takeMoney: 100
 addItem: Quart of Whisky
 --
@@ -112,7 +108,7 @@ addItem: Quart of Whisky
 > [["Thanks."->grocery-npc]]
 
 
-:: Buy the ticket to Arkham ($5) {"position":"800,725","size":"100,100"}
+:: Buy the ticket to Arkham ($5) {"position":"900,700","size":"100,100"}
 takeMoney: 500
 addItem: Train Ticket to Arkham
 --
@@ -122,7 +118,7 @@ You bough the ticket.
 > [[Fold it and put in the pocket->Agent]]
 
 
-:: Chair {"position":"6175,3025","size":"100,100"}
+:: Chair {"position":"6150,2925","size":"100,100"}
 ...
 
 > {exit} [[Leave.->Chair]]
@@ -141,11 +137,9 @@ setFact: learnedAboutInnsmouth
 :: Dead Fish {"position":"2825,3375","size":"100,100"}
 A fish carcass rots on the ground. The smell makes your eyes watery.
 
-> {exit} [[Move away.]]
+It's a good metaphor for this entire street.
 
-
-:: Enter {"position":"6625,3300","size":"100,100"}
-
+> {exit} [[Move away.->Dead Fish]]
 
 
 :: Enter the room {"position":"5375,2750","size":"100,100"}
@@ -160,12 +154,20 @@ A fish carcass rots on the ground. The smell makes your eyes watery.
 
 
 
-:: Go inside {"position":"2550,3525","size":"100,100"}
+:: Go inside {"position":"2575,3475","size":"100,100"}
 
 > {back} [[Nothing to do here->Vacant House]]
 
 
-:: Hat on a Hook {"position":"4750,2725","size":"100,100"}
+:: Hand him money for the ticket. {"position":"2300,1225","size":"100,100"}
+takeMoney: 200
+--
+The driver slowly gives you the change, looking at you suspiciously.
+
+> {level:innsmouth,0} [[Board the Bus]]
+
+
+:: Hat on a Hook {"position":"4700,2700","size":"100,100"}
 unless: hasItem hat
 --
 An old hat hangs on the hook in the hotel lobby.
@@ -193,19 +195,7 @@ Perhaps you should consider other options.
 > [[I'll think about it->Agent]]
 
 
-:: I'll see you later. {"position":"4150,3650","size":"100,100"}
-
-
-
-:: Leave it be {"position":"2250,3525","size":"100,100"}
-
-
-
 :: Leave. {"position":"4850,2975","size":"100,100"}
-
-
-
-:: Look away. {"position":"3100,3575","size":"100,100"}
 
 
 
@@ -216,47 +206,35 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 > {level:hotel,1} [[Go back downstairs]]
 
 
-:: Move away. {"position":"2825,3550","size":"100,100"}
+:: Option 1 {"position":"950,3550","size":"100,100"}
 
 
 
-:: Nothing to do here. {"position":"3025,4250","size":"100,100"}
+:: Option 2 {"position":"650,3775","size":"100,100"}
 
 
 
-:: Option 1 {"position":"850,3475","size":"100,100"}
+:: Option 3 {"position":"775,3775","size":"100,100"}
 
 
 
-:: Option 2 {"position":"550,3700","size":"100,100"}
+:: Option 4 that has a very long description that should probably fit two lines. {"position":"900,3775","size":"100,100"}
 
 
 
-:: Option 3 {"position":"675,3700","size":"100,100"}
+:: Roof Window {"position":"6325,3450","size":"100,100"}
+The glass is broken but the window is dark. You can't see well inside this house.
+
+> {level:slums-1,2} [[Jump down->Roof Window]]
 
 
+:: Slums Crossroads {"position":"1900,3300","size":"100,100"}
+You're at crossroads.
 
-:: Option 4 that has a very long description that should probably fit two lines. {"position":"800,3700","size":"100,100"}
-
-
-
-:: Perhaps later. {"position":"4600,3625","size":"100,100"}
+> {level:beach,0} [[Beach->Slums Crossroads]]
 
 
-
-:: Roof Window {"position":"6475,2975","size":"100,100"}
-...
-
-> {level:innsmouth,2} [[Enter]]
-
-
-:: Slums Crossroads {"position":"2025,3500","size":"100,100"}
-...
-
-> {level:beach,0} [[Beach]]
-
-
-:: Start {"position":"500,3275","size":"100,100"}
+:: Start {"position":"175,3050","size":"100,100"}
 
 
 
@@ -278,7 +256,7 @@ You took the hat.
 > {exit} [[Leave.]]
 
 
-:: Test {"position":"600,3425","size":"100,100"}
+:: Test {"position":"700,3500","size":"100,100"}
 setTitle: Title of the Passage
 --
 This is a test.
@@ -303,7 +281,7 @@ More normal text
 
 
 :: Train Sheet {"position":"875,1500","size":"100,100"}
-...
+The train leaves soon.
 
 > {exit} [[Leave.->Train Sheet]]
 
@@ -318,15 +296,18 @@ The station is empty except for the ticket agent.
 
 
 :: Train Station Bottle {"position":"600,1500","size":"100,100"}
-...
+It's just trash.
 
 > {exit} [[Leave.->Train Station Bottle]]
 
 
-:: Train Station Clock {"position":"1925,700","size":"100,100"}
+:: Train Station Clock {"position":"1150,1500","size":"100,100"}
+The train leaves soon.
 
 [if hasItem Train Ticket to Arkham]
 > [[Wait for the train and board it->Train to Arkham]]
+[else]
+You don't have a ticket.
 [continue]
 
 > {exit} [[Leave.->Train Station Clock]]
@@ -341,7 +322,7 @@ It's today's newspaper. Someone just threw it off, and here you are, trying to s
 > {exit} [[Leave it.->Train Station Newspaper]]
 
 
-:: Train to Arkham {"position":"2275,700","size":"100,100"}
+:: Train to Arkham {"position":"2475,450","size":"100,100"}
 setTitle: Train to Arkham
 takeItem: Train Ticket to Arkham
 --
@@ -354,13 +335,13 @@ You take the train. The travel doesn't take long.
 The house is in ruin.
 
 > [[Go inside]]
-> {exit} [[Leave it be]]
+> {exit} [[Leave it be->Vacant House]]
 
 
-:: Vacant House 2 {"position":"3025,4125","size":"100,100"}
+:: Vacant House 2 {"position":"2200,4200","size":"100,100"}
 ...
 
-> {exit} [[Nothing to do here.]]
+> {exit} [[Nothing to do here.->Vacant House 2]]
 
 
 :: Wait for Zadok {"position":"5125,4350","size":"100,100"}
@@ -373,27 +354,22 @@ The house is in ruin.
 
 
 
-:: beach [Level] {"position":"2350,4125","size":"200,100"}
+:: beach [Level] {"position":"2000,3700","size":"200,100"}
 playMusic: waves
 --
 
 
-:: city [Level] {"position":"1825,3900","size":"200,100"}
-playMusic:
---
-
-
-:: grocery-npc [Level] {"position":"4225,3325","size":"200,100"}
+:: grocery-npc [Level] {"position":"4175,3350","size":"200,100"}
 "Hello, mister!"
 
 [unless hasItem Quart of Whisky]
 > [[Buy a Quart of Whisky ($1)]]
 [continue]
 
-> {exit} [[I'll see you later.]]
+> {exit} [[I'll see you later.->grocery-npc]]
 
 
-:: hotel-hall [Level] {"position":"5500,2400","size":"200,100"}
+:: hotel-hall [Level] {"position":"5425,2375","size":"200,100"}
 setTitle: Hotel Hall
 --
 The hall is full of dust. A strong fish scent is in the air, stronger under some doors.
@@ -401,17 +377,30 @@ The hall is full of dust. A strong fish scent is in the air, stronger under some
 > [[Look for your room]]
 
 
-:: innsmouth [Level] {"position":"2200,3900","size":"200,100"}
+:: innsmouth [Level] {"position":"1825,3900","size":"200,100"}
+playMusic:
+--
+
+
+:: rooftops [Level] {"position":"6450,3350","size":"200,100"}
+You can see the town down below.
+
+Most houses are dark except for the weird churches.
+
+> {exit} [[Look around.->rooftops]]
+
+
+:: slums-1 [Level] {"position":"2200,3900","size":"200,100"}
 playMusic: crackle
 --
 
 
-:: slums-2 [Level] {"position":"2200,4050","size":"100,100"}
+:: slums-2 [Level] {"position":"2200,4050","size":"200,100"}
 playMusic: crackle
 --
 
 
-:: train-station [Level once] {"position":"600,325","size":"200,100"}
+:: train-station [Level once] {"position":"550,325","size":"200,100"}
 playMusic: kitchen
 --
 You arrive to Newsburyport on your way to Arkham, where your relative lives.
@@ -438,7 +427,7 @@ You recognize this man as Zadok, the drunk who the boy told you about.
 > {exit} [["Nothing."]]
 
 
-:: zadok-freaked-out [Level] {"position":"4675,4675","size":"200,100"}
+:: zadok-freaked-out [Level] {"position":"4525,4850","size":"200,100"}
 "GOD HELP US! RUN!"
 
 > {exit} [[What...?]]

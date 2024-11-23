@@ -53,7 +53,7 @@
   <object id="25" name="Exit Touch Trigger" class="poi" x="-208" y="920" width="192" height="584">
    <properties>
     <property name="edge" propertytype="edge" value="left"/>
-    <property name="level" value="city,1"/>
+    <property name="level" value="innsmouth,1"/>
     <property name="passage" value=""/>
     <property name="touchTrigger" type="bool" value="true"/>
    </properties>

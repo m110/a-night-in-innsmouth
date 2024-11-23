@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="33">
+ <tileset firstgid="1" source="../character/Character.tsx"/>
+ <tileset firstgid="2" source="../objects/Objects.tsx"/>
+ <imagelayer id="2" name="Background">
+  <image source="../backgrounds/slums-1.jpg" width="3840" height="2160"/>
+ </imagelayer>
+ <objectgroup id="3" name="Objects">
+  <object id="1" name="Trigger: Plank" class="trigger" x="1492" y="1110" width="192" height="472">
+   <properties>
+    <property name="poi" type="object" value="25"/>
+   </properties>
+  </object>
+  <object id="5" name="Trigger: Barnacles" class="trigger" x="888" y="1432" width="142" height="312">
+   <properties>
+    <property name="poi" type="object" value="30"/>
+   </properties>
+  </object>
+  <object id="8" name="Trigger: Fish" class="trigger" x="2692" y="1740" width="152" height="128">
+   <properties>
+    <property name="poi" type="object" value="27"/>
+   </properties>
+  </object>
+  <object id="9" name="Exit to Innsmouth" class="poi" x="3811" y="1294" width="176" height="616">
+   <properties>
+    <property name="edge" propertytype="edge" value="right"/>
+    <property name="level" value="innsmouth,0"/>
+    <property name="touchTrigger" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="24" name="Exit" class="poi" x="-124" y="1359" width="176" height="616">
+   <properties>
+    <property name="edge" propertytype="edge" value="left"/>
+    <property name="level" value="slums-2,1"/>
+    <property name="touchTrigger" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="25" name="Plank" class="poi" gid="33" x="1451" y="1283" width="268" height="171">
+   <properties>
+    <property name="level" value=""/>
+    <property name="passage" value="Vacant House"/>
+   </properties>
+  </object>
+  <object id="27" name="Fish" class="poi" gid="30" x="2696" y="1873" width="167" height="144">
+   <properties>
+    <property name="passage" value="Dead Fish"/>
+   </properties>
+  </object>
+  <object id="30" name="Barnacles" class="poi" gid="24" x="912" y="1688" width="96" height="231">
+   <properties>
+    <property name="passage" value="Barnacles"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="Entrypoints">
+  <object id="20" name="Entry Point 0" class="entrypoint" gid="1" x="243" y="1910" width="483" height="829.758">
+   <properties>
+    <property name="index" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="21" name="Entry Point 1" class="entrypoint" gid="2147483649" x="3385" y="1898" width="441" height="757.605">
+   <properties>
+    <property name="flipY" type="bool" value="true"/>
+    <property name="index" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="32" name="Entry Point 2" class="entrypoint" gid="2147483649" x="2312" y="1924" width="450" height="773.067">
+   <properties>
+    <property name="flipY" type="bool" value="true"/>
+    <property name="index" type="int" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

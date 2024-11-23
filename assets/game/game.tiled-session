@@ -110,7 +110,7 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2163.6363636363635,
+                "x": 2160.6060606060605,
                 "y": 1307.5757575757575
             }
         },
@@ -168,8 +168,8 @@
             "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1909.3333333333333,
-                "y": 852.6666666666666
+                "x": 758.6666666666667,
+                "y": 1063.3333333333333
             }
         },
         "levels/hotel.tmx": {
@@ -178,7 +178,7 @@
                 2
             ],
             "scale": 0.33,
-            "selectedLayer": 2,
+            "selectedLayer": 1,
             "viewCenter": {
                 "x": 1748.484848484849,
                 "y": 1340.9090909090908
@@ -187,13 +187,14 @@
         "levels/innsmouth.tmx": {
             "expandedObjectLayers": [
                 5,
-                3
+                3,
+                4
             ],
             "scale": 0.33,
-            "selectedLayer": 2,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 2563.6363636363635,
-                "y": 1437.8787878787878
+                "x": 1445.4545454545455,
+                "y": 1428.787878787879
             }
         },
         "levels/objects/Objects.tsx": {
@@ -210,13 +211,25 @@
                 "y": 2256.060606060606
             }
         },
+        "levels/slums-1.tmx": {
+            "expandedObjectLayers": [
+                5,
+                3
+            ],
+            "scale": 0.25,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 2328,
+                "y": 1618
+            }
+        },
         "levels/slums-2.tmx": {
             "expandedObjectLayers": [
                 3,
                 4
             ],
             "scale": 0.33,
-            "selectedLayer": 2,
+            "selectedLayer": 1,
             "viewCenter": {
                 "x": 2209.090909090909,
                 "y": 1556.060606060606
@@ -230,7 +243,7 @@
             "scale": 0.33,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1806.060606060606,
+                "x": 1803.030303030303,
                 "y": 1243.939393939394
             }
         },
