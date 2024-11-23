@@ -108,7 +108,7 @@ func (g *Game) createWorld() donburi.World {
 	g.createInventory(world, ui)
 
 	story.AddMoney(1000)
-	story.Money = 1000
+	story.AddItem("Valise")
 
 	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, nil)
 	levelCam.AddComponent(component.LevelCamera)
@@ -123,12 +123,13 @@ func (g *Game) createWorld() donburi.World {
 
 	entrypoint := 0
 	archetype.ChangeLevel(world, domain.TargetLevel{
-		Name:       "train-station",
+		Name:       "innsmouth",
 		Entrypoint: &entrypoint,
 	})
 
-	// TODO a hack to not show the initial money received event
+	// TODO a hack to not show the initial money/item received event
 	domain.MoneyReceivedEvent.ProcessEvents(world)
+	domain.ItemReceivedEvent.ProcessEvents(world)
 
 	domain.MoneyReceivedEvent.Subscribe(world, func(w donburi.World, event domain.MoneyReceived) {
 		archetype.AddLogEventSegment(w, fmt.Sprintf("[Received %v]", formatAsDollars(event.Amount)), assets.TextGreenColor)

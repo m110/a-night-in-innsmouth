@@ -61,6 +61,14 @@ func NewControls() *Controls {
 	}
 }
 
+func (c *Controls) Init(w donburi.World) {
+	domain.CharacterSpeedChangedEvent.Subscribe(w, func(w donburi.World, event domain.CharacterSpeedChanged) {
+		game := engine.MustFindWithComponent(w, component.Game)
+		in := component.Input.Get(game)
+		in.MoveSpeed += event.SpeedChange
+	})
+}
+
 func (c *Controls) Update(w donburi.World) {
 	lvl := engine.MustFindComponent[component.LevelData](w, component.Level)
 	if lvl.Changing {

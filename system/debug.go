@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/m110/secrets/domain"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/yohamta/donburi"
@@ -111,13 +113,15 @@ func (d *Debug) Update(w donburi.World) {
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) || toggleDebug {
 		d.debug.Enabled = !d.debug.Enabled
 
-		game := engine.MustFindWithComponent(w, component.Game)
-		in := component.Input.Get(game)
+		var speedChange float64
 		if d.debug.Enabled {
-			in.MoveSpeed *= 3
+			speedChange = 10
 		} else {
-			in.MoveSpeed /= 3
+			speedChange = -10
 		}
+		domain.CharacterSpeedChangedEvent.Publish(w, domain.CharacterSpeedChanged{
+			SpeedChange: speedChange,
+		})
 	}
 
 	if d.debug.Enabled {

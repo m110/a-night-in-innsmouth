@@ -325,6 +325,8 @@ func parseMacroType(str string) domain.MacroType {
 		return domain.MacroTypeSetFact
 	case "playMusic":
 		return domain.MacroTypePlayMusic
+	case "changeCharacterSpeed":
+		return domain.MacroTypeChangeCharacterSpeed
 	default:
 		panic("Invalid macro type: " + str)
 	}

@@ -337,6 +337,16 @@ func (p *Passage) Visit() {
 			MusicChangedEvent.Publish(p.story.world, MusicChanged{
 				Track: m.Value,
 			})
+		case MacroTypeChangeCharacterSpeed:
+			speed, err := strconv.ParseInt(m.Value, 10, 64)
+			if err != nil {
+				// TODO This validation should be done at the parser level
+				panic(err)
+			}
+
+			CharacterSpeedChangedEvent.Publish(p.story.world, CharacterSpeedChanged{
+				SpeedChange: float64(speed),
+			})
 		default:
 			panic("Unknown macro type: " + m.Type)
 		}
@@ -466,12 +476,13 @@ func deepChildLinksRecursive(link *Link, source *Passage, visited map[*Link]bool
 type MacroType string
 
 const (
-	MacroTypeAddItem   MacroType = "addItem"
-	MacroTypeTakeItem  MacroType = "takeItem"
-	MacroTypeSetFact   MacroType = "setFact"
-	MacroTypeAddMoney  MacroType = "addMoney"
-	MacroTypeTakeMoney MacroType = "takeMoney"
-	MacroTypePlayMusic MacroType = "playMusic"
+	MacroTypeAddItem              MacroType = "addItem"
+	MacroTypeTakeItem             MacroType = "takeItem"
+	MacroTypeSetFact              MacroType = "setFact"
+	MacroTypeAddMoney             MacroType = "addMoney"
+	MacroTypeTakeMoney            MacroType = "takeMoney"
+	MacroTypePlayMusic            MacroType = "playMusic"
+	MacroTypeChangeCharacterSpeed MacroType = "changeCharacterSpeed"
 )
 
 type Macro struct {

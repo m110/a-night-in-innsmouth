@@ -154,11 +154,11 @@
             "expandedObjectLayers": [
                 4
             ],
-            "scale": 0.25,
+            "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1580,
-                "y": 566
+                "x": 1394,
+                "y": 809
             }
         },
         "levels/hotel-room.tmx": {
@@ -180,8 +180,8 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1748.484848484849,
-                "y": 1340.9090909090908
+                "x": 1715.151515151515,
+                "y": 956.060606060606
             }
         },
         "levels/innsmouth.tmx": {
@@ -217,7 +217,7 @@
                 3
             ],
             "scale": 0.25,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 2328,
                 "y": 1618

@@ -80,7 +80,7 @@
   </object>
   <object id="32" name="Clerk" class="poi" gid="39" x="1675" y="924" width="78" height="58.5">
    <properties>
-    <property name="passage" value="TBA"/>
+    <property name="passage" value="Hotel Clerk"/>
    </properties>
   </object>
   <object id="33" name="Paper" class="poi" gid="37" x="882" y="1224" width="58.3333" height="55">

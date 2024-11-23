@@ -68,3 +68,9 @@ type MusicChanged struct {
 }
 
 var MusicChangedEvent = events.NewEventType[MusicChanged]()
+
+type CharacterSpeedChanged struct {
+	SpeedChange float64
+}
+
+var CharacterSpeedChangedEvent = events.NewEventType[CharacterSpeedChanged]()

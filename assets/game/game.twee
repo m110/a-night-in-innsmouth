@@ -7,7 +7,7 @@ game
   "ifid": "D53E6B8D-8F81-4B7F-A6AC-8DD985B2B85E",
   "format": "Chapbook",
   "format-version": "2.2.0",
-  "start": "Start",
+  "start": "train-station",
   "tag-colors": {
     "aaa": "red",
     "once": "orange",
@@ -27,8 +27,10 @@ Zadok takes a sip.
 
 
 
-:: "When does it leave?" {"position":"1225,1100","size":"100,100"}
+:: "When does it leave?" {"position":"1150,1075","size":"100,100"}
 "Shortly. It makes the stop in Innsmouth, then takes off to Arkham at 8pm."
+
+"Whatever you plan,I would not sleep at Gilman House, the town's hotel. I've heard of guests disappearing."
 
 > {back} [["Thanks."->Agent]]
 
@@ -75,7 +77,7 @@ This... Looks odd.
 
 
 :: Bus {"position":"1850,1225","size":"100,100"}
-The dirty sign reads "Innsmouth".
+The dirty half-illegible sign reads "Arkham - Innsmouth - Newb'port".
 
 [if fact learnedAboutInnsmouth]
 [hint]
@@ -98,7 +100,7 @@ He gives you a lazy stare.
 > {exit} [[Leave.->Bus Driver]]
 
 
-:: Buy a Quart of Whisky ($1) {"position":"4300,3550","size":"100,100"}
+:: Buy a Quart of Whisky ($1) {"position":"2250,2475","size":"100,100"}
 takeMoney: 100
 addItem: Quart of Whisky
 --
@@ -134,6 +136,15 @@ setFact: learnedAboutInnsmouth
 > [["When does it leave?"]]
 
 
+:: Check in your valise. {"position":"2625,2525","size":"100,100"}
+takeItem: Valise
+changeCharacterSpeed: 3
+--
+"I'll take care of that for you."
+
+> [["Thank you."->Hotel Clerk]]
+
+
 :: Dead Fish {"position":"2825,3375","size":"100,100"}
 A fish carcass rots on the ground. The smell makes your eyes watery.
 
@@ -150,17 +161,26 @@ It's a good metaphor for this entire street.
 
 
 
+:: Get your valise. {"position":"2875,2525","size":"100,100"}
+addItem: Valise
+changeCharacterSpeed: -3
+--
+"Here you go."
+
+> [["Thank you."->Hotel Clerk]]
+
+
 :: Go back downstairs {"position":"5725,2750","size":"100,100"}
 
 
 
-:: Go inside {"position":"2575,3475","size":"100,100"}
+:: Go inside {"position":"2600,3625","size":"100,100"}
 
 > {back} [[Nothing to do here->Vacant House]]
 
 
 :: Hand him money for the ticket. {"position":"2300,1225","size":"100,100"}
-takeMoney: 200
+takeMoney: 60
 --
 The driver slowly gives you the change, looking at you suspiciously.
 
@@ -174,6 +194,18 @@ An old hat hangs on the hook in the hotel lobby.
 
 > [[Take it.]]
 > {exit} [[Leave.]]
+
+
+:: Hotel Clerk {"position":"2750,2350","size":"100,100"}
+"Welcome to Gilman House, sir."
+
+[if hasItem Valise]
+> [[Check in your valise.]]
+[else]
+> [[Get your valise.]]
+[continue]
+
+> {exit} [["Goodbye."->Hotel Clerk]]
 
 
 :: I want to get to Arkham {"position":"1125,825","size":"100,100"}
@@ -228,14 +260,10 @@ The glass is broken but the window is dark. You can't see well inside this house
 > {level:slums-1,2} [[Jump down->Roof Window]]
 
 
-:: Slums Crossroads {"position":"1900,3300","size":"100,100"}
+:: Slums Crossroads {"position":"1800,3325","size":"100,100"}
 You're at crossroads.
 
 > {level:beach,0} [[Beach->Slums Crossroads]]
-
-
-:: Start {"position":"175,3050","size":"100,100"}
-
 
 
 :: TBA {"position":"200,3250","size":"100,100"}
@@ -331,17 +359,23 @@ You take the train. The travel doesn't take long.
 > [[...->Arkham]]
 
 
-:: Vacant House {"position":"2475,3300","size":"100,100"}
+:: Vacant House {"position":"2575,3400","size":"100,100"}
 The house is in ruin.
 
 > [[Go inside]]
 > {exit} [[Leave it be->Vacant House]]
 
 
-:: Vacant House 2 {"position":"2200,4200","size":"100,100"}
+:: Vacant House 2 {"position":"2075,3350","size":"100,100"}
 ...
 
 > {exit} [[Nothing to do here.->Vacant House 2]]
+
+
+:: Valise Reminder [once] {"position":"1650,2225","size":"100,100"}
+If you want to explore the town, better check in that valise at the hotel. You can't move freely with it.
+
+> {exit} [[Continue.->Valise Reminder]]
 
 
 :: Wait for Zadok {"position":"5125,4350","size":"100,100"}
@@ -354,12 +388,12 @@ The house is in ruin.
 
 
 
-:: beach [Level] {"position":"2000,3700","size":"200,100"}
+:: beach [Level] {"position":"1650,3750","size":"200,100"}
 playMusic: waves
 --
 
 
-:: grocery-npc [Level] {"position":"4175,3350","size":"200,100"}
+:: grocery-npc [Level] {"position":"2125,2275","size":"200,100"}
 "Hello, mister!"
 
 [unless hasItem Quart of Whisky]
@@ -377,7 +411,7 @@ The hall is full of dust. A strong fish scent is in the air, stronger under some
 > [[Look for your room]]
 
 
-:: innsmouth [Level] {"position":"1825,3900","size":"200,100"}
+:: innsmouth [Level] {"position":"1200,2225","size":"200,100"}
 playMusic:
 --
 
@@ -390,19 +424,22 @@ Most houses are dark except for the weird churches.
 > {exit} [[Look around.->rooftops]]
 
 
-:: slums-1 [Level] {"position":"2200,3900","size":"200,100"}
+:: slums-1 [Level] {"position":"2625,3175","size":"200,100"}
 playMusic: crackle
 --
 
 
-:: slums-2 [Level] {"position":"2200,4050","size":"200,100"}
+:: slums-2 [Level] {"position":"1975,3125","size":"200,100"}
 playMusic: crackle
 --
 
 
 :: train-station [Level once] {"position":"550,325","size":"200,100"}
 playMusic: kitchen
+setTitle: Newsburyport, Massachusetts
 --
+July 15, 1927
+
 You arrive to Newsburyport on your way to Arkham, where your relative lives.
 
 You were told the best way there is taking the steam train.
