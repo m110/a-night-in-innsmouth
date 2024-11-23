@@ -3,7 +3,6 @@ package archetype
 import (
 	"time"
 
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
@@ -47,20 +46,14 @@ func NewCharacter(parent *donburi.Entry, scale float64, movementBounds component
 	})
 
 	sprite := component.Sprite.Get(character)
-	frames := []*ebiten.Image{
-		assets.Assets.Character.Frames[0],
-		assets.Assets.Character.Frames[1],
-		assets.Assets.Character.Frames[2],
-		assets.Assets.Character.Frames[3],
-		assets.Assets.Character.Frames[4],
-	}
+	frames := assets.Assets.Character.Frames
 
 	currentFrame := 0
 
 	anim := component.Animator.Get(character)
 
 	anim.SetAnimation("walk", &component.Animation{
-		Timer: engine.NewTimer(200 * time.Millisecond),
+		Timer: engine.NewTimer(150 * time.Millisecond),
 		Update: func(e *donburi.Entry, a *component.Animation) {
 			if a.Timer.IsReady() {
 				currentFrame++

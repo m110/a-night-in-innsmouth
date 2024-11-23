@@ -112,7 +112,7 @@ func (c *Controls) Update(w donburi.World) {
 
 		for entry := range c.poiQuery.Iter(w) {
 			poi := component.POI.Get(entry)
-			if poi.POI.EdgeTrigger != nil {
+			if poi.POI.EdgeTrigger != nil || poi.POI.TouchTrigger {
 				continue
 			}
 

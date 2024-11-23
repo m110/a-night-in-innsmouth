@@ -27,11 +27,17 @@ Zadok takes a sip.
 
 
 
+:: "When does it leave?" {"position":"1225,1100","size":"100,100"}
+"Shortly. It makes the stop in Innsmouth, then takes off to Arkham at 8pm."
+
+> {back} [["Thanks."->Agent]]
+
+
 :: ... {"position":"200,3425","size":"100,100"}
 
 
 
-:: Agent {"position":"525,1125","size":"200,100"}
+:: Agent {"position":"550,1150","size":"200,100"}
 "Hello, young lad."
 
 [unless hasItem Train Ticket to Arkham]
@@ -58,7 +64,7 @@ This... Looks odd.
 > {exit} [[Look away.]]
 
 
-:: Beach {"position":"2175,1600","size":"100,100"}
+:: Beach {"position":"2025,3675","size":"100,100"}
 
 
 
@@ -68,20 +74,31 @@ This... Looks odd.
 > {exit} [[Perhaps later.]]
 
 
-:: Board the Bus {"position":"2550,1650","size":"100,100"}
+:: Board the Bus {"position":"2100,1525","size":"100,100"}
 
 
 
-:: Bus {"position":"2725,1375","size":"100,100"}
-You see the bus to Innsmouth.
+:: Bus {"position":"1850,1225","size":"100,100"}
+The dirty sign reads "Innsmouth".
+
+[if fact learnedAboutInnsmouth]
+[hint]
+Here it is, your cheaper way to Arkham.
+[else]
+Who would like to board a bus like this?
+[continue]
 
 > {exit} [[Leave.->Bus]]
 
 
-:: Bus Driver {"position":"2550,1450","size":"100,100"}
-You see the bus to Innsmouth.
+:: Bus Driver {"position":"2125,1225","size":"100,100"}
+The weird looking man must be the bus' driver.
+He gives you a lazy stare.
 
+[if fact learnedAboutInnsmouth]
 > {level:city,0} [[Board the Bus]]
+[continue]
+
 > {exit} [[Leave.->Bus Driver]]
 
 
@@ -98,7 +115,6 @@ addItem: Quart of Whisky
 :: Buy the ticket to Arkham ($5) {"position":"800,725","size":"100,100"}
 takeMoney: 500
 addItem: Train Ticket to Arkham
-setFact: hasWayOutOfNewburyport
 --
 
 You bough the ticket.
@@ -112,15 +128,14 @@ You bough the ticket.
 > {exit} [[Leave.->Chair]]
 
 
-:: Cheaper Options {"position":"1050,1150","size":"100,100"}
+:: Cheaper Options {"position":"1350,950","size":"100,100"}
 setFact: learnedAboutInnsmouth
-setFact: hasWayOutOfNewburyport
 --
-"Well, there is the bus to Innsmouth..."
+"Well, there is the bus. It goes through Innsmouth... You can find it the east way from the station."
 
-"It leaves tomorrow morning."
+"It's a weird town, most folks from here don't like talking about it. If you ask me, it's mostly stories."
 
-> [["Thanks."->Agent]]
+> [["When does it leave?"]]
 
 
 :: Dead Fish {"position":"2825,3375","size":"100,100"}
@@ -159,7 +174,7 @@ An old hat hangs on the hook in the hotel lobby.
 > {exit} [[Leave.]]
 
 
-:: I want to get to Arkham {"position":"975,900","size":"100,100"}
+:: I want to get to Arkham {"position":"1125,825","size":"100,100"}
 "I got you. The train leaves today. It's $5."
 
 [if fact readTrainStationNewspaper]
@@ -235,7 +250,7 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 > {level:innsmouth,2} [[Enter]]
 
 
-:: Slums Crossroads {"position":"2175,1425","size":"100,100"}
+:: Slums Crossroads {"position":"2025,3500","size":"100,100"}
 ...
 
 > {level:beach,0} [[Beach]]
@@ -296,7 +311,7 @@ More normal text
 :: Train Station {"position":"450,750","size":"100,100"}
 setTitle: Train Station
 --
-The station is empty except for the agent.
+The station is empty except for the ticket agent.
 
 > [[Talk to the Agent->Agent]]
 > {exit} [[Exit.]] 
@@ -321,12 +336,12 @@ The station is empty except for the agent.
 setFact: readTrainStationNewspaper
 --
 
-"Innsmouth is on the way to Arkham."
+It's today's newspaper. Someone just threw it off, and here you are, trying to save enough money to get to Arkham.
 
-> {exit} [[Leave.->Train Station Newspaper]]
+> {exit} [[Leave it.->Train Station Newspaper]]
 
 
-:: Train to Arkham {"position":"2100,900","size":"100,100"}
+:: Train to Arkham {"position":"2275,700","size":"100,100"}
 setTitle: Train to Arkham
 takeItem: Train Ticket to Arkham
 --

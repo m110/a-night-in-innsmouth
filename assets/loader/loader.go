@@ -78,7 +78,9 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 	}
 
 	progressChan <- "Validating assets"
+
 	for _, l := range levels {
+		// Levels without character should have a passage, otherwise the game will be stuck
 		if len(l.Entrypoints) == 0 {
 			err = assertPassageExists(story, l.Name)
 			if err != nil {
@@ -102,12 +104,29 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		}
 	}
 
+	availableItems := map[string]struct{}{}
+	availableFacts := map[string]struct{}{}
+
 	for _, p := range story.Passages {
 		for _, m := range p.Macros {
 			if m.Type == domain.MacroTypePlayMusic && m.Value != "" {
 				if _, ok := music[m.Value]; !ok {
 					return nil, fmt.Errorf("music not found: %v", m.Value)
 				}
+			}
+
+			if m.Type == domain.MacroTypeAddItem {
+				if m.Value == "" {
+					return nil, errors.New("empty item name")
+				}
+				availableItems[m.Value] = struct{}{}
+			}
+
+			if m.Type == domain.MacroTypeSetFact {
+				if m.Value == "" {
+					return nil, errors.New("empty fact name")
+				}
+				availableFacts[m.Value] = struct{}{}
 			}
 		}
 
@@ -116,6 +135,22 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 				err = assertLevelExists(levels, *l.Level)
 				if err != nil {
 					return nil, err
+				}
+			}
+		}
+	}
+
+	for _, p := range story.Passages {
+		for _, c := range p.Conditions {
+			if c.Type == domain.ConditionTypeHasItem {
+				if _, ok := availableItems[c.Value]; !ok {
+					return nil, fmt.Errorf("item not found: %v", c.Value)
+				}
+			}
+
+			if c.Type == domain.ConditionTypeFact {
+				if _, ok := availableFacts[c.Value]; !ok {
+					return nil, fmt.Errorf("fact not found: %v", c.Value)
 				}
 			}
 		}
