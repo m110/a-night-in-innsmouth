@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ebitenui/ebitenui/input"
+
 	"github.com/m110/secrets/domain"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -94,10 +96,10 @@ func (d *Debug) Update(w donburi.World) {
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) || toggleDebug {
-		game.DebugMode = !game.DebugMode
+		game.Debug.Enabled = !game.Debug.Enabled
 
 		var speedChange float64
-		if game.DebugMode {
+		if game.Debug.Enabled {
 			speedChange = 10
 		} else {
 			speedChange = -10
@@ -107,7 +109,7 @@ func (d *Debug) Update(w donburi.World) {
 		})
 	}
 
-	if game.DebugMode {
+	if game.Debug.Enabled {
 		if inpututil.IsKeyJustPressed(ebiten.KeyP) {
 			PrintHierarchy(w)
 		}
@@ -115,12 +117,14 @@ func (d *Debug) Update(w donburi.World) {
 		d.query.Each(w, func(entry *donburi.Entry) {
 			component.DebugUI.Get(entry).UI.Update()
 		})
+
+		game.Debug.UIHovered = input.UIHovered
 	}
 }
 
 func (d *Debug) Draw(w donburi.World, screen *ebiten.Image) {
 	game := component.MustFindGame(w)
-	if !game.DebugMode {
+	if !game.Debug.Enabled {
 		return
 	}
 

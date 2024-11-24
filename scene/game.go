@@ -55,6 +55,7 @@ func (g *Game) loadLevel() {
 	debug := system.NewDebug(g.loadLevel)
 
 	g.systems = []System{
+		debug,
 		system.NewControls(),
 		system.NewInventory(),
 		system.NewVelocity(),
@@ -67,7 +68,6 @@ func (g *Game) loadLevel() {
 		system.NewAudio(),
 		system.NewTimeToLive(),
 		system.NewDestroy(),
-		debug,
 		system.NewDimensions(),
 	}
 

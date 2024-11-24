@@ -99,12 +99,16 @@ func (c *Controls) Update(w donburi.World) {
 	var x, y int
 
 	touchIDs := inpututil.AppendJustPressedTouchIDs(nil)
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		justClicked = true
-		x, y = ebiten.CursorPosition()
-	} else if len(touchIDs) > 0 {
-		justClicked = true
-		x, y = ebiten.TouchPosition(touchIDs[0])
+
+	game := component.MustFindGame(w)
+	if !game.Debug.Enabled || !game.Debug.UIHovered {
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			justClicked = true
+			x, y = ebiten.CursorPosition()
+		} else if len(touchIDs) > 0 {
+			justClicked = true
+			x, y = ebiten.TouchPosition(touchIDs[0])
+		}
 	}
 
 	if justClicked {
@@ -159,12 +163,14 @@ func (c *Controls) Update(w donburi.World) {
 
 	var clicked bool
 	touchIDs = ebiten.AppendTouchIDs(nil)
-	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-		clicked = true
-		x, _ = ebiten.CursorPosition()
-	} else if len(touchIDs) > 0 {
-		clicked = true
-		x, _ = ebiten.TouchPosition(touchIDs[0])
+	if !game.Debug.Enabled || !game.Debug.UIHovered {
+		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+			clicked = true
+			x, _ = ebiten.CursorPosition()
+		} else if len(touchIDs) > 0 {
+			clicked = true
+			x, _ = ebiten.TouchPosition(touchIDs[0])
+		}
 	}
 
 	if clicked {
@@ -281,8 +287,10 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 		scroll = 25
 	}
 
+	game := component.MustFindGame(w)
+
 	var touched bool
-	if scroll == 0 {
+	if scroll == 0 && (!game.Debug.Enabled || !game.Debug.UIHovered) {
 		x, y := ebiten.CursorPosition()
 
 		touchIDs := inpututil.AppendJustPressedTouchIDs(nil)

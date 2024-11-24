@@ -15,7 +15,12 @@ type GameData struct {
 
 	Dimensions Dimensions
 
-	DebugMode bool
+	Debug Debug
+}
+
+type Debug struct {
+	Enabled   bool
+	UIHovered bool
 }
 
 type PreviousLevel struct {

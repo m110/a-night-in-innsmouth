@@ -66,7 +66,7 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 
 	screen.DrawImage(r.offscreen, nil)
 
-	if game.DebugMode {
+	if game.Debug.Enabled {
 		debugX := 280
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("FPS: %v", int(ebiten.ActualFPS())), debugX, 20)
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("TPS: %v", int(ebiten.ActualTPS())), debugX, 40)
@@ -122,7 +122,7 @@ func (r *Render) renderCamera(entry *donburi.Entry, offscreen *ebiten.Image, gam
 				count += r.renderCamera(child.entry, camera.Viewport, game)
 			}
 
-			if game.DebugMode {
+			if game.Debug.Enabled {
 				if child.entry.HasComponent(component.Bounds) {
 					renderBoundsDebug(child.entry, camera)
 				}
@@ -167,7 +167,7 @@ func (r *Render) renderCamera(entry *donburi.Entry, offscreen *ebiten.Image, gam
 
 	offscreen.DrawImage(camera.Viewport, op)
 
-	if game.DebugMode {
+	if game.Debug.Enabled {
 		renderCameraDebug(entry, offscreen)
 	}
 
@@ -235,7 +235,7 @@ func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer domain.LayerID, 
 			result = append(result, getEntryWithLayer(e, rootLayer))
 		}
 
-		if game.DebugMode {
+		if game.Debug.Enabled {
 			if e.HasComponent(component.Collider) || e.HasComponent(component.Bounds) {
 				result = append(result, getEntryWithLayer(e, rootLayer))
 			}
