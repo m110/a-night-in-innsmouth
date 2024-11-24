@@ -180,21 +180,21 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1715.151515151515,
+                "x": 1716.666666666667,
                 "y": 956.060606060606
             }
         },
         "levels/innsmouth.tmx": {
             "expandedObjectLayers": [
+                4,
                 5,
-                3,
-                4
+                3
             ],
             "scale": 0.33,
-            "selectedLayer": 0,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 1445.4545454545455,
-                "y": 1428.787878787879
+                "x": 1728.7878787878785,
+                "y": 1186.3636363636363
             }
         },
         "levels/objects/Objects.tsx": {
@@ -207,7 +207,7 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1739.3939393939393,
+                "x": 1740.9090909090905,
                 "y": 2256.060606060606
             }
         },

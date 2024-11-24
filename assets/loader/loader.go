@@ -79,88 +79,7 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 
 	progressChan <- "Validating assets"
 
-	for _, l := range levels {
-		// Levels without character should have a passage, otherwise the game will be stuck
-		if len(l.Entrypoints) == 0 {
-			err = assertPassageExists(story, l.Name)
-			if err != nil {
-				return nil, err
-			}
-		}
-
-		for _, p := range l.POIs {
-			if p.Passage != "" {
-				err = assertPassageExists(story, p.Passage)
-				if err != nil {
-					return nil, err
-				}
-			}
-			if p.Level != nil {
-				err = assertLevelExists(levels, *p.Level)
-				if err != nil {
-					return nil, err
-				}
-			}
-		}
-	}
-
-	availableItems := map[string]struct{}{}
-	availableFacts := map[string]struct{}{}
-
-	for _, p := range story.Passages {
-		for _, m := range p.Macros {
-			if m.Type == domain.MacroTypePlayMusic && m.Value != "" {
-				if _, ok := music[m.Value]; !ok {
-					return nil, fmt.Errorf("music not found: %v", m.Value)
-				}
-			}
-
-			if m.Type == domain.MacroTypeAddItem {
-				if m.Value == "" {
-					return nil, errors.New("empty item name")
-				}
-				availableItems[m.Value] = struct{}{}
-			}
-
-			if m.Type == domain.MacroTypeSetFact {
-				if m.Value == "" {
-					return nil, errors.New("empty fact name")
-				}
-				availableFacts[m.Value] = struct{}{}
-			}
-		}
-
-		for _, l := range p.Links {
-			if l.Level != nil {
-				err = assertLevelExists(levels, *l.Level)
-				if err != nil {
-					return nil, err
-				}
-			}
-		}
-	}
-
-	for _, p := range story.Passages {
-		for _, c := range p.Conditions {
-			if c.Type == domain.ConditionTypeHasItem {
-				if _, ok := availableItems[c.Value]; !ok {
-					return nil, fmt.Errorf("item not found: %v", c.Value)
-				}
-			}
-
-			if c.Type == domain.ConditionTypeFact {
-				if _, ok := availableFacts[c.Value]; !ok {
-					return nil, fmt.Errorf("fact not found: %v", c.Value)
-				}
-			}
-		}
-	}
-
-	if characterCollider == nil {
-		return nil, errors.New("character collider not found")
-	}
-
-	return &domain.Assets{
+	assets := &domain.Assets{
 		Story:  story,
 		Levels: levels,
 		Character: domain.Character{
@@ -169,7 +88,122 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		},
 		Sounds: sounds,
 		Music:  music,
-	}, nil
+	}
+
+	err = validateAssets(assets)
+	if err != nil {
+		return nil, err
+	}
+
+	return assets, nil
+}
+
+func validateAssets(assets *domain.Assets) error {
+	for _, l := range assets.Levels {
+		// Levels without character should have a passage, otherwise the game will be stuck
+		if len(l.Entrypoints) == 0 {
+			err := assertPassageExists(assets.Story, l.Name)
+			if err != nil {
+				return err
+			}
+		}
+
+		for _, p := range l.POIs {
+			if p.Passage != "" {
+				err := assertPassageExists(assets.Story, p.Passage)
+				if err != nil {
+					return err
+				}
+			}
+			if p.Level != nil {
+				err := assertLevelExists(assets.Levels, *p.Level)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	availableItems := map[string]struct{}{}
+	availableFacts := map[string]struct{}{}
+
+	for _, p := range assets.Story.Passages {
+		for _, m := range p.Macros {
+			if m.Type == domain.MacroTypePlayMusic && m.Value != "" {
+				if _, ok := assets.Music[m.Value]; !ok {
+					return fmt.Errorf("music not found: %v", m.Value)
+				}
+			}
+
+			if m.Type == domain.MacroTypeAddItem {
+				if m.Value == "" {
+					return errors.New("empty item name")
+				}
+				availableItems[m.Value] = struct{}{}
+			}
+
+			if m.Type == domain.MacroTypeSetFact {
+				if m.Value == "" {
+					return errors.New("empty fact name")
+				}
+				availableFacts[m.Value] = struct{}{}
+			}
+		}
+
+		for _, l := range p.Links {
+			if l.Level != nil {
+				err := assertLevelExists(assets.Levels, *l.Level)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	requiredItems := map[string]struct{}{}
+	requiredFacts := map[string]struct{}{}
+
+	for _, p := range assets.Story.Passages {
+		for _, c := range p.Conditions {
+			if c.Type == domain.ConditionTypeHasItem {
+				requiredItems[c.Value] = struct{}{}
+			}
+
+			if c.Type == domain.ConditionTypeFact {
+				requiredFacts[c.Value] = struct{}{}
+			}
+		}
+
+		for _, m := range p.Links {
+			for _, c := range m.Conditions {
+				if c.Type == domain.ConditionTypeHasItem {
+					requiredItems[c.Value] = struct{}{}
+				}
+
+				if c.Type == domain.ConditionTypeFact {
+					requiredFacts[c.Value] = struct{}{}
+				}
+			}
+		}
+	}
+
+	for item := range requiredItems {
+		if _, ok := availableItems[item]; !ok {
+			return fmt.Errorf("required item not found: %v", item)
+		}
+	}
+
+	for fact := range requiredFacts {
+		if _, ok := availableFacts[fact]; !ok {
+			return fmt.Errorf("required fact not found: %v", fact)
+		}
+	}
+
+	if characterCollider == nil {
+		return errors.New("character collider not found")
+	}
+
+	return nil
 }
 
 // TODO Passing characterHeight here seems weird, reconsider?

@@ -17,13 +17,23 @@ game
 }
 
 
-:: "Here, have a sip." - hand him the whisky bottle {"position":"4900,4275","size":"100,100"}
+:: "Here, have a sip." - hand him the whisky bottle {"position":"2700,4750","size":"100,100"}
+takeItem: Quart of Whisky
+--
+
 Zadok takes a sip.
 
 > [[Wait.->Wait for Zadok]]
 
 
-:: "Nothing." {"position":"4500,4400","size":"100,100"}
+:: "I need a room for the night." {"position":"5125,2800","size":"100,100"}
+"No problem, sir. You can have the room 428."
+
+> [[Get the room. ($1)]]
+> [["Give me a minute."->Hotel Clerk]]
+
+
+:: "Nothing." {"position":"2300,4875","size":"100,100"}
 
 
 
@@ -60,13 +70,13 @@ You feel like you missed something, but you don't know what it is.
 THE END
 
 
-:: Barnacles {"position":"3050,3375","size":"100,100"}
+:: Barnacles {"position":"4650,4025","size":"100,100"}
 This... Looks odd.
 
 > {exit} [[Look away.->Barnacles]]
 
 
-:: Board {"position":"4675,3325","size":"100,100"}
+:: Board {"position":"2775,2400","size":"100,100"}
 "Campbell's Tomato Soup - 10 cents"
 
 > {exit} [[Perhaps later.->Board]]
@@ -100,7 +110,7 @@ He gives you a lazy stare.
 > {exit} [[Leave.->Bus Driver]]
 
 
-:: Buy a Quart of Whisky ($1) {"position":"2250,2475","size":"100,100"}
+:: Buy a Quart of Whisky ($1) {"position":"2375,2400","size":"100,100"}
 takeMoney: 100
 addItem: Quart of Whisky
 --
@@ -120,7 +130,7 @@ You bought the ticket.
 > [[Fold it and put in the pocket->Agent]]
 
 
-:: Chair {"position":"6150,2925","size":"100,100"}
+:: Chair {"position":"7000,2975","size":"100,100"}
 ...
 
 > {exit} [[Leave.->Chair]]
@@ -136,7 +146,7 @@ setFact: learnedAboutInnsmouth
 > [["When does it leave?"]]
 
 
-:: Check in your valise. {"position":"2625,2525","size":"100,100"}
+:: Check in your valise. {"position":"4775,2725","size":"100,100"}
 takeItem: Valise
 changeCharacterSpeed: 3
 --
@@ -145,7 +155,7 @@ changeCharacterSpeed: 3
 > [["Thank you."->Hotel Clerk]]
 
 
-:: Dead Fish {"position":"2825,3375","size":"100,100"}
+:: Dead Fish {"position":"4425,4025","size":"100,100"}
 A fish carcass rots on the ground. The smell makes your eyes watery.
 
 It's a good metaphor for this entire street.
@@ -153,7 +163,7 @@ It's a good metaphor for this entire street.
 > {exit} [[Move away.->Dead Fish]]
 
 
-:: Enter the room {"position":"5375,2750","size":"100,100"}
+:: Enter the room {"position":"5550,2950","size":"100,100"}
 
 
 
@@ -161,7 +171,21 @@ It's a good metaphor for this entire street.
 
 
 
-:: Get your valise. {"position":"2875,2525","size":"100,100"}
+:: Get the room. ($1) {"position":"5000,3000","size":"100,100"}
+takeMoney: 100
+setFact: hotelRoomBooked
+--
+
+"Thank you. Please take the stairs."
+
+[if hasItem Valise]
+> [["Thank you."->Hotel Clerk]]
+[else]
+> [[Get your valise.]]
+[continue]
+
+
+:: Get your valise. {"position":"4825,2975","size":"100,100"}
 addItem: Valise
 changeCharacterSpeed: -3
 --
@@ -170,11 +194,11 @@ changeCharacterSpeed: -3
 > [["Thank you."->Hotel Clerk]]
 
 
-:: Go back downstairs {"position":"5725,2750","size":"100,100"}
+:: Go back downstairs {"position":"5900,2950","size":"100,100"}
 
 
 
-:: Go inside {"position":"2600,3625","size":"100,100"}
+:: Go inside {"position":"4200,4275","size":"100,100"}
 
 > {back} [[Nothing to do here->Vacant House]]
 
@@ -187,7 +211,7 @@ The driver slowly gives you the change, looking at you suspiciously.
 > {level:innsmouth,0} [[Board the Bus]]
 
 
-:: Hat on a Hook {"position":"4700,2700","size":"100,100"}
+:: Hat on a Hook {"position":"4025,2525","size":"100,100"}
 unless: hasItem hat
 --
 An old hat hangs on the hook in the hotel lobby.
@@ -196,13 +220,19 @@ An old hat hangs on the hook in the hotel lobby.
 > {exit} [[Leave.]]
 
 
-:: Hotel Clerk {"position":"2750,2350","size":"100,100"}
+:: Hotel Clerk {"position":"5000,2475","size":"100,100"}
 "Welcome to Gilman House, sir."
 
-[if hasItem Valise]
+[if hasItem Valise && !fact hotelRoomBooked]
 > [[Check in your valise.]]
-[else]
+[continue]
+
+[if !hasItem Valise && !fact hotelRoomBooked]
 > [[Get your valise.]]
+[continue]
+
+[if fact evening && !fact hotelRoomBooked]
+> [["I need a room for the night."]]
 [continue]
 
 > {exit} [["Goodbye."->Hotel Clerk]]
@@ -227,12 +257,12 @@ Perhaps you should consider other options.
 > [[I'll think about it->Agent]]
 
 
-:: Leave. {"position":"4850,2975","size":"100,100"}
+:: Leave. {"position":"4175,2800","size":"100,100"}
 
 
 
-:: Look for your room {"position":"5500,2575","size":"100,100"}
-There it is. At the end of the corridor, you see the door to your room. The smell isn't so bad in this area.
+:: Look for your room {"position":"5675,2775","size":"100,100"}
+There it is. At the end of the corridor, you see the door to room 428. The smell isn't so bad in this area.
 
 > {level:hotel-room,0} [[Enter the room]]
 > {level:hotel,1} [[Go back downstairs]]
@@ -254,13 +284,13 @@ There it is. At the end of the corridor, you see the door to your room. The smel
 
 
 
-:: Roof Window {"position":"6325,3450","size":"100,100"}
+:: Roof Window {"position":"7725,2575","size":"100,100"}
 The glass is broken but the window is dark. You can't see well inside this house.
 
 > {level:slums-1,2} [[Jump down->Roof Window]]
 
 
-:: Slums Crossroads {"position":"1800,3325","size":"100,100"}
+:: Slums Crossroads {"position":"3225,3975","size":"100,100"}
 You're at crossroads.
 
 > {level:beach,0} [[Beach->Slums Crossroads]]
@@ -272,11 +302,11 @@ You're at crossroads.
 > {exit} [[...]]
 
 
-:: Take a look {"position":"5350,4375","size":"100,100"}
+:: Take a look {"position":"3150,4850","size":"100,100"}
 
 
 
-:: Take it. {"position":"4950,2725","size":"100,100"}
+:: Take it. {"position":"4275,2550","size":"100,100"}
 addItem: hat
 --
 You took the hat.
@@ -359,14 +389,14 @@ You take the train. The travel doesn't take long.
 > [[...->Arkham]]
 
 
-:: Vacant House {"position":"2575,3400","size":"100,100"}
+:: Vacant House {"position":"4175,4050","size":"100,100"}
 The house is in ruin.
 
 > [[Go inside]]
 > {exit} [[Leave it be->Vacant House]]
 
 
-:: Vacant House 2 {"position":"2075,3350","size":"100,100"}
+:: Vacant House 2 {"position":"3500,4000","size":"100,100"}
 ...
 
 > {exit} [[Nothing to do here.->Vacant House 2]]
@@ -378,22 +408,22 @@ If you want to explore the town, better check in that valise at the hotel. You c
 > {exit} [[Continue.->Valise Reminder]]
 
 
-:: Wait for Zadok {"position":"5125,4350","size":"100,100"}
+:: Wait for Zadok {"position":"2925,4825","size":"100,100"}
 "Look at the ocean..."
 
 > {level:zadok-freaked-out} [[Take a look]]
 
 
-:: What...? {"position":"4875,4925","size":"100,100"}
+:: What...? {"position":"2225,5450","size":"100,100"}
 
 
 
-:: beach [Level] {"position":"1650,3750","size":"200,100"}
+:: beach [Level] {"position":"2400,4275","size":"200,100"}
 playMusic: waves
 --
 
 
-:: grocery-npc [Level] {"position":"2125,2275","size":"200,100"}
+:: grocery-npc [Level] {"position":"2250,2200","size":"200,100"}
 "Hello, mister!"
 
 [unless hasItem Quart of Whisky]
@@ -403,7 +433,7 @@ playMusic: waves
 > {exit} [[I'll see you later.->grocery-npc]]
 
 
-:: hotel-hall [Level] {"position":"5425,2375","size":"200,100"}
+:: hotel-hall [Level] {"position":"5600,2575","size":"200,100"}
 setTitle: Hotel Hall
 --
 The hall is full of dust. A strong fish scent is in the air, stronger under some doors.
@@ -416,7 +446,7 @@ playMusic:
 --
 
 
-:: rooftops [Level] {"position":"6450,3350","size":"200,100"}
+:: rooftops [Level] {"position":"7500,2375","size":"200,100"}
 You can see the town down below.
 
 Most houses are dark except for the weird churches.
@@ -424,12 +454,12 @@ Most houses are dark except for the weird churches.
 > {exit} [[Look around.->rooftops]]
 
 
-:: slums-1 [Level] {"position":"2625,3175","size":"200,100"}
+:: slums-1 [Level] {"position":"4225,3825","size":"200,100"}
 playMusic: crackle
 --
 
 
-:: slums-2 [Level] {"position":"1975,3125","size":"200,100"}
+:: slums-2 [Level] {"position":"3400,3775","size":"200,100"}
 playMusic: crackle
 --
 
@@ -447,7 +477,7 @@ You were told the best way there is taking the steam train.
 {exit} [[Explore the Train Station->train-station]]
 
 
-:: zadok [Level] {"position":"4450,4200","size":"200,100"}
+:: zadok [Level] {"position":"2250,4675","size":"200,100"}
 setTitle: Zadok Allen
 --
 [if hasMoney 1]
@@ -464,7 +494,9 @@ You recognize this man as Zadok, the drunk who the boy told you about.
 > {exit} [["Nothing."]]
 
 
-:: zadok-freaked-out [Level] {"position":"4525,4850","size":"200,100"}
+:: zadok-freaked-out [Level] {"position":"1875,5375","size":"200,100"}
+setFact: evening
+--
 "GOD HELP US! RUN!"
 
 > {exit} [[What...?]]
