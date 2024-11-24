@@ -4,6 +4,8 @@ import (
 	"flag"
 	"log"
 
+	"github.com/m110/secrets/engine"
+
 	"github.com/m110/secrets/game"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -19,8 +21,8 @@ func main() {
 	}
 
 	ebiten.SetVsyncEnabled(true)
-	//ebiten.SetWindowSize(1080, 720)
-	ebiten.SetWindowSize(1920, 1080)
+	w, h := ebiten.Monitor().Size()
+	ebiten.SetWindowSize(engine.IntPercent(w, 0.8), engine.IntPercent(h, 0.8))
 
 	err := ebiten.RunGame(game.NewGame(config))
 	if err != nil {

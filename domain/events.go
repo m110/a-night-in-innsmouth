@@ -74,3 +74,9 @@ type CharacterSpeedChanged struct {
 }
 
 var CharacterSpeedChangedEvent = events.NewEventType[CharacterSpeedChanged]()
+
+type StoryFactSet struct {
+	Fact string
+}
+
+var StoryFactSetEvent = events.NewEventType[StoryFactSet]()

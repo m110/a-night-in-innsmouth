@@ -64,7 +64,7 @@ type Story struct {
 
 	Money int
 	Items []Item
-	Facts map[string]struct{}
+	Facts map[string]bool
 }
 
 type Item struct {
@@ -75,8 +75,9 @@ type Item struct {
 func NewStory(w donburi.World, rawStory RawStory) *Story {
 	story := &Story{
 		world: w,
-
 		Title: rawStory.Title,
+		Items: []Item{},
+		Facts: map[string]bool{},
 	}
 
 	passagesMap := map[string]*Passage{}
@@ -85,6 +86,13 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 		for _, tag := range p.Tags {
 			if tag == "once" {
 				isOneTime = true
+			}
+		}
+
+		// Set all facts to false initially - useful for debug
+		for _, c := range p.Conditions {
+			if c.Type == ConditionTypeFact {
+				story.Facts[c.Value] = false
 			}
 		}
 
@@ -100,6 +108,13 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 
 		var links []*Link
 		for _, l := range p.Links {
+			// Set all facts to false initially - useful for debug
+			for _, c := range l.Conditions {
+				if c.Type == ConditionTypeFact {
+					story.Facts[c.Value] = false
+				}
+			}
+
 			links = append(links, &Link{
 				passage:    passage,
 				Text:       l.Text,
@@ -120,8 +135,6 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 	}
 
 	story.Passages = passagesMap
-	story.Items = []Item{}
-	story.Facts = map[string]struct{}{}
 
 	return story
 }
@@ -216,7 +229,17 @@ func (s *Story) publishInventoryUpdated() {
 }
 
 func (s *Story) SetFact(fact string) {
-	s.Facts[fact] = struct{}{}
+	s.Facts[fact] = true
+
+	StoryFactSetEvent.Publish(s.world, StoryFactSet{
+		Fact: fact,
+	})
+}
+
+// RemoveFact removes a fact from the story
+// Use only for debugging purposes.
+func (s *Story) RemoveFact(fact string) {
+	s.Facts[fact] = false
 }
 
 func (s *Story) TestCondition(c Condition) bool {
@@ -232,8 +255,7 @@ func (s *Story) TestCondition(c Condition) bool {
 
 		return found == c.Positive
 	case ConditionTypeFact:
-		_, ok := s.Facts[c.Value]
-		return ok == c.Positive
+		return s.Facts[c.Value] == c.Positive
 	case ConditionTypeHasMoney:
 		money, err := strconv.Atoi(c.Value)
 		if err != nil {
