@@ -20,15 +20,12 @@ import (
 	"github.com/m110/secrets/assets"
 	"github.com/m110/secrets/component"
 	"github.com/m110/secrets/domain"
-	"github.com/m110/secrets/engine"
 )
 
 type Render struct {
 	camerasQuery *donburi.OrderedQuery[component.CameraData]
 
 	offscreen *ebiten.Image
-
-	debug *component.DebugData
 }
 
 func NewRender() *Render {
@@ -46,7 +43,6 @@ func (r *Render) Init(w donburi.World) {
 	width := game.Dimensions.ScreenWidth
 	height := game.Dimensions.ScreenHeight
 	r.offscreen = ebiten.NewImage(width, height)
-	r.debug = component.Debug.Get(engine.MustFindWithComponent(w, component.Debug))
 }
 
 func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
@@ -64,13 +60,13 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 	count := 0
 	r.camerasQuery.EachOrdered(w, component.Camera, func(entry *donburi.Entry) {
 		if !entry.HasComponent(component.InnerCamera) {
-			count += r.renderCamera(entry, r.offscreen)
+			count += r.renderCamera(entry, r.offscreen, game)
 		}
 	})
 
 	screen.DrawImage(r.offscreen, nil)
 
-	if r.debug.Enabled {
+	if game.DebugMode {
 		debugX := 280
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("FPS: %v", int(ebiten.ActualFPS())), debugX, 20)
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("TPS: %v", int(ebiten.ActualTPS())), debugX, 40)
@@ -79,7 +75,7 @@ func (r *Render) Draw(w donburi.World, screen *ebiten.Image) {
 	}
 }
 
-func (r *Render) renderCamera(entry *donburi.Entry, offscreen *ebiten.Image) int {
+func (r *Render) renderCamera(entry *donburi.Entry, offscreen *ebiten.Image, game *component.GameData) int {
 	if entry.HasComponent(component.Active) {
 		if !component.Active.Get(entry).Active {
 			return 0
@@ -93,7 +89,7 @@ func (r *Render) renderCamera(entry *donburi.Entry, offscreen *ebiten.Image) int
 	}
 
 	rootLayer := component.Layer.Get(camera.Root).Layer
-	children := r.getAllChildren(camera.Root, rootLayer)
+	children := r.getAllChildren(camera.Root, rootLayer, game)
 
 	byLayer := map[int][]entryWithLayer{}
 	for _, child := range children {
@@ -123,10 +119,10 @@ func (r *Render) renderCamera(entry *donburi.Entry, offscreen *ebiten.Image) int
 			}
 
 			if child.entry.HasComponent(component.Camera) {
-				count += r.renderCamera(child.entry, camera.Viewport)
+				count += r.renderCamera(child.entry, camera.Viewport, game)
 			}
 
-			if r.debug.Enabled {
+			if game.DebugMode {
 				if child.entry.HasComponent(component.Bounds) {
 					renderBoundsDebug(child.entry, camera)
 				}
@@ -171,7 +167,7 @@ func (r *Render) renderCamera(entry *donburi.Entry, offscreen *ebiten.Image) int
 
 	offscreen.DrawImage(camera.Viewport, op)
 
-	if r.debug.Enabled {
+	if game.DebugMode {
 		renderCameraDebug(entry, offscreen)
 	}
 
@@ -215,7 +211,7 @@ func renderColliderDebug(entry *donburi.Entry, camera *component.CameraData) {
 	vector.StrokeRect(camera.Viewport, float32(rect.X), float32(rect.Y), float32(w), float32(h), 1, colornames.Lime, false)
 }
 
-func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer domain.LayerID) []entryWithLayer {
+func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer domain.LayerID, game *component.GameData) []entryWithLayer {
 	if !entry.Valid() || !isActive(entry) {
 		return nil
 	}
@@ -239,7 +235,7 @@ func (r *Render) getAllChildren(entry *donburi.Entry, rootLayer domain.LayerID) 
 			result = append(result, getEntryWithLayer(e, rootLayer))
 		}
 
-		if r.debug.Enabled {
+		if game.DebugMode {
 			if e.HasComponent(component.Collider) || e.HasComponent(component.Bounds) {
 				result = append(result, getEntryWithLayer(e, rootLayer))
 			}

@@ -14,6 +14,8 @@ type GameData struct {
 	PreviousLevel *PreviousLevel
 
 	Dimensions Dimensions
+
+	DebugMode bool
 }
 
 type PreviousLevel struct {

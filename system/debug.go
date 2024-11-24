@@ -19,12 +19,9 @@ import (
 )
 
 type Debug struct {
-	query     *donburi.Query
-	debug     *component.DebugData
-	offscreen *ebiten.Image
+	query *donburi.Query
 
 	pausedCameraVelocity math.Vec2
-
 	restartLevelCallback func()
 
 	// 0 for short press, 1 for long
@@ -36,31 +33,17 @@ type Debug struct {
 func NewDebug(restartLevelCallback func()) *Debug {
 	return &Debug{
 		query: donburi.NewQuery(
-			filter.Contains(transform.Transform, component.Sprite),
+			filter.Contains(component.DebugUI),
 		),
+
 		restartLevelCallback: restartLevelCallback,
 		longClickTimer:       engine.NewTimer(1 * time.Second),
 		betweenClicksTimer:   engine.NewTimer(500 * time.Millisecond),
 	}
 }
 
-func (d *Debug) Init(w donburi.World) {
-	game := component.MustFindGame(w)
-
-	imageWidth := game.Dimensions.ScreenWidth
-	imageHeight := game.Dimensions.ScreenHeight
-	d.offscreen = ebiten.NewImage(imageWidth, imageHeight)
-}
-
 func (d *Debug) Update(w donburi.World) {
-	if d.debug == nil {
-		debug, ok := donburi.NewQuery(filter.Contains(component.Debug)).First(w)
-		if !ok {
-			return
-		}
-
-		d.debug = component.Debug.Get(debug)
-	}
+	game := component.MustFindGame(w)
 
 	var clicked bool
 	var released bool
@@ -111,10 +94,10 @@ func (d *Debug) Update(w donburi.World) {
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) || toggleDebug {
-		d.debug.Enabled = !d.debug.Enabled
+		game.DebugMode = !game.DebugMode
 
 		var speedChange float64
-		if d.debug.Enabled {
+		if game.DebugMode {
 			speedChange = 10
 		} else {
 			speedChange = -10
@@ -124,11 +107,26 @@ func (d *Debug) Update(w donburi.World) {
 		})
 	}
 
-	if d.debug.Enabled {
+	if game.DebugMode {
 		if inpututil.IsKeyJustPressed(ebiten.KeyP) {
 			PrintHierarchy(w)
 		}
+
+		d.query.Each(w, func(entry *donburi.Entry) {
+			component.DebugUI.Get(entry).UI.Update()
+		})
 	}
+}
+
+func (d *Debug) Draw(w donburi.World, screen *ebiten.Image) {
+	game := component.MustFindGame(w)
+	if !game.DebugMode {
+		return
+	}
+
+	d.query.Each(w, func(entry *donburi.Entry) {
+		component.DebugUI.Get(entry).UI.Draw(screen)
+	})
 }
 
 func PrintHierarchy(w donburi.World) {

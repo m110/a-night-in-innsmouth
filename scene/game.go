@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"image/color"
 
-	"github.com/yohamta/donburi/filter"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	donburievents "github.com/yohamta/donburi/features/events"
 	"github.com/yohamta/donburi/features/math"
+	"github.com/yohamta/donburi/filter"
 
 	"github.com/m110/secrets/archetype"
 	"github.com/m110/secrets/assets"
@@ -53,6 +52,8 @@ func NewGame(screenWidth int, screenHeight int) *Game {
 }
 
 func (g *Game) loadLevel() {
+	debug := system.NewDebug(g.loadLevel)
+
 	g.systems = []System{
 		system.NewControls(),
 		system.NewInventory(),
@@ -66,12 +67,13 @@ func (g *Game) loadLevel() {
 		system.NewAudio(),
 		system.NewTimeToLive(),
 		system.NewDestroy(),
-		system.NewDebug(g.loadLevel),
+		debug,
 		system.NewDimensions(),
 	}
 
 	g.drawables = []Drawable{
 		system.NewRender(),
+		debug,
 	}
 
 	g.world = g.createWorld()
@@ -97,14 +99,14 @@ func (g *Game) createWorld() donburi.World {
 		MoveSpeed:     8,
 	})
 
-	world.Create(component.Debug)
-
 	ui := archetype.NewTagged(world, "UI").
 		WithLayer(domain.SpriteUILayerUI).
 		Entry()
 
 	archetype.NewDialog(world)
 
+	builder := newDebugUIBuilder(world)
+	builder.Create()
 	g.createInventory(world, ui)
 
 	story.AddMoney(1000)
