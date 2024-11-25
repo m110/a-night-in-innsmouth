@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hajimehoshi/ebiten/v2/audio"
-
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 

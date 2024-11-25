@@ -13,7 +13,7 @@ game
     "once": "orange",
     "Level": "green"
   },
-  "zoom": 0.6
+  "zoom": 0.3
 }
 
 
@@ -290,12 +290,6 @@ The glass is broken but the window is dark. You can't see well inside this house
 > {level:slums-1,2} [[Jump down->Roof Window]]
 
 
-:: Slums Crossroads {"position":"3225,3975","size":"100,100"}
-You're at crossroads.
-
-> {level:beach,0} [[Beach->Slums Crossroads]]
-
-
 :: TBA {"position":"200,3250","size":"100,100"}
 ...
 
@@ -435,6 +429,7 @@ playMusic: waves
 
 :: hotel-hall [Level] {"position":"5600,2575","size":"200,100"}
 setTitle: Hotel Hall
+if: fact hotelRoomBooked
 --
 The hall is full of dust. A strong fish scent is in the air, stronger under some doors.
 
@@ -462,6 +457,13 @@ playMusic: crackle
 :: slums-2 [Level] {"position":"3400,3775","size":"200,100"}
 playMusic: crackle
 --
+
+
+:: slums-crossroads [Level] {"position":"3050,3850","size":"200,100"}
+You're at crossroads.
+
+> {level:beach,0} [[Beach->slums-crossroads]]
+> {level:slums-2,0} [[Main Street->slums-crossroads]]
 
 
 :: train-station [Level once] {"position":"550,325","size":"200,100"}

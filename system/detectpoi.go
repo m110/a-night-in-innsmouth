@@ -3,6 +3,8 @@ package system
 import (
 	"math"
 
+	"github.com/m110/secrets/engine"
+
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
 
@@ -34,7 +36,18 @@ func (d *DetectPOI) Update(w donburi.World) {
 		poiPos := archetype.HorizontalCenterPosition(poi)
 
 		distance := math.Abs(characterPos - poiPos)
-		component.Sprite.Get(poi).ColorBlendOverride.Value = distanceToBlendValue(distance)
+		if distance > archetype.PoiVisibleDistance.Max {
+			return
+		}
+
+		value := 0.0
+		// TODO Probably not efficient to do it each frame
+		// Consider marking the POI as interactable asynchronously
+		if archetype.CanInteractWithPOI(engine.MustGetParent(poi)) {
+			value = distanceToBlendValue(distance)
+		}
+
+		component.Sprite.Get(poi).ColorBlendOverride.Value = value
 	})
 }
 

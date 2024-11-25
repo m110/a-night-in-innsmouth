@@ -110,8 +110,8 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2160.6060606060605,
-                "y": 1307.5757575757575
+                "x": 3345.4545454545455,
+                "y": 1383.3333333333335
             }
         },
         "levels/bus-station.tmx": {
@@ -216,23 +216,31 @@
                 5,
                 3
             ],
-            "scale": 0.25,
+            "scale": 0.1058,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 2328,
-                "y": 1618
+                "x": 1994.328922495274,
+                "y": 2244.801512287335
             }
         },
         "levels/slums-2.tmx": {
             "expandedObjectLayers": [
-                3,
-                4
+                4,
+                3
             ],
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2209.090909090909,
-                "y": 1556.060606060606
+                "x": 945.4545454545455,
+                "y": 1740.9090909090908
+            }
+        },
+        "levels/slums-crossroads.tmx": {
+            "scale": 0.1814,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1587.6515986769568,
+                "y": 984.0132304299887
             }
         },
         "levels/train-station.tmx": {

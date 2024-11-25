@@ -88,6 +88,10 @@ func CanInteractWithPOI(entry *donburi.Entry) bool {
 	game := component.MustFindGame(entry.World)
 
 	if poi.POI.Level != nil {
+		if game.Story.PassageExists(poi.POI.Level.Name) {
+			passage := game.Story.PassageByTitle(poi.POI.Level.Name)
+			return passage.ConditionsMet()
+		}
 		return true
 	}
 

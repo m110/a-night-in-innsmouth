@@ -37,9 +37,8 @@
     <property name="poi" type="object" value="33"/>
    </properties>
   </object>
-  <object id="24" name="Stairs" class="poi" x="3072" y="904" width="160" height="584">
+  <object id="24" name="Stairs" class="poi" x="2899" y="865" width="160" height="584">
    <properties>
-    <property name="edge" propertytype="edge" value="right"/>
     <property name="level" value="hotel-hall"/>
     <property name="passage" value=""/>
     <property name="touchTrigger" type="bool" value="true"/>

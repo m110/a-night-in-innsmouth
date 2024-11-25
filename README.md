@@ -146,4 +146,14 @@ You can add tags in the Twine editor on the passage level.
 
 ### Levels
 
+| Object type |
+|-------------|
+| collider    |
+| entrypoint  |
+| fadepoint   |
+| limits      |
+| object      |
+| poi         |
+| trigger     |
+
 
