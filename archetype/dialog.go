@@ -208,7 +208,7 @@ func NextPassage(w donburi.World) {
 		if passage.ActiveOption == opt.Index {
 			txt := engine.MustFindChildWithComponent(e, component.Text)
 			t := component.Text.Get(txt)
-			AddLogEventSegment(w, fmt.Sprintf("-> %s", t.Text), assets.TextDarkColor)
+			AddLogEventSegment(w, fmt.Sprintf("-> %s", t.Text), assets.TextDarkColor, 0)
 		}
 
 		component.Destroy(e)
@@ -266,6 +266,19 @@ func NextPassage(w donburi.World) {
 		return
 	}
 
+	if link.IsFinish() {
+		showCredits(w)
+		return
+	}
+
+	if link.HasTag("main-menu") {
+		// TODO Fade out on all cameras
+		// TODO Passage is not set
+		game := component.MustFindGame(w)
+		game.SwitchToTitle()
+		return
+	}
+
 	if link.Level != nil {
 		// When switching levels, the camera should be reset
 		briefZoom.OriginCamera = nil
@@ -279,7 +292,43 @@ func NextPassage(w donburi.World) {
 	ShowPassage(w, link.Target, nil)
 }
 
-func AddLogEventSegment(w donburi.World, text string, color color.Color) {
+func showCredits(w donburi.World) {
+	game := component.MustFindGame(w)
+	credits := game.Story.PassageByTitle(domain.CreditsPassage)
+
+	entry := New(w).
+		With(component.Animator).
+		Entry()
+
+	index := 0
+	var segments []string
+	for _, s := range credits.AvailableSegments() {
+		segments = append(segments, strings.Split(s.Text, "\n\n")...)
+	}
+
+	duration := 2 * time.Second
+
+	anim := component.Animator.Get(entry)
+	anim.SetAnimation("credits", &component.Animation{
+		Active: true,
+		Timer:  engine.NewTimer(duration),
+		Update: func(e *donburi.Entry, a *component.Animation) {
+			if a.Timer.IsReady() {
+				a.Timer.Reset()
+
+				if index < len(segments) {
+					AddLogEventSegment(w, segments[index], assets.TextColor, duration)
+					index++
+				} else {
+					createDialogOptions(w, credits)
+					a.Stop(e)
+				}
+			}
+		},
+	})
+}
+
+func AddLogEventSegment(w donburi.World, text string, color color.Color, streamingDuration time.Duration) {
 	game := component.MustFindGame(w)
 
 	log := engine.MustFindWithComponent(w, component.DialogLog)
@@ -292,6 +341,16 @@ func AddLogEventSegment(w donburi.World, text string, color color.Color) {
 	logHeight := component.Camera.Get(logCamera).Viewport.Bounds().Dy()
 	passageMarginTop := float64(int(float64(logHeight) * passageMarginTopPercent))
 
+	txt := component.TextData{
+		Text:  text,
+		Color: color,
+	}
+
+	if streamingDuration > 0 {
+		txt.Streaming = true
+		txt.StreamingTimer = engine.NewTimer(streamingDuration)
+	}
+
 	segment := NewTagged(w, "Log Segment").
 		WithParent(log).
 		WithLayerInherit().
@@ -299,10 +358,7 @@ func AddLogEventSegment(w donburi.World, text string, color color.Color) {
 			X: float64(passageMarginLeft),
 			Y: stackedView.CurrentY + passageMarginTop,
 		}).
-		WithText(component.TextData{
-			Text:  text,
-			Color: color,
-		}).
+		WithText(txt).
 		With(component.Bounds).
 		Entry()
 

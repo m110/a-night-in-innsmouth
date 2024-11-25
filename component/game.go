@@ -16,6 +16,8 @@ type GameData struct {
 	Dimensions Dimensions
 
 	Debug Debug
+
+	SwitchToTitle func()
 }
 
 type Debug struct {

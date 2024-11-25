@@ -69,6 +69,8 @@ You feel like you missed something, but you don't know what it is.
 
 THE END
 
+> {finish} [[Finish.]]
+
 
 :: Barnacles {"position":"4650,4025","size":"100,100"}
 This... Looks odd.
@@ -171,6 +173,10 @@ It's a good metaphor for this entire street.
 
 
 
+:: Finish. {"position":"3650,400","size":"100,100"}
+
+
+
 :: Get the room. ($1) {"position":"5000,3000","size":"100,100"}
 takeMoney: 100
 setFact: hotelRoomBooked
@@ -268,10 +274,6 @@ There it is. At the end of the corridor, you see the door to room 428. The smell
 > {level:hotel,1} [[Go back downstairs]]
 
 
-:: Option 1 {"position":"950,3550","size":"100,100"}
-
-
-
 :: Option 2 {"position":"650,3775","size":"100,100"}
 
 
@@ -326,7 +328,7 @@ This seems like a bad idea. People disappear here.
 
 More normal text
 
-> {exit} [[Option 1]]
+> [[Wait for the train and board it->Train to Arkham]]
 > {exit} [[Option 2]]
 > {exit} [[Option 3]]
 > {exit} [[Option 4 that has a very long description that should probably fit two lines.]]
@@ -417,6 +419,31 @@ playMusic: waves
 --
 
 
+:: credits {"position":"4475,400","size":"100,100"}
+Innsmouth Game Name
+
+Made by
+
+Author 1
+ROLE
+
+Author 2
+ROLE
+
+Author 3
+ROLE
+
+Special thanks to
+A
+B
+C
+D
+
+Based on The Shadow Over Inssmouth by Howard Phillips Lovecraft
+
+> {main-menu} [[Back to Main Menu->credits]]
+
+
 :: grocery-npc [Level] {"position":"2250,2200","size":"200,100"}
 "Hello, mister!"
 
@@ -429,7 +456,7 @@ playMusic: waves
 
 :: hotel-hall [Level] {"position":"5600,2575","size":"200,100"}
 setTitle: Hotel Hall
-if: fact hotelRoomBooked
+if: fact hotelRoomBooked	
 --
 The hall is full of dust. A strong fish scent is in the air, stronger under some doors.
 

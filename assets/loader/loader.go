@@ -99,6 +99,11 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 }
 
 func validateAssets(assets *domain.Assets) error {
+	err := assertPassageExists(assets.Story, domain.CreditsPassage)
+	if err != nil {
+		return err
+	}
+
 	for _, l := range assets.Levels {
 		// Levels without character should have a passage, otherwise the game will be stuck
 		if len(l.Entrypoints) == 0 {

@@ -38,12 +38,15 @@ type Game struct {
 
 	screenWidth  int
 	screenHeight int
+
+	switchToTitle func()
 }
 
-func NewGame(screenWidth int, screenHeight int) *Game {
+func NewGame(screenWidth int, screenHeight int, switchToTitle func()) *Game {
 	g := &Game{
-		screenWidth:  screenWidth,
-		screenHeight: screenHeight,
+		screenWidth:   screenWidth,
+		screenHeight:  screenHeight,
+		switchToTitle: switchToTitle,
 	}
 
 	g.loadLevel()
@@ -88,8 +91,9 @@ func (g *Game) createWorld() donburi.World {
 
 	game := world.Entry(world.Create(component.Game, component.Input))
 	component.Game.SetValue(game, component.GameData{
-		Story:      story,
-		Dimensions: system.CalculateDimensions(g.screenWidth, g.screenHeight),
+		Story:         story,
+		Dimensions:    system.CalculateDimensions(g.screenWidth, g.screenHeight),
+		SwitchToTitle: g.switchToTitle,
 	})
 	component.Input.SetValue(game, component.InputData{
 		Disabled:      false,
@@ -134,19 +138,19 @@ func (g *Game) createWorld() donburi.World {
 	domain.ItemReceivedEvent.ProcessEvents(world)
 
 	domain.MoneyReceivedEvent.Subscribe(world, func(w donburi.World, event domain.MoneyReceived) {
-		archetype.AddLogEventSegment(w, fmt.Sprintf("[Received %v]", formatAsDollars(event.Amount)), assets.TextGreenColor)
+		archetype.AddLogEventSegment(w, fmt.Sprintf("[Received %v]", formatAsDollars(event.Amount)), assets.TextGreenColor, 0)
 	})
 
 	domain.MoneySpentEvent.Subscribe(world, func(w donburi.World, event domain.MoneySpent) {
-		archetype.AddLogEventSegment(w, fmt.Sprintf("[Spent %v]", formatAsDollars(event.Amount)), assets.TextRedColor)
+		archetype.AddLogEventSegment(w, fmt.Sprintf("[Spent %v]", formatAsDollars(event.Amount)), assets.TextRedColor, 0)
 	})
 
 	domain.ItemReceivedEvent.Subscribe(world, func(w donburi.World, event domain.ItemReceived) {
-		archetype.AddLogEventSegment(w, fmt.Sprintf("[Received %v]", event.Item.Name), assets.TextGreenColor)
+		archetype.AddLogEventSegment(w, fmt.Sprintf("[Received %v]", event.Item.Name), assets.TextGreenColor, 0)
 	})
 
 	domain.ItemLostEvent.Subscribe(world, func(w donburi.World, event domain.ItemLost) {
-		archetype.AddLogEventSegment(w, fmt.Sprintf("[Lost %v]", event.Item.Name), assets.TextRedColor)
+		archetype.AddLogEventSegment(w, fmt.Sprintf("[Lost %v]", event.Item.Name), assets.TextRedColor, 0)
 	})
 
 	return world

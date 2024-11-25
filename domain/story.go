@@ -8,6 +8,10 @@ import (
 	"github.com/yohamta/donburi"
 )
 
+const (
+	CreditsPassage = "credits"
+)
+
 type RawStory struct {
 	Title    string
 	Passages []RawPassage
@@ -426,6 +430,16 @@ func (l *Link) Visit() {
 func (l *Link) IsExit() bool {
 	for _, t := range l.Tags {
 		if t == "exit" {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (l *Link) IsFinish() bool {
+	for _, t := range l.Tags {
+		if t == "finish" {
 			return true
 		}
 	}
