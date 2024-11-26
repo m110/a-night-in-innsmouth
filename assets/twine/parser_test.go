@@ -58,7 +58,10 @@ Only if not 200 money.
 		Tags:   []string{"tag1", "tag2"},
 		Segments: []domain.Segment{
 			{
-				Text: "First line.\n\nSecond line.\nAnd third line.",
+				Text: "First line.",
+			},
+			{
+				Text: "Second line.\nAnd third line.",
 			},
 			{
 				Text: "Only if has key.",

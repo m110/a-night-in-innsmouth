@@ -347,7 +347,13 @@ func (b *debugUIBuilder) newFactsWindow() *widget.Window {
 	}
 
 	domain.StoryFactSetEvent.Subscribe(b.world, func(w donburi.World, event domain.StoryFactSet) {
-		b.factCheckboxes[event.Fact].SetState(widget.WidgetChecked)
+		checkbox, ok := b.factCheckboxes[event.Fact]
+		if !ok {
+			// This can happen if the fact is not used in any condition in the story
+			// No point displaying the checkbox then, as it has no effect
+			return
+		}
+		checkbox.SetState(widget.WidgetChecked)
 	})
 
 	window := widget.NewWindow(

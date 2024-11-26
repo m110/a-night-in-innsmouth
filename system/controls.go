@@ -248,8 +248,8 @@ func stopCharacter(entry *donburi.Entry) {
 }
 
 func (c *Controls) UpdateDialog(w donburi.World) {
-	entry, ok := c.passageQuery.First(w)
-	if !ok {
+	entry, optionsLoaded := c.passageQuery.First(w)
+	if !optionsLoaded {
 		return
 	}
 
@@ -288,9 +288,11 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 	}
 
 	game := component.MustFindGame(w)
+	// TODO Refactor to a method
+	indicator, optionsLoaded := engine.FindWithComponent(w, component.ActiveOptionIndicator)
 
 	var touched bool
-	if scroll == 0 && (!game.Debug.Enabled || !game.Debug.UIHovered) {
+	if optionsLoaded && scroll == 0 && (!game.Debug.Enabled || !game.Debug.UIHovered) {
 		x, y := ebiten.CursorPosition()
 
 		touchIDs := inpututil.AppendJustPressedTouchIDs(nil)
@@ -312,7 +314,7 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 		})
 	}
 
-	if optionUpdated {
+	if optionsLoaded && optionUpdated {
 		if passage.ActiveOption < 0 {
 			passage.ActiveOption = len(passage.Passage.Links()) - 1
 		}
@@ -321,7 +323,6 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 			passage.ActiveOption = 0
 		}
 
-		indicator := engine.MustFindWithComponent(w, component.ActiveOptionIndicator)
 		c.buttonsQuery.Each(w, func(entry *donburi.Entry) {
 			if component.DialogOption.Get(entry).Index == passage.ActiveOption {
 				transform.ChangeParent(indicator, entry, false)
@@ -330,7 +331,7 @@ func (c *Controls) UpdateDialog(w donburi.World) {
 	}
 
 	var next bool
-	if inpututil.IsKeyJustPressed(ebiten.KeySpace) ||
+	if optionsLoaded && inpututil.IsKeyJustPressed(ebiten.KeySpace) ||
 		(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && optionUpdated) ||
 		(touched && optionUpdated) {
 		next = true

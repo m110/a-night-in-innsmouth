@@ -40,7 +40,7 @@ Zadok takes a sip.
 :: "When does it leave?" {"position":"1150,1075","size":"100,100"}
 "Shortly. It makes the stop in Innsmouth, then takes off to Arkham at 8pm."
 
-"Whatever you plan,I would not sleep at Gilman House, the town's hotel. I've heard of guests disappearing."
+"Whatever you plan, I would not sleep at Gilman House, the town's hotel. I've heard of guests disappearing."
 
 > {back} [["Thanks."->Agent]]
 
@@ -446,35 +446,25 @@ playMusic: waves
 
 :: credits {"position":"4575,350","size":"100,100"}
 setTitle: Innsmouth Game Name
-segmentDelay: 2s
-segmentTypingTime: 1.5s 
+segmentDelay: 1s
+segmentTypingTime: 1s 
 --
 
-[segment]
 Made by
-[continue]
 
-[segment]
 Author 1
 ROLE
-[continue]
 
-[segment]
 Author 2
 ROLE
-[continue]
 
-[segment]
 Special thanks to
 A
 B
 C
 D
-[continue]
 
-[segment]
 Based on The Shadow Over Inssmouth by Howard Phillips Lovecraft
-[continue]
 
 > {main-menu} [[Back to Main Menu->credits]]
 

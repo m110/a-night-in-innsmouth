@@ -111,17 +111,6 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 	conditionStarted := false
 
 	for _, segment := range strings.Split(content, "\n") {
-		if segment == "[segment]" {
-			if !conditionStarted {
-				if currentSegment.Text != "" {
-					segments = append(segments, currentSegment)
-				}
-				currentSegment = domain.Segment{}
-				conditionStarted = true
-			}
-			continue
-		}
-
 		if segment == "[hint]" {
 			if !conditionStarted {
 				if currentSegment.Text != "" {
@@ -204,6 +193,15 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 		}
 
 		currentSegment.Text += segment + "\n"
+
+		// Double newline indicates end of segment
+		if !conditionStarted &&
+			strings.HasSuffix(currentSegment.Text, "\n\n") &&
+			strings.TrimSpace(currentSegment.Text) != "" {
+			segments = append(segments, currentSegment)
+			currentSegment = domain.Segment{}
+			continue
+		}
 	}
 
 	currentSegment.Text = strings.TrimSpace(currentSegment.Text)

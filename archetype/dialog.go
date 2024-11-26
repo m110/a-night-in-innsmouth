@@ -438,6 +438,11 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		With(component.Passage).
 		Entry()
 
+	component.Passage.SetValue(passage, component.PassageData{
+		Passage:      domainPassage,
+		ActiveOption: 0,
+	})
+
 	textY := passageMarginTop
 	passageHeight := textY
 
@@ -504,47 +509,51 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 			With(component.Bounds).
 			Entry()
 
-		if i > 0 {
-			component.Animator.Get(txt).SetAnimation("stream", &component.Animation{
-				Active: true,
-				Timer:  engine.NewTimer(streamingTime*time.Duration(i) + domainPassage.SegmentDelay*time.Duration(i)),
-				Update: func(e *donburi.Entry, a *component.Animation) {
-					if a.Timer.IsReady() {
-						t := component.Text.Get(e)
-						t.Hidden = false
-						t.Streaming = true
-						a.Stop(e)
-					}
-				},
-			})
-		}
-
 		AdjustTextWidth(txt, passageTextWidth)
 		segmentTextHeight := MeasureTextHeight(txt)
 
-		yIncrease := segmentTextHeight
 		if i != len(domainPassage.AvailableSegments())-1 {
-			yIncrease += assets.NormalFont.Size
+			segmentTextHeight += assets.NormalFont.Size
 		}
 
-		textY += yIncrease
-		passageHeight += yIncrease
+		textY += segmentTextHeight
 
 		component.Bounds.SetValue(txt, component.BoundsData{
 			Width:  float64(passageTextWidth),
 			Height: segmentTextHeight,
 		})
+
+		finished := false
+
+		component.Animator.Get(txt).SetAnimation("stream", &component.Animation{
+			Active: true,
+			Timer:  engine.NewTimer(streamingTime*time.Duration(i) + domainPassage.SegmentDelay*time.Duration(i)),
+			Update: func(e *donburi.Entry, a *component.Animation) {
+				if a.Timer.IsReady() {
+					if i == 0 {
+						scrollDialogLog(w, passageHeight+segmentTextHeight)
+					} else {
+						t := component.Text.Get(e)
+						t.Hidden = false
+						t.Streaming = true
+						scrollDialogLog(w, segmentTextHeight)
+					}
+
+					if i == len(domainPassage.AvailableSegments())-1 {
+						if finished {
+							createDialogOptions(w, domainPassage)
+							a.Stop(e)
+						} else {
+							finished = true
+							a.Timer = engine.NewTimer(streamingTime)
+						}
+					} else {
+						a.Stop(e)
+					}
+				}
+			},
+		})
 	}
-
-	component.Passage.SetValue(passage, component.PassageData{
-		Passage:      domainPassage,
-		ActiveOption: 0,
-		Height:       passageHeight,
-	})
-
-	scrollDialogLog(w, passageHeight)
-
-	createDialogOptions(w, domainPassage)
 }
 
 func zoomInOnPOI(w donburi.World, source *donburi.Entry) {

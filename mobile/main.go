@@ -9,6 +9,7 @@ import (
 func init() {
 	mobile.SetGame(game.NewGame(game.Config{
 		Quick: true,
+		Safe:  true,
 	}))
 }
 
