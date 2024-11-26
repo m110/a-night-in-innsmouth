@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/yohamta/donburi/features/math"
@@ -160,9 +161,18 @@ func (s *Story) AddMoney(amount int) {
 	s.publishInventoryUpdated()
 }
 
-func (s *Story) PassageExists(title string) bool {
-	_, ok := s.Passages[title]
-	return ok
+func (s *Story) PassageForLevel(level TargetLevel) (*Passage, bool) {
+	passage, ok := s.Passages[level.Name]
+	if ok {
+		return passage, ok
+	}
+
+	if level.Entrypoint == nil {
+		return nil, false
+	}
+
+	passage, ok = s.Passages[fmt.Sprintf("%s,%d", level.Name, *level.Entrypoint)]
+	return passage, ok
 }
 
 func (s *Story) PassageByTitle(title string) *Passage {

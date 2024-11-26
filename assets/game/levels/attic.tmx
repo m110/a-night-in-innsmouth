@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="10">
+ <tileset firstgid="1" source="../character/Character.tsx"/>
+ <tileset firstgid="2" source="../objects/Objects.tsx"/>
+ <imagelayer id="2" name="Background">
+  <image source="../backgrounds/attic.jpg" width="3840" height="2160"/>
+ </imagelayer>
+ <objectgroup id="3" name="Objects">
+  <properties>
+   <property name="layer" type="int" value="130"/>
+  </properties>
+  <object id="1" name="Entrypoint" class="entrypoint" gid="1" x="220" y="1714" width="500.604" height="860"/>
+  <object id="3" name="Furniture" class="object" gid="52" x="-1" y="2160" width="1801" height="741"/>
+  <object id="6" name="Chest" class="poi" x="1152" y="1244" width="500" height="244">
+   <properties>
+    <property name="passage" value="Attic Chest"/>
+   </properties>
+  </object>
+  <object id="7" name="Mirror" class="poi" x="3203" y="834" width="247" height="699">
+   <properties>
+    <property name="passage" value="Attic Mirror"/>
+   </properties>
+  </object>
+  <object id="8" name="Exit" class="poi" x="1854" y="1686" width="937" height="265">
+   <properties>
+    <property name="level" value="slums-1,2"/>
+   </properties>
+  </object>
+  <object id="9" name="Limits" class="limits" x="162" y="420" width="3168" height="1557"/>
+ </objectgroup>
+</map>

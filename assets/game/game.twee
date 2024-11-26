@@ -7,13 +7,13 @@ game
   "ifid": "D53E6B8D-8F81-4B7F-A6AC-8DD985B2B85E",
   "format": "Chapbook",
   "format-version": "2.2.0",
-  "start": "train-station",
+  "start": "train-station,0",
   "tag-colors": {
     "aaa": "red",
     "once": "orange",
     "Level": "green"
   },
-  "zoom": 0.3
+  "zoom": 0.6
 }
 
 
@@ -70,6 +70,19 @@ You feel like you missed something, but you don't know what it is.
 THE END
 
 > {finish} [[Finish.]]
+
+
+:: Attic Chest {"position":"7975,2400","size":"100,100"}
+It's locked.
+
+> {exit} [[Leave.->Attic Chest]]
+
+
+:: Attic Mirror {"position":"8225,2400","size":"100,100"}
+There's a big mirror covered in dust in the corner.
+
+> [[Look in the mirror.]]
+> {exit} [[Leave.->Attic Mirror]]
 
 
 :: Barnacles {"position":"4650,4025","size":"100,100"}
@@ -155,6 +168,14 @@ changeCharacterSpeed: 3
 "I'll take care of that for you."
 
 > [["Thank you."->Hotel Clerk]]
+
+
+:: Church Tower {"position":"7450,2600","size":"100,100"}
+The church tower in the distance.
+
+You can hear disgusting voices coming from there.
+
+> {exit} [[Leave.->Church Tower]]
 
 
 :: Dead Fish {"position":"4425,4025","size":"100,100"}
@@ -274,6 +295,14 @@ There it is. At the end of the corridor, you see the door to room 428. The smell
 > {level:hotel,1} [[Go back downstairs]]
 
 
+:: Look in the mirror. {"position":"8225,2550","size":"100,100"}
+You look frightened.
+
+Is it your imagination or are your eyes bigger?
+
+> {exit} [[Look away.->Look in the mirror.]]
+
+
 :: Option 2 {"position":"650,3775","size":"100,100"}
 
 
@@ -289,7 +318,7 @@ There it is. At the end of the corridor, you see the door to room 428. The smell
 :: Roof Window {"position":"7725,2575","size":"100,100"}
 The glass is broken but the window is dark. You can't see well inside this house.
 
-> {level:slums-1,2} [[Jump down->Roof Window]]
+> {level:attic,0} [[Jump down->Roof Window]]
 
 
 :: TBA {"position":"200,3250","size":"100,100"}
@@ -493,7 +522,7 @@ You're at crossroads.
 > {level:slums-2,0} [[Main Street->slums-crossroads]]
 
 
-:: train-station [Level once] {"position":"550,325","size":"200,100"}
+:: train-station,0 [Level once] {"position":"550,325","size":"200,100"}
 playMusic: kitchen
 setTitle: Newsburyport, Massachusetts
 --
@@ -503,7 +532,7 @@ You arrive to Newsburyport on your way to Arkham, where your relative lives.
 
 You were told the best way there is taking the steam train.
 
-{exit} [[Explore the Train Station->train-station]]
+{exit} [[Explore the Train Station->train-station,0]]
 
 
 :: zadok [Level] {"position":"2250,4675","size":"200,100"}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="16">
  <tileset firstgid="1" source="../objects/Objects.tsx"/>
- <tileset firstgid="51" source="../character/Character.tsx"/>
+ <tileset firstgid="52" source="../character/Character.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="../backgrounds/slums-2.jpg" width="3840" height="2160"/>
  </imagelayer>
@@ -35,14 +35,13 @@
     <property name="poi" type="object" value="2"/>
    </properties>
   </object>
-  <object id="5" x="1406" y="1306"/>
-  <object id="6" name="Entry Point 1" class="entrypoint" gid="2147483699" x="3293" y="1936" width="480.812" height="826">
+  <object id="6" name="Entry Point 1" class="entrypoint" gid="2147483700" x="3293" y="1936" width="480.812" height="826">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>
    </properties>
   </object>
-  <object id="10" name="Entry Point 0" class="entrypoint" gid="51" x="476" y="1901" width="450" height="773.067">
+  <object id="10" name="Entry Point 0" class="entrypoint" gid="52" x="476" y="1901" width="450" height="773.067">
    <properties>
     <property name="flipY" type="bool" value="false"/>
     <property name="index" type="int" value="0"/>
