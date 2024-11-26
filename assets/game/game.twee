@@ -69,7 +69,7 @@ You feel like you missed something, but you don't know what it is.
 
 THE END
 
-> {finish} [[Finish.]]
+> [[Finish.->credits]]
 
 
 :: Attic Chest {"position":"7975,2400","size":"100,100"}
@@ -191,10 +191,6 @@ It's a good metaphor for this entire street.
 
 
 :: Exit. {"position":"275,975","size":"100,100"}
-
-
-
-:: Finish. {"position":"3650,400","size":"100,100"}
 
 
 
@@ -448,27 +444,37 @@ playMusic: waves
 --
 
 
-:: credits {"position":"4475,400","size":"100,100"}
-Innsmouth Game Name
+:: credits {"position":"4575,350","size":"100,100"}
+setTitle: Innsmouth Game Name
+segmentDelay: 2s
+segmentTypingTime: 1.5s 
+--
 
+[segment]
 Made by
+[continue]
 
+[segment]
 Author 1
 ROLE
+[continue]
 
+[segment]
 Author 2
 ROLE
+[continue]
 
-Author 3
-ROLE
-
+[segment]
 Special thanks to
 A
 B
 C
 D
+[continue]
 
+[segment]
 Based on The Shadow Over Inssmouth by Howard Phillips Lovecraft
+[continue]
 
 > {main-menu} [[Back to Main Menu->credits]]
 

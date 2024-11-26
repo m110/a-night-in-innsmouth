@@ -3,6 +3,7 @@ package domain
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/yohamta/donburi/features/math"
 
@@ -296,6 +297,9 @@ type Passage struct {
 
 	IsOneTime bool
 	Visited   bool
+
+	SegmentDelay      time.Duration
+	SegmentTypingTime time.Duration
 }
 
 func (p *Passage) AvailableSegments() []Segment {
@@ -383,6 +387,22 @@ func (p *Passage) Visit() {
 			CharacterSpeedChangedEvent.Publish(p.story.world, CharacterSpeedChanged{
 				SpeedChange: float64(speed),
 			})
+		case MacroTypeSegmentDelay:
+			duration, err := time.ParseDuration(m.Value)
+			if err != nil {
+				// TODO This validation should be done at the parser level
+				panic(err)
+			}
+
+			p.SegmentDelay = duration
+		case MacroTypeSegmentTypingTime:
+			duration, err := time.ParseDuration(m.Value)
+			if err != nil {
+				// TODO This validation should be done at the parser level
+				panic(err)
+			}
+
+			p.SegmentTypingTime = duration
 		default:
 			panic("Unknown macro type: " + m.Type)
 		}
@@ -440,16 +460,6 @@ func (l *Link) Visit() {
 func (l *Link) IsExit() bool {
 	for _, t := range l.Tags {
 		if t == "exit" {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (l *Link) IsFinish() bool {
-	for _, t := range l.Tags {
-		if t == "finish" {
 			return true
 		}
 	}
@@ -529,6 +539,8 @@ const (
 	MacroTypeTakeMoney            MacroType = "takeMoney"
 	MacroTypePlayMusic            MacroType = "playMusic"
 	MacroTypeChangeCharacterSpeed MacroType = "changeCharacterSpeed"
+	MacroTypeSegmentDelay         MacroType = "segmentDelay"
+	MacroTypeSegmentTypingTime    MacroType = "segmentTypingTime"
 )
 
 type Macro struct {

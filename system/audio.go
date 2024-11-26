@@ -40,6 +40,20 @@ func (a *Audio) Init(w donburi.World) {
 	domain.MusicChangedEvent.Subscribe(w, a.onMusicChanged)
 }
 
+func (a *Audio) Stop(w donburi.World) {
+	if a.currentMusicPlayer != nil {
+		a.currentMusicPlayer.Pause()
+		_ = a.currentMusicPlayer.Close()
+		a.currentMusicPlayer = nil
+	}
+
+	if a.fadingMusicPlayer != nil {
+		a.fadingMusicPlayer.Pause()
+		_ = a.fadingMusicPlayer.Close()
+		a.fadingMusicPlayer = nil
+	}
+}
+
 func (a *Audio) Update(w donburi.World) {
 	if a.mixInProgress {
 		a.musicMixTimer.Update()

@@ -266,14 +266,8 @@ func NextPassage(w donburi.World) {
 		return
 	}
 
-	if link.IsFinish() {
-		showCredits(w)
-		return
-	}
-
 	if link.HasTag("main-menu") {
 		// TODO Fade out on all cameras
-		// TODO Passage is not set
 		game := component.MustFindGame(w)
 		game.SwitchToTitle()
 		return
@@ -290,42 +284,6 @@ func NextPassage(w donburi.World) {
 	}
 
 	ShowPassage(w, link.Target, nil)
-}
-
-func showCredits(w donburi.World) {
-	game := component.MustFindGame(w)
-	credits := game.Story.PassageByTitle(domain.CreditsPassage)
-
-	entry := New(w).
-		With(component.Animator).
-		Entry()
-
-	index := 0
-	var segments []string
-	for _, s := range credits.AvailableSegments() {
-		segments = append(segments, strings.Split(s.Text, "\n\n")...)
-	}
-
-	duration := 2 * time.Second
-
-	anim := component.Animator.Get(entry)
-	anim.SetAnimation("credits", &component.Animation{
-		Active: true,
-		Timer:  engine.NewTimer(duration),
-		Update: func(e *donburi.Entry, a *component.Animation) {
-			if a.Timer.IsReady() {
-				a.Timer.Reset()
-
-				if index < len(segments) {
-					AddLogEventSegment(w, segments[index], assets.TextColor, duration)
-					index++
-				} else {
-					createDialogOptions(w, credits)
-					a.Stop(e)
-				}
-			}
-		},
-	})
 }
 
 func AddLogEventSegment(w donburi.World, text string, color color.Color, streamingDuration time.Duration) {
@@ -515,6 +473,9 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 	}
 
 	streamingTime := 500 * time.Millisecond
+	if domainPassage.SegmentTypingTime != 0 {
+		streamingTime = domainPassage.SegmentTypingTime
+	}
 
 	for i, segment := range domainPassage.AvailableSegments() {
 		segmentColor := assets.TextColor
@@ -546,7 +507,7 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		if i > 0 {
 			component.Animator.Get(txt).SetAnimation("stream", &component.Animation{
 				Active: true,
-				Timer:  engine.NewTimer(streamingTime * time.Duration(i)),
+				Timer:  engine.NewTimer(streamingTime*time.Duration(i) + domainPassage.SegmentDelay*time.Duration(i)),
 				Update: func(e *donburi.Entry, a *component.Animation) {
 					if a.Timer.IsReady() {
 						t := component.Text.Get(e)

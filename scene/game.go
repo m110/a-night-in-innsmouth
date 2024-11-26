@@ -22,6 +22,10 @@ type Initializer interface {
 	Init(w donburi.World)
 }
 
+type Stopper interface {
+	Stop(w donburi.World)
+}
+
 type System interface {
 	Update(w donburi.World)
 }
@@ -39,14 +43,14 @@ type Game struct {
 	screenWidth  int
 	screenHeight int
 
-	switchToTitle func()
+	switchToTitleFunc func()
 }
 
 func NewGame(screenWidth int, screenHeight int, switchToTitle func()) *Game {
 	g := &Game{
-		screenWidth:   screenWidth,
-		screenHeight:  screenHeight,
-		switchToTitle: switchToTitle,
+		screenWidth:       screenWidth,
+		screenHeight:      screenHeight,
+		switchToTitleFunc: switchToTitle,
 	}
 
 	g.loadLevel()
@@ -287,4 +291,20 @@ func formatAsDollars(amount int) string {
 	cents := amount % 100
 	dollars := amount / 100
 	return fmt.Sprintf("$%v.%02v", dollars, cents)
+}
+
+func (g *Game) switchToTitle() {
+	for _, s := range g.systems {
+		if stop, ok := s.(Stopper); ok {
+			stop.Stop(g.world)
+		}
+	}
+
+	for _, d := range g.drawables {
+		if stop, ok := d.(Stopper); ok {
+			stop.Stop(g.world)
+		}
+	}
+
+	g.switchToTitleFunc()
 }

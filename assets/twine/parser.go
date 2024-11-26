@@ -111,6 +111,17 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 	conditionStarted := false
 
 	for _, segment := range strings.Split(content, "\n") {
+		if segment == "[segment]" {
+			if !conditionStarted {
+				if currentSegment.Text != "" {
+					segments = append(segments, currentSegment)
+				}
+				currentSegment = domain.Segment{}
+				conditionStarted = true
+			}
+			continue
+		}
+
 		if segment == "[hint]" {
 			if !conditionStarted {
 				if currentSegment.Text != "" {
@@ -327,6 +338,10 @@ func parseMacroType(str string) domain.MacroType {
 		return domain.MacroTypePlayMusic
 	case "changeCharacterSpeed":
 		return domain.MacroTypeChangeCharacterSpeed
+	case "segmentDelay":
+		return domain.MacroTypeSegmentDelay
+	case "segmentTypingTime":
+		return domain.MacroTypeSegmentTypingTime
 	default:
 		panic("Invalid macro type: " + str)
 	}
