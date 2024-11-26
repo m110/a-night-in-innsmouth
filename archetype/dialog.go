@@ -482,7 +482,14 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		streamingTime = domainPassage.SegmentTypingTime
 	}
 
-	for i, segment := range domainPassage.AvailableSegments() {
+	segments := domainPassage.AvailableSegments()
+
+	if len(segments) == 0 {
+		scrollDialogLog(w, passageHeight)
+		createDialogOptions(w, domainPassage)
+	}
+
+	for i, segment := range segments {
 		segmentColor := assets.TextColor
 		switch segment.Type {
 		case domain.SegmentTypeHint:

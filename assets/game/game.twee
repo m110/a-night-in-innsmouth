@@ -146,7 +146,13 @@ You bought the ticket.
 
 
 :: Chair {"position":"7000,2975","size":"100,100"}
-...
+A cheap, old chair.
+
+[if hasItem Valise]
+> [[Leave your valise.]]
+[else]
+> [[Take your valise.]]
+[continue]
 
 > {exit} [[Leave.->Chair]]
 
@@ -280,6 +286,16 @@ Perhaps you should consider other options.
 > [[I'll think about it->Agent]]
 
 
+:: Leave your valise. {"position":"6900,3175","size":"100,100"}
+takeItem: Valise
+changeCharacterSpeed: 3
+--
+
+You picked up your valise.
+
+> {exit} [[Leave.->Leave your valise.]]
+
+
 :: Leave. {"position":"4175,2800","size":"100,100"}
 
 
@@ -315,6 +331,7 @@ Is it your imagination or are your eyes bigger?
 The glass is broken but the window is dark. You can't see well inside this house.
 
 > {level:attic,0} [[Jump down->Roof Window]]
+> {exit} [[Reconsider.->Roof Window]]
 
 
 :: TBA {"position":"200,3250","size":"100,100"}
@@ -333,6 +350,16 @@ addItem: hat
 You took the hat.
 
 > {exit} [[Leave.]]
+
+
+:: Take your valise. {"position":"7150,3175","size":"100,100"}
+addItem: Valise
+changeCharacterSpeed: -3
+--
+
+You left your valise by the chair.
+
+> {exit} [[Leave.->Take your valise.]]
 
 
 :: Test {"position":"700,3500","size":"100,100"}
