@@ -56,7 +56,7 @@ Only if not 200 money.
 		Title:  "This is title",
 		Header: "Actual title",
 		Tags:   []string{"tag1", "tag2"},
-		Segments: []domain.Segment{
+		Paragraphs: []domain.Paragraph{
 			{
 				Text: "First line.",
 			},
@@ -211,7 +211,7 @@ The sun is getting low.
 	expectedPassage := domain.RawPassage{
 		Title: "This is title",
 		Tags:  []string{"tag1", "tag2"},
-		Segments: []domain.Segment{
+		Paragraphs: []domain.Paragraph{
 			{
 				Text: "It's early morning. The town is still quiet",
 				Conditions: []domain.Condition{
@@ -302,7 +302,7 @@ You arrive at the train station.
 
 	expectedPassage := domain.RawPassage{
 		Title: "Train Station",
-		Segments: []domain.Segment{
+		Paragraphs: []domain.Paragraph{
 			{
 				Text: "You arrive at the train station.",
 			},

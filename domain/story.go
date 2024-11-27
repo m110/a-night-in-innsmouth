@@ -3,7 +3,6 @@ package domain
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/yohamta/donburi/features/math"
 
@@ -23,24 +22,26 @@ type RawPassage struct {
 	Title      string
 	Header     string
 	Tags       []string
-	Segments   []Segment
+	Paragraphs []Paragraph
 	Conditions []Condition
 	Macros     []Macro
 	Links      []RawLink
 }
 
-type Segment struct {
+type Paragraph struct {
 	Text       string
-	Type       SegmentType
+	Type       ParagraphType
 	Conditions []Condition
 }
 
-type SegmentType int
+type ParagraphType int
 
 const (
-	SegmentTypeStandard SegmentType = iota
-	SegmentTypeHint
-	SegmentTypeFear
+	ParagraphTypeStandard ParagraphType = iota
+	ParagraphTypeHint
+	ParagraphTypeFear
+	ParagraphTypeReceived
+	ParagraphTypeLost
 )
 
 type RawLink struct {
@@ -106,7 +107,7 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 			story:      story,
 			Title:      p.Title,
 			Header:     p.Header,
-			Segments:   p.Segments,
+			Paragraphs: p.Paragraphs,
 			Conditions: p.Conditions,
 			Macros:     p.Macros,
 			IsOneTime:  isOneTime,
@@ -290,22 +291,19 @@ type Passage struct {
 
 	Title      string
 	Header     string
-	Segments   []Segment
+	Paragraphs []Paragraph
 	Conditions []Condition
 	Macros     []Macro
 	AllLinks   []*Link
 
 	IsOneTime bool
 	Visited   bool
-
-	SegmentDelay      time.Duration
-	SegmentTypingTime time.Duration
 }
 
-func (p *Passage) AvailableSegments() []Segment {
-	var segments []Segment
+func (p *Passage) AvailableParagraphs() []Paragraph {
+	var paragraphs []Paragraph
 
-	for _, s := range p.Segments {
+	for _, s := range p.Paragraphs {
 		if len(s.Conditions) > 0 {
 			var skip bool
 			for _, c := range s.Conditions {
@@ -320,16 +318,16 @@ func (p *Passage) AvailableSegments() []Segment {
 			}
 		}
 
-		segments = append(segments, s)
+		paragraphs = append(paragraphs, s)
 	}
 
-	return segments
+	return paragraphs
 }
 
 func (p *Passage) Content() string {
 	var content string
 
-	for _, s := range p.AvailableSegments() {
+	for _, s := range p.AvailableParagraphs() {
 		content += s.Text
 	}
 
@@ -387,22 +385,6 @@ func (p *Passage) Visit() {
 			CharacterSpeedChangedEvent.Publish(p.story.world, CharacterSpeedChanged{
 				SpeedChange: float64(speed),
 			})
-		case MacroTypeSegmentDelay:
-			duration, err := time.ParseDuration(m.Value)
-			if err != nil {
-				// TODO This validation should be done at the parser level
-				panic(err)
-			}
-
-			p.SegmentDelay = duration
-		case MacroTypeSegmentTypingTime:
-			duration, err := time.ParseDuration(m.Value)
-			if err != nil {
-				// TODO This validation should be done at the parser level
-				panic(err)
-			}
-
-			p.SegmentTypingTime = duration
 		default:
 			panic("Unknown macro type: " + m.Type)
 		}
@@ -539,8 +521,6 @@ const (
 	MacroTypeTakeMoney            MacroType = "takeMoney"
 	MacroTypePlayMusic            MacroType = "playMusic"
 	MacroTypeChangeCharacterSpeed MacroType = "changeCharacterSpeed"
-	MacroTypeSegmentDelay         MacroType = "segmentDelay"
-	MacroTypeSegmentTypingTime    MacroType = "segmentTypingTime"
 )
 
 type Macro struct {

@@ -105,37 +105,37 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 	passage.Title = strings.TrimSpace(titleLine)
 	content = strings.TrimSpace(content)
 
-	var segments []domain.Segment
-	currentSegment := domain.Segment{}
+	var paragraphs []domain.Paragraph
+	currentParagraph := domain.Paragraph{}
 	var currentConditions []domain.Condition
 	conditionStarted := false
 
-	for _, segment := range strings.Split(content, "\n") {
-		if segment == "[hint]" {
+	for _, line := range strings.Split(content, "\n") {
+		if line == "[hint]" {
 			if !conditionStarted {
-				if currentSegment.Text != "" {
-					segments = append(segments, currentSegment)
+				if currentParagraph.Text != "" {
+					paragraphs = append(paragraphs, currentParagraph)
 				}
-				currentSegment = domain.Segment{}
+				currentParagraph = domain.Paragraph{}
 				conditionStarted = true
 			}
-			currentSegment.Type = domain.SegmentTypeHint
+			currentParagraph.Type = domain.ParagraphTypeHint
 			continue
 		}
 
-		if segment == "[fear]" {
+		if line == "[fear]" {
 			if !conditionStarted {
-				if currentSegment.Text != "" {
-					segments = append(segments, currentSegment)
+				if currentParagraph.Text != "" {
+					paragraphs = append(paragraphs, currentParagraph)
 				}
-				currentSegment = domain.Segment{}
+				currentParagraph = domain.Paragraph{}
 				conditionStarted = true
 			}
-			currentSegment.Type = domain.SegmentTypeFear
+			currentParagraph.Type = domain.ParagraphTypeFear
 			continue
 		}
 
-		if segment == "[else]" {
+		if line == "[else]" {
 			if !conditionStarted {
 				panic("Invalid [else] tag")
 			}
@@ -144,72 +144,72 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 				panic("Missing else condition")
 			}
 
-			if currentSegment.Text != "" {
-				segments = append(segments, currentSegment)
+			if currentParagraph.Text != "" {
+				paragraphs = append(paragraphs, currentParagraph)
 			}
-			currentSegment = domain.Segment{}
+			currentParagraph = domain.Paragraph{}
 			for _, cond := range currentConditions {
 				cond.Positive = !cond.Positive
-				currentSegment.Conditions = append(currentSegment.Conditions, cond)
+				currentParagraph.Conditions = append(currentParagraph.Conditions, cond)
 			}
 			currentConditions = nil
 			continue
 		}
 
-		if segment == "[continue]" {
+		if line == "[continue]" {
 			if !conditionStarted {
 				panic("Invalid [continue] tag")
 			}
 
-			if currentSegment.Text != "" {
-				segments = append(segments, currentSegment)
+			if currentParagraph.Text != "" {
+				paragraphs = append(paragraphs, currentParagraph)
 			}
-			currentSegment = domain.Segment{}
+			currentParagraph = domain.Paragraph{}
 			conditionStarted = false
 			currentConditions = nil
 			continue
 		}
 
-		if strings.HasPrefix(segment, "[if") || strings.HasPrefix(segment, "[unless") {
+		if strings.HasPrefix(line, "[if") || strings.HasPrefix(line, "[unless") {
 			if conditionStarted {
-				if currentSegment.Text != "" {
-					segments = append(segments, currentSegment)
+				if currentParagraph.Text != "" {
+					paragraphs = append(paragraphs, currentParagraph)
 				}
-				currentSegment = domain.Segment{}
+				currentParagraph = domain.Paragraph{}
 				conditionStarted = false
 				currentConditions = nil
 			}
 
-			if currentSegment.Text != "" {
-				segments = append(segments, currentSegment)
+			if currentParagraph.Text != "" {
+				paragraphs = append(paragraphs, currentParagraph)
 			}
-			currentSegment = domain.Segment{}
+			currentParagraph = domain.Paragraph{}
 			conditionStarted = true
 
-			currentConditions = parseConditions(segment)
+			currentConditions = parseConditions(line)
 
-			currentSegment.Conditions = append(currentSegment.Conditions, currentConditions...)
+			currentParagraph.Conditions = append(currentParagraph.Conditions, currentConditions...)
 			continue
 		}
 
-		currentSegment.Text += segment + "\n"
+		currentParagraph.Text += line + "\n"
 
-		// Double newline indicates end of segment
+		// Double newline indicates end of paragraph
 		if !conditionStarted &&
-			strings.HasSuffix(currentSegment.Text, "\n\n") &&
-			strings.TrimSpace(currentSegment.Text) != "" {
-			segments = append(segments, currentSegment)
-			currentSegment = domain.Segment{}
+			strings.HasSuffix(currentParagraph.Text, "\n\n") &&
+			strings.TrimSpace(currentParagraph.Text) != "" {
+			paragraphs = append(paragraphs, currentParagraph)
+			currentParagraph = domain.Paragraph{}
 			continue
 		}
 	}
 
-	currentSegment.Text = strings.TrimSpace(currentSegment.Text)
-	if currentSegment.Text != "" {
-		segments = append(segments, currentSegment)
+	currentParagraph.Text = strings.TrimSpace(currentParagraph.Text)
+	if currentParagraph.Text != "" {
+		paragraphs = append(paragraphs, currentParagraph)
 	}
 
-	passage.Segments, passage.Links = parseLinks(segments)
+	passage.Paragraphs, passage.Links = parseLinks(paragraphs)
 
 	return passage
 }
@@ -253,13 +253,13 @@ func parseConditions(str string) []domain.Condition {
 // Match both [[Target]] and [[Text->Target]] format links
 var linkRegex = regexp.MustCompile(`(?m)^(?:>\s+)?(\{.*?\} )?(\[.*?\] )*\[\[(.*?)\]\]`)
 
-func parseLinks(segments []domain.Segment) ([]domain.Segment, []domain.RawLink) {
-	finalSegments := []domain.Segment{}
+func parseLinks(paragraphs []domain.Paragraph) ([]domain.Paragraph, []domain.RawLink) {
+	finalParagraphs := []domain.Paragraph{}
 	links := []domain.RawLink{}
 
-	for _, segment := range segments {
-		matches := linkRegex.FindAllStringSubmatch(segment.Text, -1)
-		segment.Text = strings.TrimSpace(linkRegex.ReplaceAllString(segment.Text, ""))
+	for _, paragraph := range paragraphs {
+		matches := linkRegex.FindAllStringSubmatch(paragraph.Text, -1)
+		paragraph.Text = strings.TrimSpace(linkRegex.ReplaceAllString(paragraph.Text, ""))
 
 		for _, match := range matches {
 			if len(match) < 4 {
@@ -267,7 +267,7 @@ func parseLinks(segments []domain.Segment) ([]domain.Segment, []domain.RawLink) 
 			}
 
 			link := domain.RawLink{
-				Conditions: segment.Conditions,
+				Conditions: paragraph.Conditions,
 			}
 
 			tagPattern := regexp.MustCompile(`\{(.*?)\}`)
@@ -312,12 +312,12 @@ func parseLinks(segments []domain.Segment) ([]domain.Segment, []domain.RawLink) 
 			links = append(links, link)
 		}
 
-		if segment.Text != "" {
-			finalSegments = append(finalSegments, segment)
+		if paragraph.Text != "" {
+			finalParagraphs = append(finalParagraphs, paragraph)
 		}
 	}
 
-	return finalSegments, links
+	return finalParagraphs, links
 }
 
 func parseMacroType(str string) domain.MacroType {
@@ -336,10 +336,6 @@ func parseMacroType(str string) domain.MacroType {
 		return domain.MacroTypePlayMusic
 	case "changeCharacterSpeed":
 		return domain.MacroTypeChangeCharacterSpeed
-	case "segmentDelay":
-		return domain.MacroTypeSegmentDelay
-	case "segmentTypingTime":
-		return domain.MacroTypeSegmentTypingTime
 	default:
 		panic("Invalid macro type: " + str)
 	}

@@ -473,8 +473,6 @@ playMusic: waves
 
 :: credits {"position":"4575,350","size":"100,100"}
 setTitle: Innsmouth Game Name
-segmentDelay: 1s
-segmentTypingTime: 1s 
 --
 
 Made by

@@ -208,7 +208,7 @@ func NextPassage(w donburi.World) {
 		if passage.ActiveOption == opt.Index {
 			txt := engine.MustFindChildWithComponent(e, component.Text)
 			t := component.Text.Get(txt)
-			AddLogEventSegment(w, fmt.Sprintf("-> %s", t.Text), assets.TextDarkColor, 0)
+			AddLogEventParagraph(w, fmt.Sprintf("-> %s", t.Text), assets.TextDarkColor, 0)
 		}
 
 		component.Destroy(e)
@@ -286,7 +286,7 @@ func NextPassage(w donburi.World) {
 	ShowPassage(w, link.Target, nil)
 }
 
-func AddLogEventSegment(w donburi.World, text string, color color.Color, streamingDuration time.Duration) {
+func AddLogEventParagraph(w donburi.World, text string, color color.Color, streamingDuration time.Duration) {
 	game := component.MustFindGame(w)
 
 	log := engine.MustFindWithComponent(w, component.DialogLog)
@@ -309,7 +309,7 @@ func AddLogEventSegment(w donburi.World, text string, color color.Color, streami
 		txt.StreamingTimer = engine.NewTimer(streamingDuration)
 	}
 
-	segment := NewTagged(w, "Log Segment").
+	paragraph := NewTagged(w, "Log Paragraph").
 		WithParent(log).
 		WithLayerInherit().
 		WithPosition(math.Vec2{
@@ -320,12 +320,12 @@ func AddLogEventSegment(w donburi.World, text string, color color.Color, streami
 		With(component.Bounds).
 		Entry()
 
-	AdjustTextWidth(segment, passageTextWidth)
+	AdjustTextWidth(paragraph, passageTextWidth)
 
-	optionTextHeight := MeasureTextHeight(segment)
+	optionTextHeight := MeasureTextHeight(paragraph)
 	height := passageMarginTop + optionTextHeight
 
-	component.Bounds.SetValue(segment, component.BoundsData{
+	component.Bounds.SetValue(paragraph, component.BoundsData{
 		Width:  float64(passageTextWidth),
 		Height: optionTextHeight,
 	})
@@ -403,8 +403,8 @@ func hideDialog(w donburi.World, onHide func(e *donburi.Entry)) {
 }
 
 func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi.Entry) {
-	if len(domainPassage.Segments) == 0 && len(domainPassage.Links()) == 0 {
-		// In rare cases, a passage might have no segments or links, so we skip it
+	if len(domainPassage.Paragraphs) == 0 && len(domainPassage.Links()) == 0 {
+		// In rare cases, a passage might have no paragraphs or links, so we skip it
 		// (e.g. when a passage is only used for macros)
 		return
 	}
@@ -478,30 +478,31 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 	}
 
 	streamingTime := 500 * time.Millisecond
-	if domainPassage.SegmentTypingTime != 0 {
-		streamingTime = domainPassage.SegmentTypingTime
-	}
 
-	segments := domainPassage.AvailableSegments()
+	paragraphs := domainPassage.AvailableParagraphs()
 
-	if len(segments) == 0 {
+	if len(paragraphs) == 0 {
 		scrollDialogLog(w, passageHeight)
 		createDialogOptions(w, domainPassage)
 	}
 
-	for i, segment := range segments {
-		segmentColor := assets.TextColor
-		switch segment.Type {
-		case domain.SegmentTypeHint:
-			segmentColor = assets.TextOrangeColor
-		case domain.SegmentTypeFear:
-			segmentColor = assets.TextPurpleColor
+	for i, paragraph := range paragraphs {
+		paragraphColor := assets.TextColor
+		switch paragraph.Type {
+		case domain.ParagraphTypeHint:
+			paragraphColor = assets.TextOrangeColor
+		case domain.ParagraphTypeFear:
+			paragraphColor = assets.TextPurpleColor
+		case domain.ParagraphTypeReceived:
+			paragraphColor = assets.TextGreenColor
+		case domain.ParagraphTypeLost:
+			paragraphColor = assets.TextRedColor
 		}
 
-		txt := NewTagged(w, "Passage Segment Text").
+		txt := NewTagged(w, "Passage Paragraph Text").
 			WithText(component.TextData{
-				Text:           segment.Text,
-				Color:          segmentColor,
+				Text:           paragraph.Text,
+				Color:          paragraphColor,
 				Streaming:      i == 0,
 				Hidden:         i > 0,
 				StreamingTimer: engine.NewTimer(streamingTime),
@@ -517,36 +518,36 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 			Entry()
 
 		AdjustTextWidth(txt, passageTextWidth)
-		segmentTextHeight := MeasureTextHeight(txt)
+		paragraphTextHeight := MeasureTextHeight(txt)
 
-		if i != len(domainPassage.AvailableSegments())-1 {
-			segmentTextHeight += assets.NormalFont.Size
+		if i != len(domainPassage.AvailableParagraphs())-1 {
+			paragraphTextHeight += assets.NormalFont.Size
 		}
 
-		textY += segmentTextHeight
+		textY += paragraphTextHeight
 
 		component.Bounds.SetValue(txt, component.BoundsData{
 			Width:  float64(passageTextWidth),
-			Height: segmentTextHeight,
+			Height: paragraphTextHeight,
 		})
 
 		finished := false
 
 		component.Animator.Get(txt).SetAnimation("stream", &component.Animation{
 			Active: true,
-			Timer:  engine.NewTimer(streamingTime*time.Duration(i) + domainPassage.SegmentDelay*time.Duration(i)),
+			Timer:  engine.NewTimer(streamingTime * time.Duration(i)),
 			Update: func(e *donburi.Entry, a *component.Animation) {
 				if a.Timer.IsReady() {
 					if i == 0 {
-						scrollDialogLog(w, passageHeight+segmentTextHeight)
+						scrollDialogLog(w, passageHeight+paragraphTextHeight)
 					} else {
 						t := component.Text.Get(e)
 						t.Hidden = false
 						t.Streaming = true
-						scrollDialogLog(w, segmentTextHeight)
+						scrollDialogLog(w, paragraphTextHeight)
 					}
 
-					if i == len(domainPassage.AvailableSegments())-1 {
+					if i == len(domainPassage.AvailableParagraphs())-1 {
 						if finished {
 							createDialogOptions(w, domainPassage)
 							a.Stop(e)

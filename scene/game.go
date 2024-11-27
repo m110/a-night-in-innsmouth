@@ -142,19 +142,19 @@ func (g *Game) createWorld() donburi.World {
 	domain.ItemReceivedEvent.ProcessEvents(world)
 
 	domain.MoneyReceivedEvent.Subscribe(world, func(w donburi.World, event domain.MoneyReceived) {
-		archetype.AddLogEventSegment(w, fmt.Sprintf("[Received %v]", formatAsDollars(event.Amount)), assets.TextGreenColor, 0)
+		archetype.AddLogEventParagraph(w, fmt.Sprintf("[Received %v]", formatAsDollars(event.Amount)), assets.TextGreenColor, 0)
 	})
 
 	domain.MoneySpentEvent.Subscribe(world, func(w donburi.World, event domain.MoneySpent) {
-		archetype.AddLogEventSegment(w, fmt.Sprintf("[Spent %v]", formatAsDollars(event.Amount)), assets.TextRedColor, 0)
+		archetype.AddLogEventParagraph(w, fmt.Sprintf("[Spent %v]", formatAsDollars(event.Amount)), assets.TextRedColor, 0)
 	})
 
 	domain.ItemReceivedEvent.Subscribe(world, func(w donburi.World, event domain.ItemReceived) {
-		archetype.AddLogEventSegment(w, fmt.Sprintf("[Received %v]", event.Item.Name), assets.TextGreenColor, 0)
+		archetype.AddLogEventParagraph(w, fmt.Sprintf("[Received %v]", event.Item.Name), assets.TextGreenColor, 0)
 	})
 
 	domain.ItemLostEvent.Subscribe(world, func(w donburi.World, event domain.ItemLost) {
-		archetype.AddLogEventSegment(w, fmt.Sprintf("[Lost %v]", event.Item.Name), assets.TextRedColor, 0)
+		archetype.AddLogEventParagraph(w, fmt.Sprintf("[Lost %v]", event.Item.Name), assets.TextRedColor, 0)
 	})
 
 	return world

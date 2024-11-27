@@ -20,7 +20,7 @@ A single passage can contain:
 
 * conditions — the passage is not available until they're all met.
 * macros — actions that happen once the passage is visited.
-* text segments — text displayed to the player.
+* paragraphs — text displayed to the player.
 * links — dialog options the player chooses to continue.
 
 Conditions and macros come first and are separated by two minuses (`--`).
@@ -83,7 +83,7 @@ setFact: arrivedHome
 addMoney: 100
 ```
 
-#### Text Segments
+#### Paragraphs
 
 #### Links
 
@@ -104,7 +104,7 @@ Examples:
 > [[Kitchen<-Take the door on the right.]]
 ```
 
-Links use conditions in the same way as text segments.
+Links use conditions in the same way as paragraphs.
 
 Examples:
 
