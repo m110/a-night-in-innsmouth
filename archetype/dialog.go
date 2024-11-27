@@ -29,6 +29,8 @@ const (
 
 	defaultParagraphEffect         = domain.ParagraphEffectTyping
 	defaultParagraphEffectDuration = 500 * time.Millisecond
+
+	scrollLogDuration = 500 * time.Millisecond
 )
 
 func NewDialog(w donburi.World) *donburi.Entry {
@@ -145,11 +147,6 @@ func NewDialog(w donburi.World) *donburi.Entry {
 	logCamera.AddComponent(component.DialogLogCamera)
 	logCamera.AddComponent(component.Animator)
 
-	logAnim := component.Animator.Get(logCamera)
-	logAnim.SetAnimation("scroll", &component.Animation{
-		Timer: engine.NewTimer(500 * time.Millisecond),
-	})
-
 	logCam := component.Camera.Get(logCamera)
 	logCam.Mask = CreateScrollMask(w, dialogWidth, logCameraHeight)
 	logCam.ViewportBounds.Y = &engine.FloatRange{
@@ -212,11 +209,15 @@ func NextPassage(w donburi.World) {
 		if passage.ActiveOption == opt.Index {
 			txt := engine.MustFindChildWithComponent(e, component.Text)
 			t := component.Text.Get(txt)
+			effect := domain.ParagraphEffectNone
 			paragraph := domain.Paragraph{
 				Text: fmt.Sprintf("-> %s", t.Text),
 				Type: domain.ParagraphTypeRead,
 			}
-			AddLogParagraph(w, paragraph, ParagraphOptions{})
+			AddLogParagraph(w, paragraph, ParagraphOptions{
+				EffectOverride: &effect,
+				SkipScroll:     true,
+			})
 		}
 
 		component.Destroy(e)
@@ -294,16 +295,14 @@ func NextPassage(w donburi.World) {
 	ShowPassage(w, link.Target, nil)
 }
 
-func extendDialogLog(w donburi.World, height float64) {
+func extendDialogLog(w donburi.World, height float64) float64 {
 	dialogLog := engine.MustFindWithComponent(w, component.DialogLog)
 	stackedView := component.StackedView.Get(dialogLog)
 	stackedView.CurrentY += height
+	return stackedView.CurrentY
 }
 
-func scrollDialogLog(w donburi.World) {
-	dialogLog := engine.MustFindWithComponent(w, component.DialogLog)
-	stackedView := component.StackedView.Get(dialogLog)
-
+func scrollDialogLog(w donburi.World, y float64) {
 	cameraEntry := engine.MustFindWithComponent(w, component.DialogLogCamera)
 	cam := component.Camera.Get(cameraEntry)
 	camHeight := float64(cam.Viewport.Bounds().Dy())
@@ -313,7 +312,7 @@ func scrollDialogLog(w donburi.World) {
 	scrollMaskHeight := engine.IntPercent(game.Dimensions.DialogLogHeight, scrollMaskHeightPercent)
 
 	marginBottom := float64(scrollMaskHeight)
-	endY := stackedView.CurrentY - camHeight + marginBottom
+	endY := y - camHeight + marginBottom
 
 	if endY < 0 {
 		return
@@ -328,14 +327,16 @@ func scrollDialogLog(w donburi.World) {
 	scrollValue := endY - startY
 
 	anim := component.Animator.Get(cameraEntry)
-	scroll := anim.Animations["scroll"]
-	scroll.Update = func(e *donburi.Entry, a *component.Animation) {
-		cam.ViewportPosition.Y = startY + scrollValue*engine.EaseInOut(a.Timer.PercentDone())
-		if a.Timer.IsReady() {
-			a.Stop(cameraEntry)
-		}
-	}
-	scroll.Start(cameraEntry)
+	anim.SetAnimation("scroll", &component.Animation{
+		Active: true,
+		Timer:  engine.NewTimer(scrollLogDuration),
+		Update: func(e *donburi.Entry, a *component.Animation) {
+			cam.ViewportPosition.Y = startY + scrollValue*engine.EaseInOut(a.Timer.PercentDone())
+			if a.Timer.IsReady() {
+				a.Stop(e)
+			}
+		},
+	})
 }
 
 func showDialog(w donburi.World) {
@@ -425,8 +426,10 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 }
 
 type ParagraphOptions struct {
-	Delay  time.Duration
-	OnShow func()
+	Delay          time.Duration
+	OnShow         func()
+	SkipScroll     bool
+	EffectOverride *domain.ParagraphEffect
 }
 
 func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options ParagraphOptions) {
@@ -484,7 +487,7 @@ func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options Paragr
 
 	optionTextHeight := MeasureTextHeight(entry)
 	height := passageMarginTop + optionTextHeight
-	extendDialogLog(w, height)
+	logY := extendDialogLog(w, height)
 
 	switch paragraph.Align {
 	case domain.ParagraphAlignCenter:
@@ -519,10 +522,14 @@ func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options Paragr
 	if effect == domain.ParagraphEffectDefault {
 		effect = defaultParagraphEffect
 	}
+	if options.EffectOverride != nil {
+		effect = *options.EffectOverride
+	}
 
 	text := component.Text.Get(entry)
 
 	switch effect {
+	case domain.ParagraphEffectNone:
 	case domain.ParagraphEffectTyping:
 		text.Hidden = true
 	case domain.ParagraphEffectFadeIn:
@@ -557,7 +564,9 @@ func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options Paragr
 			case domain.ParagraphEffectDefault:
 			}
 
-			scrollDialogLog(w)
+			if !options.SkipScroll {
+				scrollDialogLog(w, logY)
+			}
 		},
 		OnStop: func(e *donburi.Entry) {
 			switch effect {
