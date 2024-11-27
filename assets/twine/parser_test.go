@@ -11,8 +11,11 @@ import (
 func TestParsePassage(t *testing.T) {
 	passage := `addItem: key
 takeMoney: 100
-setTitle: Actual title
 --
+[h1]
+Actual title
+[continue]
+
 First line.
 
 Second line.
@@ -53,10 +56,13 @@ Only if not 200 money.
 	parsed := parsePassage("This is title [tag1 tag2]", passage)
 
 	expectedPassage := domain.RawPassage{
-		Title:  "This is title",
-		Header: "Actual title",
-		Tags:   []string{"tag1", "tag2"},
+		Title: "This is title",
+		Tags:  []string{"tag1", "tag2"},
 		Paragraphs: []domain.Paragraph{
+			{
+				Text: "Actual title",
+				Type: domain.ParagraphTypeHeader,
+			},
 			{
 				Text: "First line.",
 			},
@@ -186,6 +192,10 @@ The sun is getting low.
 
 [continue]
 
+[h1,center]
+Center title
+[continue]
+
 > [[Go to the train station->Train Station]]
 > [[Talk with the Shopkeeper->Newburyport Shopkeeper]]
 
@@ -231,6 +241,11 @@ The sun is getting low.
 						Value:    "day2",
 					},
 				},
+			},
+			{
+				Text:  "Center title",
+				Type:  domain.ParagraphTypeHeader,
+				Align: domain.ParagraphAlignCenter,
 			},
 		},
 		Links: []domain.RawLink{

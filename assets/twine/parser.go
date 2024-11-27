@@ -4,6 +4,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/m110/secrets/domain"
 )
@@ -43,6 +44,17 @@ func ParseStory(content string) (domain.RawStory, error) {
 	}
 
 	return story, nil
+}
+
+type expression struct {
+	command   string
+	arguments []string
+}
+
+func (e expression) String() string {
+	exp := []string{e.command}
+	exp = append(exp, e.arguments...)
+	return strings.Join(exp, " ")
 }
 
 func parsePassage(titleLine, content string) domain.RawPassage {
@@ -116,96 +128,100 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 	}
 
 	for _, line := range strings.Split(content, "\n") {
-		if line == "[center]" {
-			startParagraphIfNotStarted()
-			currentParagraph.Align = domain.ParagraphAlignCenter
-			continue
-		}
+		expressions := parseExpressions(line)
 
-		if line == "[h1]" {
-			startParagraphIfNotStarted()
-			currentParagraph.Type = domain.ParagraphTypeHeader
-			continue
-		}
+		if len(expressions) == 0 {
+			currentParagraph.Text += line + "\n"
 
-		if line == "[hint]" {
-			startParagraphIfNotStarted()
-			currentParagraph.Type = domain.ParagraphTypeHint
-			continue
-		}
-
-		if line == "[fear]" {
-			startParagraphIfNotStarted()
-			currentParagraph.Type = domain.ParagraphTypeFear
-			continue
-		}
-
-		if line == "[else]" {
-			if !paragraphStarted {
-				panic("Invalid [else] tag")
-			}
-
-			if len(currentConditions) == 0 {
-				panic("Missing else condition")
-			}
-
-			if currentParagraph.Text != "" {
+			// Double newline indicates end of paragraph
+			if !paragraphStarted &&
+				strings.HasSuffix(currentParagraph.Text, "\n\n") &&
+				strings.TrimSpace(currentParagraph.Text) != "" {
 				paragraphs = append(paragraphs, currentParagraph)
+				currentParagraph = domain.Paragraph{}
 			}
-			currentParagraph = domain.Paragraph{}
-			for _, cond := range currentConditions {
-				cond.Positive = !cond.Positive
-				currentParagraph.Conditions = append(currentParagraph.Conditions, cond)
-			}
-			currentConditions = nil
+
 			continue
 		}
 
-		if line == "[continue]" {
-			if !paragraphStarted {
-				panic("Invalid [continue] tag")
-			}
+		for _, exp := range expressions {
+			switch exp.command {
+			case "center":
+				startParagraphIfNotStarted()
+				currentParagraph.Align = domain.ParagraphAlignCenter
+			case "h1":
+				startParagraphIfNotStarted()
+				currentParagraph.Type = domain.ParagraphTypeHeader
+			case "hint":
+				startParagraphIfNotStarted()
+				currentParagraph.Type = domain.ParagraphTypeHint
+			case "fear":
+				startParagraphIfNotStarted()
+				currentParagraph.Type = domain.ParagraphTypeFear
+			case "after":
+				startParagraphIfNotStarted()
 
-			if currentParagraph.Text != "" {
-				paragraphs = append(paragraphs, currentParagraph)
-			}
-			currentParagraph = domain.Paragraph{}
-			paragraphStarted = false
-			currentConditions = nil
-			continue
-		}
+				if len(exp.arguments) != 1 {
+					panic("expected one argument to after")
+				}
 
-		if strings.HasPrefix(line, "[if") || strings.HasPrefix(line, "[unless") {
-			if paragraphStarted {
+				duration, err := time.ParseDuration(exp.arguments[0])
+				if err != nil {
+					panic("error parsing duration: " + err.Error())
+				}
+
+				currentParagraph.Delay = duration
+			case "else":
+				if !paragraphStarted {
+					panic("Invalid [else] tag")
+				}
+
+				if len(currentConditions) == 0 {
+					panic("Missing else condition")
+				}
+
+				if currentParagraph.Text != "" {
+					paragraphs = append(paragraphs, currentParagraph)
+				}
+				currentParagraph = domain.Paragraph{}
+				for _, cond := range currentConditions {
+					cond.Positive = !cond.Positive
+					currentParagraph.Conditions = append(currentParagraph.Conditions, cond)
+				}
+				currentConditions = nil
+			case "continue":
+				if !paragraphStarted {
+					panic("Invalid [continue] tag")
+				}
+
 				if currentParagraph.Text != "" {
 					paragraphs = append(paragraphs, currentParagraph)
 				}
 				currentParagraph = domain.Paragraph{}
 				paragraphStarted = false
 				currentConditions = nil
+			case "if", "unless":
+				if paragraphStarted {
+					if currentParagraph.Text != "" {
+						paragraphs = append(paragraphs, currentParagraph)
+					}
+					currentParagraph = domain.Paragraph{}
+					paragraphStarted = false
+					currentConditions = nil
+				}
+
+				if currentParagraph.Text != "" {
+					paragraphs = append(paragraphs, currentParagraph)
+				}
+				currentParagraph = domain.Paragraph{}
+				paragraphStarted = true
+
+				currentConditions = parseConditions(exp.String())
+
+				currentParagraph.Conditions = append(currentParagraph.Conditions, currentConditions...)
+			default:
+				panic("unknown command: " + exp.command)
 			}
-
-			if currentParagraph.Text != "" {
-				paragraphs = append(paragraphs, currentParagraph)
-			}
-			currentParagraph = domain.Paragraph{}
-			paragraphStarted = true
-
-			currentConditions = parseConditions(line)
-
-			currentParagraph.Conditions = append(currentParagraph.Conditions, currentConditions...)
-			continue
-		}
-
-		currentParagraph.Text += line + "\n"
-
-		// Double newline indicates end of paragraph
-		if !paragraphStarted &&
-			strings.HasSuffix(currentParagraph.Text, "\n\n") &&
-			strings.TrimSpace(currentParagraph.Text) != "" {
-			paragraphs = append(paragraphs, currentParagraph)
-			currentParagraph = domain.Paragraph{}
-			continue
 		}
 	}
 
@@ -217,6 +233,30 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 	passage.Paragraphs, passage.Links = parseLinks(paragraphs)
 
 	return passage
+}
+
+func parseExpressions(line string) []expression {
+	var expressions []expression
+
+	if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
+		expressionLine := strings.Trim(line, "[]")
+		for _, e := range strings.Split(expressionLine, ",") {
+			e = strings.TrimSpace(e)
+			expParts := strings.SplitN(e, " ", 2)
+
+			exp := expression{
+				command: expParts[0],
+			}
+
+			if len(expParts) > 1 {
+				exp.arguments = expParts[1:]
+			}
+
+			expressions = append(expressions, exp)
+		}
+	}
+
+	return expressions
 }
 
 func parseConditions(str string) []domain.Condition {

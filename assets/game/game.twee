@@ -13,7 +13,7 @@ game
     "once": "orange",
     "Level": "green"
   },
-  "zoom": 0.3
+  "zoom": 0.6
 }
 
 
@@ -481,26 +481,47 @@ playMusic: waves
 
 
 :: credits {"position":"4575,350","size":"100,100"}
-[h1]
-[center]
+[h1,center]
 - Innsmouth Game Name -
 [continue]
 
+[center,after 2s]
 Made by
+[continue]
 
+[center,after 1s]
 Author 1
+[continue]
+[center]
 ROLE
+[continue]
 
+[center,after 1s]
 Author 2
+[continue]
+[center]
 ROLE
+[continue]
 
+[center,after 1s]
 Special thanks to
+[continue]
+[center]
 A
 B
 C
 D
+[continue]
 
-Based on The Shadow Over Inssmouth by Howard Phillips Lovecraft
+[center,after 1s]
+Based on
+[continue]
+[center]
+The Shadow Over Inssmouth
+[continue]
+[center]
+by Howard Phillips Lovecraft
+[continue]
 
 > {main-menu} [[Back to Main Menu->credits]]
 
@@ -564,9 +585,13 @@ playMusic: kitchen
 Newsburyport, Massachusetts
 [continue]
 
+[after 1s]
 July 15, 1927
+[continue]
 
+[after 1s]
 You arrive to Newsburyport on your way to Arkham, where your relative lives.
+[continue]
 
 You were told the best way there is taking the steam train.
 
