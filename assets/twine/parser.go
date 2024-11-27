@@ -83,11 +83,6 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 			macroType := strings.TrimSpace(parts[0])
 			macroValue := strings.TrimSpace(parts[1])
 
-			if macroType == "setTitle" {
-				passage.Header = macroValue
-				continue
-			}
-
 			if macroType == "if" || macroType == "unless" {
 				passage.Conditions = parseConditions(macroType + " " + macroValue)
 				continue
@@ -108,35 +103,45 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 	var paragraphs []domain.Paragraph
 	currentParagraph := domain.Paragraph{}
 	var currentConditions []domain.Condition
-	conditionStarted := false
+	paragraphStarted := false
+
+	startParagraphIfNotStarted := func() {
+		if !paragraphStarted {
+			if currentParagraph.Text != "" {
+				paragraphs = append(paragraphs, currentParagraph)
+			}
+			currentParagraph = domain.Paragraph{}
+			paragraphStarted = true
+		}
+	}
 
 	for _, line := range strings.Split(content, "\n") {
+		if line == "[center]" {
+			startParagraphIfNotStarted()
+			currentParagraph.Align = domain.ParagraphAlignCenter
+			continue
+		}
+
+		if line == "[h1]" {
+			startParagraphIfNotStarted()
+			currentParagraph.Type = domain.ParagraphTypeHeader
+			continue
+		}
+
 		if line == "[hint]" {
-			if !conditionStarted {
-				if currentParagraph.Text != "" {
-					paragraphs = append(paragraphs, currentParagraph)
-				}
-				currentParagraph = domain.Paragraph{}
-				conditionStarted = true
-			}
+			startParagraphIfNotStarted()
 			currentParagraph.Type = domain.ParagraphTypeHint
 			continue
 		}
 
 		if line == "[fear]" {
-			if !conditionStarted {
-				if currentParagraph.Text != "" {
-					paragraphs = append(paragraphs, currentParagraph)
-				}
-				currentParagraph = domain.Paragraph{}
-				conditionStarted = true
-			}
+			startParagraphIfNotStarted()
 			currentParagraph.Type = domain.ParagraphTypeFear
 			continue
 		}
 
 		if line == "[else]" {
-			if !conditionStarted {
+			if !paragraphStarted {
 				panic("Invalid [else] tag")
 			}
 
@@ -157,7 +162,7 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 		}
 
 		if line == "[continue]" {
-			if !conditionStarted {
+			if !paragraphStarted {
 				panic("Invalid [continue] tag")
 			}
 
@@ -165,18 +170,18 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 				paragraphs = append(paragraphs, currentParagraph)
 			}
 			currentParagraph = domain.Paragraph{}
-			conditionStarted = false
+			paragraphStarted = false
 			currentConditions = nil
 			continue
 		}
 
 		if strings.HasPrefix(line, "[if") || strings.HasPrefix(line, "[unless") {
-			if conditionStarted {
+			if paragraphStarted {
 				if currentParagraph.Text != "" {
 					paragraphs = append(paragraphs, currentParagraph)
 				}
 				currentParagraph = domain.Paragraph{}
-				conditionStarted = false
+				paragraphStarted = false
 				currentConditions = nil
 			}
 
@@ -184,7 +189,7 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 				paragraphs = append(paragraphs, currentParagraph)
 			}
 			currentParagraph = domain.Paragraph{}
-			conditionStarted = true
+			paragraphStarted = true
 
 			currentConditions = parseConditions(line)
 
@@ -195,7 +200,7 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 		currentParagraph.Text += line + "\n"
 
 		// Double newline indicates end of paragraph
-		if !conditionStarted &&
+		if !paragraphStarted &&
 			strings.HasSuffix(currentParagraph.Text, "\n\n") &&
 			strings.TrimSpace(currentParagraph.Text) != "" {
 			paragraphs = append(paragraphs, currentParagraph)

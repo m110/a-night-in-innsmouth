@@ -12,6 +12,8 @@ var (
 	DialogLog       = donburi.NewTag()
 	DialogLogCamera = donburi.NewTag()
 
+	RecentParagraph = donburi.NewTag()
+
 	// InnerCamera means the camera is placed inside another camera.
 	InnerCamera = donburi.NewTag()
 

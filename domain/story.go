@@ -3,6 +3,7 @@ package domain
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/yohamta/donburi/features/math"
 
@@ -20,7 +21,6 @@ type RawStory struct {
 
 type RawPassage struct {
 	Title      string
-	Header     string
 	Tags       []string
 	Paragraphs []Paragraph
 	Conditions []Condition
@@ -29,19 +29,41 @@ type RawPassage struct {
 }
 
 type Paragraph struct {
-	Text       string
-	Type       ParagraphType
-	Conditions []Condition
+	Text           string
+	Align          ParagraphAlign
+	Type           ParagraphType
+	Conditions     []Condition
+	Delay          time.Duration
+	Effect         ParagraphEffect
+	EffectDuration time.Duration
 }
+
+type ParagraphAlign int
+
+const (
+	ParagraphAlignLeft ParagraphAlign = iota
+	ParagraphAlignCenter
+)
 
 type ParagraphType int
 
 const (
 	ParagraphTypeStandard ParagraphType = iota
+	ParagraphTypeHeader
 	ParagraphTypeHint
 	ParagraphTypeFear
 	ParagraphTypeReceived
 	ParagraphTypeLost
+	ParagraphTypeRead
+)
+
+type ParagraphEffect int
+
+const (
+	ParagraphEffectDefault ParagraphEffect = iota
+	ParagraphEffectTyping
+	ParagraphEffectFadeIn
+	ParagraphEffectNone
 )
 
 type RawLink struct {
@@ -106,7 +128,6 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 		passage := &Passage{
 			story:      story,
 			Title:      p.Title,
-			Header:     p.Header,
 			Paragraphs: p.Paragraphs,
 			Conditions: p.Conditions,
 			Macros:     p.Macros,
@@ -290,7 +311,6 @@ type Passage struct {
 	story *Story
 
 	Title      string
-	Header     string
 	Paragraphs []Paragraph
 	Conditions []Condition
 	Macros     []Macro

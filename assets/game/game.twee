@@ -13,7 +13,7 @@ game
     "once": "orange",
     "Level": "green"
   },
-  "zoom": 0.6
+  "zoom": 0.3
 }
 
 
@@ -60,8 +60,10 @@ Zadok takes a sip.
 
 
 :: Arkham {"position":"3250,350","size":"200,200"}
-setTitle: Arkham
---
+[h1]
+Arkham
+[continue]
+
 You arrive safely at Arkham.
 
 You feel like you missed something, but you don't know what it is.
@@ -363,8 +365,10 @@ You left your valise by the chair.
 
 
 :: Test {"position":"700,3500","size":"100,100"}
-setTitle: Title of the Passage
---
+[h1]
+Title of the Passage
+[continue]
+
 This is a test.
 
 Lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet.
@@ -393,8 +397,10 @@ The train leaves soon.
 
 
 :: Train Station {"position":"450,750","size":"100,100"}
-setTitle: Train Station
---
+[h1]
+Train Station
+[continue]
+
 The station is empty except for the ticket agent.
 
 > [[Talk to the Agent->Agent]]
@@ -429,9 +435,12 @@ It's today's newspaper. Someone just threw it off, and here you are, trying to s
 
 
 :: Train to Arkham {"position":"2475,450","size":"100,100"}
-setTitle: Train to Arkham
 takeItem: Train Ticket to Arkham
 --
+[h1]
+Train to Arkham
+[continue]
+
 You take the train. The travel doesn't take long.
 
 > [[...->Arkham]]
@@ -472,8 +481,10 @@ playMusic: waves
 
 
 :: credits {"position":"4575,350","size":"100,100"}
-setTitle: Innsmouth Game Name
---
+[h1]
+[center]
+- Innsmouth Game Name -
+[continue]
 
 Made by
 
@@ -505,9 +516,12 @@ Based on The Shadow Over Inssmouth by Howard Phillips Lovecraft
 
 
 :: hotel-hall [Level] {"position":"5600,2575","size":"200,100"}
-setTitle: Hotel Hall
 if: fact hotelRoomBooked	
 --
+[h1]
+Hotel Hall
+[continue]
+
 The hall is full of dust. A strong fish scent is in the air, stronger under some doors.
 
 > [[Look for your room]]
@@ -545,8 +559,11 @@ You're at crossroads.
 
 :: train-station,0 [Level once] {"position":"550,325","size":"200,100"}
 playMusic: kitchen
-setTitle: Newsburyport, Massachusetts
 --
+[h1]
+Newsburyport, Massachusetts
+[continue]
+
 July 15, 1927
 
 You arrive to Newsburyport on your way to Arkham, where your relative lives.
@@ -557,8 +574,10 @@ You were told the best way there is taking the steam train.
 
 
 :: zadok [Level] {"position":"2250,4675","size":"200,100"}
-setTitle: Zadok Allen
---
+[h1]
+Zadok Allen
+[continue]
+
 [if hasMoney 1]
 [hint]
 You recognize this man as Zadok, the drunk who the boy told you about.

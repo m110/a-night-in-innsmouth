@@ -142,19 +142,35 @@ func (g *Game) createWorld() donburi.World {
 	domain.ItemReceivedEvent.ProcessEvents(world)
 
 	domain.MoneyReceivedEvent.Subscribe(world, func(w donburi.World, event domain.MoneyReceived) {
-		archetype.AddLogEventParagraph(w, fmt.Sprintf("[Received %v]", formatAsDollars(event.Amount)), assets.TextGreenColor, 0)
+		paragraph := domain.Paragraph{
+			Text: fmt.Sprintf("[Received %v]", formatAsDollars(event.Amount)),
+			Type: domain.ParagraphTypeReceived,
+		}
+		archetype.AddLogParagraph(w, paragraph, archetype.ParagraphOptions{})
 	})
 
 	domain.MoneySpentEvent.Subscribe(world, func(w donburi.World, event domain.MoneySpent) {
-		archetype.AddLogEventParagraph(w, fmt.Sprintf("[Spent %v]", formatAsDollars(event.Amount)), assets.TextRedColor, 0)
+		paragraph := domain.Paragraph{
+			Text: fmt.Sprintf("[Spent %v]", formatAsDollars(event.Amount)),
+			Type: domain.ParagraphTypeLost,
+		}
+		archetype.AddLogParagraph(w, paragraph, archetype.ParagraphOptions{})
 	})
 
 	domain.ItemReceivedEvent.Subscribe(world, func(w donburi.World, event domain.ItemReceived) {
-		archetype.AddLogEventParagraph(w, fmt.Sprintf("[Received %v]", event.Item.Name), assets.TextGreenColor, 0)
+		paragraph := domain.Paragraph{
+			Text: fmt.Sprintf("[Received %v]", event.Item.Name),
+			Type: domain.ParagraphTypeReceived,
+		}
+		archetype.AddLogParagraph(w, paragraph, archetype.ParagraphOptions{})
 	})
 
 	domain.ItemLostEvent.Subscribe(world, func(w donburi.World, event domain.ItemLost) {
-		archetype.AddLogEventParagraph(w, fmt.Sprintf("[Lost %v]", event.Item.Name), assets.TextRedColor, 0)
+		paragraph := domain.Paragraph{
+			Text: fmt.Sprintf("[Lost %v]", event.Item.Name),
+			Type: domain.ParagraphTypeLost,
+		}
+		archetype.AddLogParagraph(w, paragraph, archetype.ParagraphOptions{})
 	})
 
 	return world

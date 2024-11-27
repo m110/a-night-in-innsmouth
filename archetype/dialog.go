@@ -26,6 +26,9 @@ const (
 	scrollMaskHeightPercent = 0.05
 
 	openDialogDuration = 1000 * time.Millisecond
+
+	defaultParagraphEffect         = domain.ParagraphEffectTyping
+	defaultParagraphEffectDuration = 500 * time.Millisecond
 )
 
 func NewDialog(w donburi.World) *donburi.Entry {
@@ -193,8 +196,9 @@ func NextPassage(w donburi.World) {
 
 	activePassage.RemoveComponent(component.Passage)
 
-	for _, txt := range engine.FindChildrenWithComponent(activePassage, component.Text) {
-		component.Text.Get(txt).Color = assets.TextDarkColor
+	for entry := range donburi.NewQuery(filter.Contains(component.RecentParagraph)).Iter(w) {
+		component.Text.Get(entry).Color = assets.TextDarkColor
+		entry.RemoveComponent(component.RecentParagraph)
 	}
 
 	q := donburi.NewQuery(filter.And(filter.Contains(component.DialogOption)))
@@ -208,7 +212,11 @@ func NextPassage(w donburi.World) {
 		if passage.ActiveOption == opt.Index {
 			txt := engine.MustFindChildWithComponent(e, component.Text)
 			t := component.Text.Get(txt)
-			AddLogEventParagraph(w, fmt.Sprintf("-> %s", t.Text), assets.TextDarkColor, 0)
+			paragraph := domain.Paragraph{
+				Text: fmt.Sprintf("-> %s", t.Text),
+				Type: domain.ParagraphTypeRead,
+			}
+			AddLogParagraph(w, paragraph, ParagraphOptions{})
 		}
 
 		component.Destroy(e)
@@ -286,57 +294,15 @@ func NextPassage(w donburi.World) {
 	ShowPassage(w, link.Target, nil)
 }
 
-func AddLogEventParagraph(w donburi.World, text string, color color.Color, streamingDuration time.Duration) {
-	game := component.MustFindGame(w)
-
-	log := engine.MustFindWithComponent(w, component.DialogLog)
-	stackedView := component.StackedView.Get(log)
-
-	// TODO Deduplicate
-	passageMarginLeft := engine.IntPercent(game.Dimensions.DialogWidth, passageMarginLeftPercent)
-	passageTextWidth := game.Dimensions.DialogWidth - passageMarginLeft*2
-	logCamera := engine.MustFindWithComponent(w, component.DialogLogCamera)
-	logHeight := component.Camera.Get(logCamera).Viewport.Bounds().Dy()
-	passageMarginTop := float64(int(float64(logHeight) * passageMarginTopPercent))
-
-	txt := component.TextData{
-		Text:  text,
-		Color: color,
-	}
-
-	if streamingDuration > 0 {
-		txt.Streaming = true
-		txt.StreamingTimer = engine.NewTimer(streamingDuration)
-	}
-
-	paragraph := NewTagged(w, "Log Paragraph").
-		WithParent(log).
-		WithLayerInherit().
-		WithPosition(math.Vec2{
-			X: float64(passageMarginLeft),
-			Y: stackedView.CurrentY + passageMarginTop,
-		}).
-		WithText(txt).
-		With(component.Bounds).
-		Entry()
-
-	AdjustTextWidth(paragraph, passageTextWidth)
-
-	optionTextHeight := MeasureTextHeight(paragraph)
-	height := passageMarginTop + optionTextHeight
-
-	component.Bounds.SetValue(paragraph, component.BoundsData{
-		Width:  float64(passageTextWidth),
-		Height: optionTextHeight,
-	})
-
-	scrollDialogLog(w, height)
-}
-
-func scrollDialogLog(w donburi.World, height float64) {
+func extendDialogLog(w donburi.World, height float64) {
 	dialogLog := engine.MustFindWithComponent(w, component.DialogLog)
 	stackedView := component.StackedView.Get(dialogLog)
 	stackedView.CurrentY += height
+}
+
+func scrollDialogLog(w donburi.World) {
+	dialogLog := engine.MustFindWithComponent(w, component.DialogLog)
+	stackedView := component.StackedView.Get(dialogLog)
 
 	cameraEntry := engine.MustFindWithComponent(w, component.DialogLogCamera)
 	cam := component.Camera.Get(cameraEntry)
@@ -416,25 +382,10 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 	showDialog(w)
 
 	log := engine.MustFindWithComponent(w, component.DialogLog)
-	stackedView := component.StackedView.Get(log)
-
-	game := component.MustFindGame(w)
-	// TODO deduplicate
-	passageMarginLeft := engine.IntPercent(game.Dimensions.DialogWidth, passageMarginLeftPercent)
-	passageTextWidth := game.Dimensions.DialogWidth - passageMarginLeft*2
-
-	// TODO deduplicate
-	logCamera := engine.MustFindWithComponent(w, component.DialogLogCamera)
-	logHeight := component.Camera.Get(logCamera).Viewport.Bounds().Dy()
-	passageMarginTop := float64(int(float64(logHeight) * passageMarginTopPercent))
 
 	passage := NewTagged(w, "Passage").
 		WithParent(log).
 		WithLayer(domain.SpriteUILayerText).
-		WithPosition(math.Vec2{
-			X: float64(passageMarginLeft),
-			Y: stackedView.CurrentY,
-		}).
 		With(component.Passage).
 		Entry()
 
@@ -443,125 +394,180 @@ func ShowPassage(w donburi.World, domainPassage *domain.Passage, source *donburi
 		ActiveOption: 0,
 	})
 
-	textY := passageMarginTop
-	passageHeight := textY
-
-	if domainPassage.Header != "" {
-		header := NewTagged(w, "Header").
-			WithParent(passage).
-			WithLayerInherit().
-			WithText(component.TextData{
-				Text: fmt.Sprintf("- %v -", domainPassage.Header),
-				Size: component.TextSizeL,
-			}).
-			With(component.Bounds).
-			Entry()
-
-		headerWidth := MeasureTextWidth(header)
-
-		transform.GetTransform(header).LocalPosition = math.Vec2{
-			X: (float64(passageTextWidth) - headerWidth) / 2.0,
-			Y: passageMarginTop,
-		}
-
-		headerHeight := MeasureTextHeight(header)
-
-		component.Bounds.SetValue(header, component.BoundsData{
-			Width:  headerWidth,
-			Height: headerHeight,
-		})
-
-		headerHeight += passageMarginTop
-
-		textY += headerHeight
-		passageHeight += headerHeight
-	}
-
-	streamingTime := 500 * time.Millisecond
-
 	paragraphs := domainPassage.AvailableParagraphs()
 
 	if len(paragraphs) == 0 {
-		scrollDialogLog(w, passageHeight)
 		createDialogOptions(w, domainPassage)
 	}
 
+	delay := time.Duration(0)
 	for i, paragraph := range paragraphs {
-		paragraphColor := assets.TextColor
-		switch paragraph.Type {
-		case domain.ParagraphTypeHint:
-			paragraphColor = assets.TextOrangeColor
-		case domain.ParagraphTypeFear:
-			paragraphColor = assets.TextPurpleColor
-		case domain.ParagraphTypeReceived:
-			paragraphColor = assets.TextGreenColor
-		case domain.ParagraphTypeLost:
-			paragraphColor = assets.TextRedColor
+		opt := ParagraphOptions{
+			Delay: delay,
 		}
 
-		txt := NewTagged(w, "Passage Paragraph Text").
-			WithText(component.TextData{
-				Text:           paragraph.Text,
-				Color:          paragraphColor,
-				Streaming:      i == 0,
-				Hidden:         i > 0,
-				StreamingTimer: engine.NewTimer(streamingTime),
-			}).
-			WithParent(passage).
-			With(component.Animator).
-			WithLayerInherit().
-			WithPosition(math.Vec2{
-				X: 0,
-				Y: textY,
-			}).
-			With(component.Bounds).
-			Entry()
-
-		AdjustTextWidth(txt, passageTextWidth)
-		paragraphTextHeight := MeasureTextHeight(txt)
-
-		if i != len(domainPassage.AvailableParagraphs())-1 {
-			paragraphTextHeight += assets.NormalFont.Size
+		if i == len(paragraphs)-1 {
+			opt.OnShow = func() {
+				createDialogOptions(w, domainPassage)
+			}
 		}
 
-		textY += paragraphTextHeight
+		AddLogParagraph(w, paragraph, opt)
 
-		component.Bounds.SetValue(txt, component.BoundsData{
-			Width:  float64(passageTextWidth),
-			Height: paragraphTextHeight,
-		})
+		delay += paragraph.Delay
 
-		finished := false
-
-		component.Animator.Get(txt).SetAnimation("stream", &component.Animation{
-			Active: true,
-			Timer:  engine.NewTimer(streamingTime * time.Duration(i)),
-			Update: func(e *donburi.Entry, a *component.Animation) {
-				if a.Timer.IsReady() {
-					if i == 0 {
-						scrollDialogLog(w, passageHeight+paragraphTextHeight)
-					} else {
-						t := component.Text.Get(e)
-						t.Hidden = false
-						t.Streaming = true
-						scrollDialogLog(w, paragraphTextHeight)
-					}
-
-					if i == len(domainPassage.AvailableParagraphs())-1 {
-						if finished {
-							createDialogOptions(w, domainPassage)
-							a.Stop(e)
-						} else {
-							finished = true
-							a.Timer = engine.NewTimer(streamingTime)
-						}
-					} else {
-						a.Stop(e)
-					}
-				}
-			},
-		})
+		if paragraph.EffectDuration == 0 {
+			delay += defaultParagraphEffectDuration
+		} else {
+			delay += paragraph.EffectDuration
+		}
 	}
+}
+
+type ParagraphOptions struct {
+	Delay  time.Duration
+	OnShow func()
+}
+
+func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options ParagraphOptions) {
+	game := component.MustFindGame(w)
+
+	log := engine.MustFindWithComponent(w, component.DialogLog)
+	stackedView := component.StackedView.Get(log)
+
+	// TODO Deduplicate
+	passageMarginLeft := engine.IntPercent(game.Dimensions.DialogWidth, passageMarginLeftPercent)
+	passageTextWidth := game.Dimensions.DialogWidth - passageMarginLeft*2
+	logCamera := engine.MustFindWithComponent(w, component.DialogLogCamera)
+	logHeight := component.Camera.Get(logCamera).Viewport.Bounds().Dy()
+	passageMarginTop := float64(int(float64(logHeight) * passageMarginTopPercent))
+
+	textColor := assets.TextColor
+	textSize := component.TextSizeM
+	switch paragraph.Type {
+	case domain.ParagraphTypeHeader:
+		textSize = component.TextSizeL
+	case domain.ParagraphTypeHint:
+		textColor = assets.TextOrangeColor
+	case domain.ParagraphTypeFear:
+		textColor = assets.TextPurpleColor
+	case domain.ParagraphTypeReceived:
+		textColor = assets.TextGreenColor
+	case domain.ParagraphTypeLost:
+		textColor = assets.TextRedColor
+	case domain.ParagraphTypeRead:
+		textColor = assets.TextDarkColor
+	default:
+	}
+
+	txt := component.TextData{
+		Text:  paragraph.Text,
+		Color: textColor,
+		Size:  textSize,
+	}
+
+	entry := NewTagged(w, "Log Paragraph").
+		WithParent(log).
+		WithLayerInherit().
+		WithPosition(math.Vec2{
+			X: float64(passageMarginLeft),
+			Y: stackedView.CurrentY + passageMarginTop,
+		}).
+		WithText(txt).
+		With(component.Bounds).
+		With(component.Animator).
+		Entry()
+
+	if paragraph.Type == domain.ParagraphTypeStandard {
+		entry.AddComponent(component.RecentParagraph)
+	}
+
+	AdjustTextWidth(entry, passageTextWidth)
+
+	optionTextHeight := MeasureTextHeight(entry)
+	height := passageMarginTop + optionTextHeight
+	extendDialogLog(w, height)
+
+	switch paragraph.Align {
+	case domain.ParagraphAlignCenter:
+		transform.GetTransform(entry).LocalPosition.X += (float64(passageTextWidth) - MeasureTextWidth(entry)) / 2.0
+	}
+
+	component.Bounds.SetValue(entry, component.BoundsData{
+		Width:  float64(passageTextWidth),
+		Height: optionTextHeight,
+	})
+
+	animator := component.Animator.Get(entry)
+
+	delay := paragraph.Delay + options.Delay
+	animator.SetAnimation("delay", &component.Animation{
+		Active: true,
+		Timer:  engine.NewTimer(delay),
+		Update: func(e *donburi.Entry, a *component.Animation) {
+			if a.Timer.IsReady() {
+				animator.Animations["show"].Start(e)
+				a.Stop(e)
+			}
+		},
+	})
+
+	effectDuration := defaultParagraphEffectDuration
+	if paragraph.EffectDuration != 0 {
+		effectDuration = paragraph.EffectDuration
+	}
+
+	effect := paragraph.Effect
+	if effect == domain.ParagraphEffectDefault {
+		effect = defaultParagraphEffect
+	}
+
+	switch effect {
+	case domain.ParagraphEffectTyping:
+		t := component.Text.Get(entry)
+		t.Hidden = true
+	case domain.ParagraphEffectFadeIn:
+		panic("not implemented")
+	case domain.ParagraphEffectDefault:
+	default:
+		panic("unknown paragraph effect")
+	}
+
+	animator.SetAnimation("show", &component.Animation{
+		Active: false,
+		Timer:  engine.NewTimer(effectDuration),
+		Update: func(e *donburi.Entry, a *component.Animation) {
+			if a.Timer.IsReady() {
+				a.Stop(e)
+			}
+		},
+		OnStart: func(e *donburi.Entry) {
+			switch effect {
+			case domain.ParagraphEffectTyping:
+				t := component.Text.Get(e)
+				t.Hidden = false
+				t.Streaming = true
+				t.StreamingTimer = engine.NewTimer(effectDuration)
+			case domain.ParagraphEffectFadeIn:
+				panic("not implemented")
+			case domain.ParagraphEffectDefault:
+			}
+
+			scrollDialogLog(w)
+		},
+		OnStop: func(e *donburi.Entry) {
+			switch effect {
+			case domain.ParagraphEffectTyping:
+			case domain.ParagraphEffectFadeIn:
+				panic("not implemented")
+			case domain.ParagraphEffectDefault:
+			}
+
+			if options.OnShow != nil {
+				options.OnShow()
+			}
+		},
+	})
 }
 
 func zoomInOnPOI(w donburi.World, source *donburi.Entry) {
