@@ -2,6 +2,7 @@ package twine
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 
@@ -192,7 +193,7 @@ The sun is getting low.
 
 [continue]
 
-[h1,center]
+[h1,center,effect fade-in 2s]
 Center title
 [continue]
 
@@ -243,9 +244,11 @@ Center title
 				},
 			},
 			{
-				Text:  "Center title",
-				Type:  domain.ParagraphTypeHeader,
-				Align: domain.ParagraphAlignCenter,
+				Text:           "Center title",
+				Type:           domain.ParagraphTypeHeader,
+				Align:          domain.ParagraphAlignCenter,
+				Effect:         domain.ParagraphEffectFadeIn,
+				EffectDuration: time.Second * 2,
 			},
 		},
 		Links: []domain.RawLink{

@@ -171,6 +171,32 @@ func parsePassage(titleLine, content string) domain.RawPassage {
 				}
 
 				currentParagraph.Delay = duration
+			case "effect":
+				startParagraphIfNotStarted()
+
+				if len(exp.arguments) != 1 && len(exp.arguments) != 2 {
+					panic("expected one or two arguments to effect")
+				}
+
+				switch exp.arguments[0] {
+				case "fade-in":
+					currentParagraph.Effect = domain.ParagraphEffectFadeIn
+				case "typing":
+					currentParagraph.Effect = domain.ParagraphEffectTyping
+				case "default":
+					currentParagraph.Effect = domain.ParagraphEffectDefault
+				default:
+					panic("unknown effect: " + exp.arguments[0])
+				}
+
+				if len(exp.arguments) > 1 {
+					duration, err := time.ParseDuration(exp.arguments[1])
+					if err != nil {
+						panic(err)
+					}
+
+					currentParagraph.EffectDuration = duration
+				}
 			case "else":
 				if !paragraphStarted {
 					panic("Invalid [else] tag")
@@ -242,7 +268,7 @@ func parseExpressions(line string) []expression {
 		expressionLine := strings.Trim(line, "[]")
 		for _, e := range strings.Split(expressionLine, ",") {
 			e = strings.TrimSpace(e)
-			expParts := strings.SplitN(e, " ", 2)
+			expParts := strings.Split(e, " ")
 
 			exp := expression{
 				command: expParts[0],

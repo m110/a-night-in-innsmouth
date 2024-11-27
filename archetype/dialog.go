@@ -460,12 +460,6 @@ func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options Paragr
 	default:
 	}
 
-	txt := component.TextData{
-		Text:  paragraph.Text,
-		Color: textColor,
-		Size:  textSize,
-	}
-
 	entry := NewTagged(w, "Log Paragraph").
 		WithParent(log).
 		WithLayerInherit().
@@ -473,7 +467,11 @@ func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options Paragr
 			X: float64(passageMarginLeft),
 			Y: stackedView.CurrentY + passageMarginTop,
 		}).
-		WithText(txt).
+		WithText(component.TextData{
+			Text:  paragraph.Text,
+			Color: textColor,
+			Size:  textSize,
+		}).
 		With(component.Bounds).
 		With(component.Animator).
 		Entry()
@@ -522,12 +520,15 @@ func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options Paragr
 		effect = defaultParagraphEffect
 	}
 
+	text := component.Text.Get(entry)
+
 	switch effect {
 	case domain.ParagraphEffectTyping:
-		t := component.Text.Get(entry)
-		t.Hidden = true
+		text.Hidden = true
 	case domain.ParagraphEffectFadeIn:
-		panic("not implemented")
+		text.AlphaOverride = &component.AlphaOverride{
+			A: 0,
+		}
 	case domain.ParagraphEffectDefault:
 	default:
 		panic("unknown paragraph effect")
@@ -540,16 +541,19 @@ func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options Paragr
 			if a.Timer.IsReady() {
 				a.Stop(e)
 			}
+
+			switch effect {
+			case domain.ParagraphEffectFadeIn:
+				text.AlphaOverride.A = engine.EaseInOut(a.Timer.PercentDone())
+			}
 		},
 		OnStart: func(e *donburi.Entry) {
 			switch effect {
 			case domain.ParagraphEffectTyping:
-				t := component.Text.Get(e)
-				t.Hidden = false
-				t.Streaming = true
-				t.StreamingTimer = engine.NewTimer(effectDuration)
+				text.Hidden = false
+				text.Streaming = true
+				text.StreamingTimer = engine.NewTimer(effectDuration)
 			case domain.ParagraphEffectFadeIn:
-				panic("not implemented")
 			case domain.ParagraphEffectDefault:
 			}
 
@@ -559,7 +563,6 @@ func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options Paragr
 			switch effect {
 			case domain.ParagraphEffectTyping:
 			case domain.ParagraphEffectFadeIn:
-				panic("not implemented")
 			case domain.ParagraphEffectDefault:
 			}
 

@@ -352,6 +352,10 @@ func renderText(entry *donburi.Entry, camera *component.CameraData) {
 	op.GeoM.Translate(pos.X, pos.Y)
 	op.ColorScale.ScaleWithColor(col)
 
+	if t.AlphaOverride != nil {
+		op.ColorScale.ScaleAlpha(float32(t.AlphaOverride.A))
+	}
+
 	text.Draw(camera.Viewport, textToDraw, font, op)
 }
 

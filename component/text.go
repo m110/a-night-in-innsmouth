@@ -28,6 +28,8 @@ type TextData struct {
 
 	Streaming      bool
 	StreamingTimer *engine.Timer
+
+	AlphaOverride *AlphaOverride
 }
 
 var Text = donburi.NewComponentType[TextData]()

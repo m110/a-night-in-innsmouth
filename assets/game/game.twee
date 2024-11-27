@@ -369,9 +369,13 @@ You left your valise by the chair.
 Title of the Passage
 [continue]
 
+[effect typing 1s]
 This is a test.
+[continue]
 
+[effect fade-in 1s,after 1s]
 Lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet.
+[continue]
 
 [hint]
 This is what the boy in the grocery store has been talking about.
@@ -382,7 +386,9 @@ This is what the boy in the grocery store has been talking about.
 This seems like a bad idea. People disappear here.
 [continue]
 
-More normal text
+[effect default 3s]
+Are we clear?
+[continue]
 
 > [[Wait for the train and board it->Train to Arkham]]
 > {exit} [[Option 2]]
@@ -581,11 +587,11 @@ You're at crossroads.
 :: train-station,0 [Level once] {"position":"550,325","size":"200,100"}
 playMusic: kitchen
 --
-[h1]
+[h1,effect fade-in]
 Newsburyport, Massachusetts
 [continue]
 
-[after 1s]
+[after 1s,effect fade-in]
 July 15, 1927
 [continue]
 
