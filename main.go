@@ -4,11 +4,10 @@ import (
 	"flag"
 	"log"
 
-	"github.com/m110/secrets/engine"
-
-	"github.com/m110/secrets/game"
-
 	"github.com/hajimehoshi/ebiten/v2"
+
+	"github.com/m110/secrets/engine"
+	"github.com/m110/secrets/game"
 )
 
 func main() {
@@ -17,7 +16,7 @@ func main() {
 	_ = quickFlag
 
 	config := game.Config{
-		Quick: true,
+		// Quick: true,
 	}
 
 	ebiten.SetVsyncEnabled(true)

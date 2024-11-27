@@ -82,7 +82,7 @@ func (g *Game) switchToTitle() {
 }
 
 func (g *Game) switchToGame() {
-	g.scene = scene.NewGame(g.screenWidth, g.screenHeight, g.switchToGame)
+	g.scene = scene.NewGame(g.screenWidth, g.screenHeight, g.switchToTitle)
 }
 
 func (g *Game) Update() error {

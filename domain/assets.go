@@ -12,6 +12,8 @@ type Assets struct {
 	Character Character
 	Sounds    Sounds
 	Music     map[string][]byte
+
+	TitleBackground *ebiten.Image
 }
 
 type Sounds struct {

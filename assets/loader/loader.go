@@ -77,7 +77,14 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		return nil, err
 	}
 
-	progressChan <- "Validating assets"
+	titleBackground, err := fs.ReadFile(assetsFS, "game/backgrounds/title.jpg")
+	if err != nil {
+		return nil, err
+	}
+	titleBackgroundImg, err := newImageFromBytes(titleBackground)
+	if err != nil {
+		return nil, err
+	}
 
 	assets := &domain.Assets{
 		Story:  story,
@@ -86,10 +93,12 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 			Frames:   character,
 			Collider: *characterCollider,
 		},
-		Sounds: sounds,
-		Music:  music,
+		Sounds:          sounds,
+		Music:           music,
+		TitleBackground: titleBackgroundImg,
 	}
 
+	progressChan <- "Validating assets"
 	err = validateAssets(assets)
 	if err != nil {
 		return nil, err
