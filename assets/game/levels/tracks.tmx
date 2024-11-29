@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="5">
+ <tileset firstgid="1" source="../character/Character.tsx"/>
+ <tileset firstgid="2" source="../objects/Objects.tsx"/>
+ <imagelayer id="2" name="Background">
+  <image source="../backgrounds/tracks.jpg" width="7680" height="2160"/>
+ </imagelayer>
+ <objectgroup id="3" name="Objects">
+  <properties>
+   <property name="layer" type="int" value="130"/>
+  </properties>
+  <object id="1" name="Entrypoint 1" class="entrypoint" gid="1" x="104" y="1920" width="456.364" height="784"/>
+  <object id="2" name="Bush " class="object" gid="61" x="702" y="2117" width="1691" height="660"/>
+  <object id="3" name="Bush" class="object" gid="62" x="5083" y="2151" width="1327" height="637"/>
+  <object id="4" name="Exit" class="poi" x="7513" y="1399" width="127" height="657">
+   <properties>
+    <property name="edge" propertytype="edge" value="right"/>
+    <property name="level" value="bridge,0"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="6">
+ <tileset firstgid="1" source="../character/Character.tsx"/>
+ <tileset firstgid="2" source="../objects/Objects.tsx"/>
+ <imagelayer id="2" name="Background">
+  <image source="../backgrounds/bridge.jpg" width="7680" height="2160"/>
+ </imagelayer>
+ <objectgroup id="4" name="Background Objects">
+  <properties>
+   <property name="layer" type="int" value="111"/>
+  </properties>
+  <object id="4" name="sign" class="object" gid="60" x="6977" y="1772" width="454" height="738"/>
+ </objectgroup>
+ <objectgroup id="3" name="Objects">
+  <properties>
+   <property name="layer" type="int" value="130"/>
+  </properties>
+  <object id="2" name="Bridge" class="object" gid="59" x="1497" y="2013" width="4999" height="1879"/>
+  <object id="5" name="Entrypoint" class="entrypoint" gid="1" x="127" y="1906" width="400" height="687.17"/>
+ </objectgroup>
+</map>

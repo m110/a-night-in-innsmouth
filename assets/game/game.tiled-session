@@ -138,6 +138,14 @@
                 "y": 1425.7575757575758
             }
         },
+        "levels/bridge.tmx": {
+            "scale": 0.1649,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 536.6889023650698,
+                "y": 1682.838083687083
+            }
+        },
         "levels/bus-station.tmx": {
             "expandedObjectLayers": [
                 5,
@@ -252,11 +260,11 @@
                 4,
                 3
             ],
-            "scale": 0.2587,
-            "selectedLayer": 3,
+            "scale": 0.174,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 1180.9045226130654,
-                "y": 1818.708929261693
+                "x": 2353.4482758620693,
+                "y": 1669.5402298850574
             }
         },
         "levels/slums-2.tmx#Objects": {
@@ -268,6 +276,17 @@
             "viewCenter": {
                 "x": 1584.8952590959207,
                 "y": 984.0132304299887
+            }
+        },
+        "levels/tracks.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.104,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 6225.961538461537,
+                "y": 1399.0384615384614
             }
         },
         "levels/train-station.tmx": {
