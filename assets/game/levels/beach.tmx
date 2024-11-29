@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="11">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="14">
  <properties>
   <property name="outdoor" type="bool" value="true"/>
  </properties>
  <tileset firstgid="1" source="../objects/Objects.tsx"/>
- <tileset firstgid="62" source="../character/Character.tsx"/>
+ <tileset firstgid="66" source="../character/Character.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="../backgrounds/beach.jpg" width="3840" height="2160"/>
  </imagelayer>
@@ -12,9 +12,7 @@
   <properties>
    <property name="layer" type="int" value="130"/>
   </properties>
-  <object id="4" name="Breaker" class="object" gid="26" x="1157" y="2118" width="251" height="360"/>
-  <object id="5" name="Breaker" class="object" gid="26" x="1683" y="2142" width="251" height="360"/>
-  <object id="6" name="Entrypoint" class="entrypoint" gid="2147483710" x="3494" y="1928" width="283" height="486.173">
+  <object id="6" name="Entrypoint" class="entrypoint" gid="2147483714" x="3494" y="1928" width="283" height="486.173">
    <properties>
     <property name="flipY" type="bool" value="true"/>
    </properties>
@@ -26,15 +24,21 @@
     <property name="touchTrigger" type="bool" value="false"/>
    </properties>
   </object>
-  <object id="9" name="Zadok" class="poi" gid="30" x="2338" y="1637" width="160" height="78">
+  <object id="10" name="Trigger: Zadok" class="trigger" x="2323" y="1551" width="171" height="305">
+   <properties>
+    <property name="poi" type="object" value="11"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="POIs">
+  <object id="11" name="Zadok" class="poi" gid="30" x="2333" y="1638" width="160" height="78">
    <properties>
     <property name="level" value="zadok"/>
    </properties>
   </object>
-  <object id="10" name="Trigger: Zadok" class="trigger" x="2323" y="1551" width="171" height="305">
-   <properties>
-    <property name="poi" type="object" value="9"/>
-   </properties>
-  </object>
+ </objectgroup>
+ <objectgroup id="4" name="Foreground Objects">
+  <object id="12" name="Breaker" class="object" gid="26" x="1676" y="2141" width="251" height="360"/>
+  <object id="13" name="Breaker" class="object" gid="26" x="1157" y="2121" width="251" height="360"/>
  </objectgroup>
 </map>

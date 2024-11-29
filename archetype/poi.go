@@ -22,10 +22,15 @@ func NewPOI(
 ) *donburi.Entry {
 	w := parent.World
 
+	layer := domain.SpriteLayerObjects
+	if poi.Object.Layer != 0 {
+		layer = poi.Object.Layer
+	}
+
 	entry := NewTagged(w, "POI").
 		WithParent(parent).
 		WithPosition(poi.TriggerRect.Position()).
-		WithLayer(domain.SpriteLayerPOI).
+		WithLayer(layer).
 		WithBounds(poi.TriggerRect.Size()).
 		WithBoundsAsCollider(domain.CollisionLayerPOI).
 		With(component.Animator).

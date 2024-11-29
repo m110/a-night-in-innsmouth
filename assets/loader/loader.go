@@ -381,6 +381,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 						X: obj.X,
 						Y: obj.Y,
 					},
+					Layer: domain.LayerID(o.Properties.GetInt("layer")),
 				}
 
 				if obj.GID != 0 {
@@ -571,7 +572,6 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 func loadObject(image *ebiten.Image, objectGroup *tiled.ObjectGroup, obj *tiled.Object) domain.Object {
 	objImg := ebiten.NewImageFromImage(image)
 	bounds := objImg.Bounds()
-	// TODO Replace by separate layers
 	layer := objectGroup.Properties.GetInt("layer")
 
 	return domain.Object{

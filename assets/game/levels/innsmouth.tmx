@@ -1,26 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="7" nextobjectid="38">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="8" nextobjectid="47">
  <properties>
   <property name="outdoor" type="bool" value="true"/>
  </properties>
  <tileset firstgid="1" source="../objects/Objects.tsx"/>
- <tileset firstgid="54" source="../character/Character.tsx"/>
+ <tileset firstgid="66" source="../character/Character.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="../backgrounds/innsmouth.jpg" width="3840" height="2160"/>
  </imagelayer>
- <objectgroup id="3" name="Entrypoints">
-  <object id="28" name="Entrypoint 0" class="entrypoint" gid="54" x="424" y="1872" width="353" height="606.428"/>
-  <object id="31" name="Entrypoint 1" class="entrypoint" gid="2147483702" x="3093" y="1860" width="353" height="606.428">
+ <objectgroup id="7" name="Objects">
+  <object id="40" name="Trigger: Hotel" class="trigger" x="3268" y="1278" width="280" height="437">
+   <properties>
+    <property name="poi" type="object" value="6"/>
+   </properties>
+  </object>
+  <object id="41" name="Trigger: Doodle" class="trigger" x="2300" y="1543" width="200" height="264">
+   <properties>
+    <property name="poi" type="object" value="9"/>
+   </properties>
+  </object>
+  <object id="42" name="Trigger: Boy Cap" class="trigger" x="1547" y="1229" width="208" height="200">
+   <properties>
+    <property name="poi" type="object" value="37"/>
+   </properties>
+  </object>
+  <object id="43" name="Exit" class="poi" x="-424" y="1228" width="176" height="616">
+   <properties>
+    <property name="edge" propertytype="edge" value="left"/>
+    <property name="level" value="slums-1,1"/>
+    <property name="touchTrigger" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="44" name="Valise Reminder" class="poi" x="1270" y="1253" width="64" height="618">
+   <properties>
+    <property name="passage" value="Valise Reminder"/>
+    <property name="touchTrigger" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="45" name="Entrypoint 0" class="entrypoint" gid="66" x="413" y="1867" width="353" height="606.428"/>
+  <object id="46" name="Entrypoint 1" class="entrypoint" gid="2147483714" x="3082" y="1855" width="353" height="606.428">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="4" name="POI">
-  <properties>
-   <property name="layer" type="int" value="111"/>
-  </properties>
+ <objectgroup id="4" name="Background Objects">
   <object id="6" name="Hotel" class="poi" gid="3" x="3472" y="1512" width="89" height="92">
    <properties>
     <property name="level" value="hotel,0"/>
@@ -31,37 +56,9 @@
     <property name="passage" value="Board"/>
    </properties>
   </object>
-  <object id="13" name="Trigger: Hotel" class="trigger" x="3384" y="1352" width="176" height="208">
-   <properties>
-    <property name="poi" type="object" value="6"/>
-   </properties>
-  </object>
-  <object id="15" name="Trigger: Doodle" class="trigger" x="2312" y="1536" width="200" height="264">
-   <properties>
-    <property name="poi" type="object" value="9"/>
-   </properties>
-  </object>
-  <object id="16" name="Trigger: Boy Cap" class="trigger" x="1544" y="1256" width="208" height="200">
-   <properties>
-    <property name="poi" type="object" value="37"/>
-   </properties>
-  </object>
-  <object id="26" name="Exit" class="poi" x="104" y="1240" width="176" height="616">
-   <properties>
-    <property name="edge" propertytype="edge" value="left"/>
-    <property name="level" value="slums-1,1"/>
-    <property name="touchTrigger" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="32" name="Valise Reminder" class="poi" x="1266" y="1258" width="64" height="618">
-   <properties>
-    <property name="passage" value="Valise Reminder"/>
-    <property name="touchTrigger" type="bool" value="true"/>
-   </properties>
-  </object>
   <object id="35" name="Boy" class="object" gid="52" x="1533" y="1858" width="222" height="577"/>
  </objectgroup>
- <objectgroup id="6" name="POI Objects">
+ <objectgroup id="6" name="POIs">
   <properties>
    <property name="layer" type="int" value="112"/>
   </properties>
@@ -69,11 +66,10 @@
    <properties>
     <property name="level" value="grocery-npc"/>
     <property name="parentObject" type="object" value="35"/>
-    <property name="passage" value=""/>
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="5" name="Objects">
+ <objectgroup id="5" name="Foreground Objects">
   <properties>
    <property name="layer" type="int" value="130"/>
   </properties>

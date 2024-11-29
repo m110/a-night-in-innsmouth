@@ -1,33 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="15">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="7" nextobjectid="18">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="../backgrounds/bus.jpg" width="3840" height="2160"/>
  </imagelayer>
- <objectgroup id="4" name="POI">
-  <object id="1" name="Trigger: Sign" class="trigger" x="1984" y="832" width="136" height="112">
-   <properties>
-    <property name="poi" type="object" value="11"/>
-   </properties>
-  </object>
-  <object id="2" name="Trigger: Driver" class="trigger" x="2208" y="976" width="128" height="176">
-   <properties>
-    <property name="poi" type="object" value="10"/>
-   </properties>
-  </object>
-  <object id="10" name="Driver" class="poi" gid="35" x="2240" y="1128" width="45" height="57">
-   <properties>
-    <property name="passage" value="Bus Driver"/>
-   </properties>
-  </object>
-  <object id="11" name="Sign" class="poi" gid="34" x="2000" y="920" width="113" height="57" visible="0">
-   <properties>
-    <property name="passage" value="Bus"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup id="5" name="Entrypoints">
+ <objectgroup id="5" name="Objects">
   <object id="5" name="Exit" class="poi" x="-72" y="912" width="160" height="712">
    <properties>
     <property name="edge" propertytype="edge" value="left"/>
@@ -35,5 +13,27 @@
    </properties>
   </object>
   <object id="9" name="Entrypoint 0" class="entrypoint" gid="1" x="208" y="1560" width="405" height="695.76"/>
+  <object id="16" name="Trigger: Driver" class="trigger" x="2205" y="976" width="128" height="176">
+   <properties>
+    <property name="poi" type="object" value="10"/>
+   </properties>
+  </object>
+  <object id="17" name="Trigger: Sign" class="trigger" x="1979" y="833" width="136" height="112">
+   <properties>
+    <property name="poi" type="object" value="11"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="POIs">
+  <object id="10" name="Driver" class="poi" gid="35" x="2240" y="1128" width="45" height="57">
+   <properties>
+    <property name="passage" value="Bus Driver"/>
+   </properties>
+  </object>
+  <object id="11" name="Sign" class="poi" gid="34" x="2000" y="920" width="113" height="57">
+   <properties>
+    <property name="passage" value="Bus"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

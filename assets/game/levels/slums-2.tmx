@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="7" nextobjectid="20">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="7" nextobjectid="29">
  <properties>
   <property name="outdoor" type="bool" value="true"/>
  </properties>
@@ -122,28 +122,48 @@
  <imagelayer id="2" name="Background">
   <image source="../backgrounds/slums-2.jpg" width="3840" height="2160"/>
  </imagelayer>
- <objectgroup id="4" name="Background">
-  <object id="11" name="Cross" class="poi" gid="49" x="198" y="1845" width="265" height="716">
-   <properties>
-    <property name="level" value="slums-crossroads"/>
-    <property name="passage" value=""/>
-    <property name="touchTrigger" type="bool" value="true"/>
-   </properties>
-  </object>
+ <objectgroup id="4" name="Objects">
   <object id="12" name="Exit" class="poi" x="3812" y="1103" width="273" height="885">
    <properties>
     <property name="edge" propertytype="edge" value="right"/>
     <property name="level" value="slums-1,0"/>
    </properties>
   </object>
+  <object id="22" name="Trigger: Plank" class="trigger" x="2247" y="1097" width="218" height="600">
+   <properties>
+    <property name="poi" type="object" value="21"/>
+   </properties>
+  </object>
+  <object id="26" name="Entry Point 1" class="entrypoint" gid="2147483706" x="3227" y="1905" width="480.812" height="826">
+   <properties>
+    <property name="flipY" type="bool" value="true"/>
+    <property name="index" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="27" name="Entry Point 0" class="entrypoint" gid="58" x="410" y="1870" width="450" height="773.067">
+   <properties>
+    <property name="flipY" type="bool" value="false"/>
+    <property name="index" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="28" name="Entry Point 2" class="entrypoint" gid="58" x="1765" y="1879" width="450" height="773.067">
+   <properties>
+    <property name="flipY" type="bool" value="false"/>
+    <property name="index" type="int" value="2"/>
+   </properties>
+  </object>
  </objectgroup>
- <objectgroup id="5" name="Objects">
-  <properties>
-   <property name="layer" type="int" value="110"/>
-  </properties>
+ <objectgroup id="5" name="Background Objects">
   <object id="17" name="Bus" class="object" gid="115" x="373" y="1863" width="2601" height="998"/>
+  <object id="20" name="Cross" class="poi" gid="49" x="201" y="1843" width="265" height="716">
+   <properties>
+    <property name="level" value="slums-crossroads"/>
+    <property name="passage" value=""/>
+    <property name="touchTrigger" type="bool" value="true"/>
+   </properties>
+  </object>
  </objectgroup>
- <objectgroup id="6" name="Objects 2">
+ <objectgroup id="6" name="POIs">
   <properties>
    <property name="layer" type="int" value="112"/>
   </properties>
@@ -153,39 +173,16 @@
     <property name="passage" value="Bus in Innsmouth"/>
    </properties>
   </object>
+  <object id="21" name="Plank" class="poi" gid="50" x="2228" y="1341" width="233" height="157">
+   <properties>
+    <property name="passage" value="Vacant House 2"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="3" name="Objects Foreground">
   <properties>
    <property name="layer" type="int" value="130"/>
   </properties>
-  <object id="2" name="Plank" class="poi" gid="50" x="2236" y="1343" width="233" height="157">
-   <properties>
-    <property name="passage" value="Vacant House 2"/>
-   </properties>
-  </object>
   <object id="3" name="Barrels" class="object" gid="48" x="1996" y="2156" width="765" height="401"/>
-  <object id="4" name="Trigger: Plank" class="trigger" x="2255" y="1094" width="218" height="600">
-   <properties>
-    <property name="poi" type="object" value="2"/>
-   </properties>
-  </object>
-  <object id="6" name="Entry Point 1" class="entrypoint" gid="2147483706" x="3293" y="1936" width="480.812" height="826">
-   <properties>
-    <property name="flipY" type="bool" value="true"/>
-    <property name="index" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="10" name="Entry Point 0" class="entrypoint" gid="58" x="476" y="1901" width="450" height="773.067">
-   <properties>
-    <property name="flipY" type="bool" value="false"/>
-    <property name="index" type="int" value="0"/>
-   </properties>
-  </object>
-  <object id="19" name="Entry Point 2" class="entrypoint" gid="58" x="1831" y="1910" width="450" height="773.067">
-   <properties>
-    <property name="flipY" type="bool" value="false"/>
-    <property name="index" type="int" value="2"/>
-   </properties>
-  </object>
  </objectgroup>
 </map>

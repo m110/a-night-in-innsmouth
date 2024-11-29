@@ -1,41 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="14">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="21">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="../backgrounds/attic.jpg" width="3840" height="2160"/>
  </imagelayer>
- <objectgroup id="3" name="Objects">
-  <properties>
-   <property name="layer" type="int" value="130"/>
-  </properties>
-  <object id="1" name="Entrypoint" class="entrypoint" gid="1" x="220" y="1714" width="500.604" height="860"/>
-  <object id="3" name="Furniture" class="object" gid="52" x="-1" y="2160" width="1801" height="741"/>
-  <object id="6" name="Chest Trigger" class="trigger" x="1152" y="1244" width="500" height="244">
-   <properties>
-    <property name="poi" type="object" value="10"/>
-   </properties>
-  </object>
-  <object id="7" name="Trigger: Mirror" class="trigger" x="3199" y="834" width="247" height="699">
-   <properties>
-    <property name="poi" type="object" value="13"/>
-   </properties>
-  </object>
-  <object id="8" name="Exit" class="poi" x="1854" y="1686" width="937" height="265">
+ <objectgroup id="5" name="Objects">
+  <object id="16" name="Limits" class="limits" x="162" y="422" width="2421" height="1557"/>
+  <object id="17" name="Exit" class="poi" x="1847" y="1688" width="937" height="265">
    <properties>
     <property name="level" value="slums-1,2"/>
    </properties>
   </object>
-  <object id="9" name="Limits" class="limits" x="162" y="420" width="2421" height="1557"/>
-  <object id="10" name="Attic Chest" class="poi" gid="42" x="1273" y="1438" width="71" height="39">
+  <object id="18" name="Trigger: Mirror" class="trigger" x="3194" y="831" width="247" height="699">
    <properties>
-    <property name="passage" value="Attic Chest"/>
+    <property name="poi" type="object" value="14"/>
    </properties>
   </object>
-  <object id="13" name="Mirror" class="poi" gid="42" x="3277" y="881" width="91.0256" height="50">
+  <object id="19" name="Chest Trigger" class="trigger" x="1155" y="1243" width="500" height="244">
+   <properties>
+    <property name="poi" type="object" value="15"/>
+   </properties>
+  </object>
+  <object id="20" name="Entrypoint" class="entrypoint" gid="1" x="1155" y="935" width="500.604" height="860"/>
+ </objectgroup>
+ <objectgroup id="4" name="POIs">
+  <object id="14" name="Mirror" class="poi" gid="42" x="3272" y="879" width="91.0256" height="50">
    <properties>
     <property name="passage" value="Attic Mirror"/>
    </properties>
   </object>
+  <object id="15" name="Attic Chest" class="poi" gid="42" x="1271" y="1438" width="71" height="39">
+   <properties>
+    <property name="passage" value="Attic Chest"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Foreground Objects">
+  <properties>
+   <property name="layer" type="int" value="130"/>
+  </properties>
+  <object id="3" name="Furniture" class="object" gid="52" x="-1" y="2160" width="1801" height="741"/>
  </objectgroup>
 </map>

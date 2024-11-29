@@ -103,6 +103,12 @@ All done.
 > {exit} [[Leave.->Barricade the door]]
 
 
+:: Bed {"position":"8650,3000","size":"100,100"}
+
+
+> {exit} [[Leave.->Bed]]
+
+
 :: Blocked Water Street {"position":"3100,3975","size":"100,100"}
 A group of people stays in your way.
 You're probably not welcome here.
@@ -235,7 +241,7 @@ It's a good metaphor for this entire street.
 > {exit} [[Move away.->Dead Fish]]
 
 
-:: Drawer {"position":"8400,3000","size":"100,100"}
+:: Drawer {"position":"8450,3000","size":"100,100"}
 if: fact hotelRoomBarricaded
 --
 

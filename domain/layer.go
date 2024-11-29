@@ -4,7 +4,7 @@ type LayerID int
 
 const (
 	SpriteLayerBackground LayerID = 100 + iota*10
-	SpriteLayerPOI
+	SpriteLayerObjects
 	SpriteLayerCharacter
 	SpriteLayerForeground
 	SpriteLayerIndicator
