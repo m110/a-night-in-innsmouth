@@ -1,38 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="27">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="43">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
- <tileset firstgid="55" source=":/automap-tiles.tsx"/>
+ <tileset firstgid="67" source=":/automap-tiles.tsx"/>
  <imagelayer id="2" name="Background">
-  <image source="../backgrounds/hotel-room.jpg" width="3072" height="1728"/>
+  <image source="../backgrounds/hotel-room.jpg" width="3840" height="2160"/>
  </imagelayer>
+ <objectgroup id="4" name="Background Objects">
+  <properties>
+   <property name="layer" type="int" value="111"/>
+  </properties>
+  <object id="27" name="Curtains" class="object" gid="63" x="515" y="1688" width="1043" height="1181"/>
+  <object id="28" name="Curtains Holder" class="poi" x="590" y="524" width="830" height="96">
+   <properties>
+    <property name="parentObject" type="object" value="27"/>
+    <property name="passage" value="Curtains"/>
+   </properties>
+  </object>
+  <object id="30" name="Dresser" class="object" gid="65" x="1532" y="1648" width="705" height="571"/>
+  <object id="31" name="Broken Dresser" class="object" gid="66" x="1515" y="1649" width="755" height="563"/>
+ </objectgroup>
+ <objectgroup id="5" name="Objects 2">
+  <properties>
+   <property name="layer" type="int" value="112"/>
+  </properties>
+  <object id="34" name="Drawer" class="object" gid="64" x="2485" y="1245" width="555" height="241"/>
+  <object id="35" name="Room Door" class="poi" x="2599" y="613" width="298" height="790">
+   <properties>
+    <property name="passage" value="Room Door"/>
+   </properties>
+  </object>
+  <object id="37" name="Broken Dresser POI" class="poi" gid="4" x="1900" y="1291" width="65.8043" height="68.0225">
+   <properties>
+    <property name="parentObject" type="object" value="31"/>
+    <property name="passage" value="Broken Dresser"/>
+   </properties>
+  </object>
+  <object id="38" name="Dresser POI" class="poi" gid="4" x="1900" y="1291" width="65.8043" height="68.0225">
+   <properties>
+    <property name="parentObject" type="object" value="30"/>
+    <property name="passage" value="Dresser"/>
+   </properties>
+  </object>
+  <object id="39" name="Drawer POI" class="poi" x="2562" y="1050" width="439" height="158">
+   <properties>
+    <property name="parentObject" type="object" value="34"/>
+    <property name="passage" value="Drawer"/>
+   </properties>
+  </object>
+  <object id="41" name="Door Trigger" class="trigger" x="2583" y="658" width="313" height="783">
+   <properties>
+    <property name="poi" type="object" value="7"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup id="3" name="Objects">
   <properties>
    <property name="layer" type="int" value="130"/>
   </properties>
-  <object id="5" name="Entrypoint 0" class="entrypoint" gid="2147483649" x="1752" y="1368" width="427.259" height="734">
+  <object id="5" name="Entrypoint 0" class="entrypoint" gid="2147483649" x="2079.26" y="1688.69" width="500.955" height="860.605">
    <properties>
     <property name="flipY" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="7" name="Door" class="poi" gid="7" x="2096" y="936" width="55" height="86">
+  <object id="7" name="Door" class="poi" gid="7" x="2626" y="1179" width="64.4867" height="100.834">
    <properties>
     <property name="level" value="hotel,1"/>
    </properties>
   </object>
-  <object id="8" name="Chair" class="poi" gid="6" x="240" y="1168" width="160" height="236.404">
+  <object id="8" name="Chair" class="poi" gid="6" x="306.458" y="1454.19" width="187.598" height="277.18">
    <properties>
     <property name="passage" value="Chair"/>
    </properties>
   </object>
-  <object id="10" name="Limits" class="limits" x="104" y="448" width="2208" height="944"/>
-  <object id="22" name="Bed" class="object" gid="25" x="1520" y="1616" width="1448" height="907.016"/>
-  <object id="24" name="Trigger: Rooftops exit" class="trigger" x="650" y="794" width="202" height="214">
+  <object id="10" name="Limits" class="limits" x="147" y="610" width="2742" height="1106.83" visible="0"/>
+  <object id="22" name="Bed" class="object" gid="25" x="1977" y="2028" width="1697.76" height="1063.46"/>
+  <object id="24" name="Trigger: Rooftops exit" class="trigger" x="787.177" y="1015.68" width="236.842" height="250.912">
    <properties>
     <property name="poi" type="object" value="25"/>
    </properties>
   </object>
-  <object id="25" name="Rooftops Exit" class="poi" gid="36" x="652" y="981" width="212.533" height="165.61">
+  <object id="25" name="Rooftops Exit" class="poi" gid="36" x="789.522" y="1234.94" width="249.192" height="194.175">
    <properties>
     <property name="level" value="rooftops,0"/>
    </properties>

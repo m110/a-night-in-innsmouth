@@ -208,9 +208,9 @@ func HorizontalCenterPosition(entry *donburi.Entry) float64 {
 	return pos.X + bounds.Width/2
 }
 
-func SelectPOI(entry *donburi.Entry) {
+func SelectPOI(entry *donburi.Entry) bool {
 	if !CanInteractWithPOI(entry) {
-		return
+		return false
 	}
 
 	poi := component.POI.Get(entry)
@@ -225,6 +225,8 @@ func SelectPOI(entry *donburi.Entry) {
 	} else if poi.POI.Level != nil {
 		ChangeLevel(entry.World, *poi.POI.Level)
 	}
+
+	return true
 }
 
 func ActivatePOI(entry *donburi.Entry) {

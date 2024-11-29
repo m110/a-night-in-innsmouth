@@ -37,6 +37,7 @@
             }
         },
         "character/Character.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 0.1877,
             "scaleInEditor": 0.5
         },
@@ -120,11 +121,11 @@
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 0.2031,
+            "scale": 0.1516,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2493.845396356475,
-                "y": 1518.956179222058
+                "x": 2483.5092348284957,
+                "y": 1329.1556728232185
             }
         },
         "levels/beach.tmx": {
@@ -134,16 +135,19 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2562.121212121212,
-                "y": 1425.7575757575758
+                "x": 3383.333333333333,
+                "y": 1477.2727272727273
             }
         },
         "levels/bridge.tmx": {
-            "scale": 0.1649,
-            "selectedLayer": 1,
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.0972,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 536.6889023650698,
-                "y": 1682.838083687083
+                "x": 1712.9629629629628,
+                "y": 1877.5720164609056
             }
         },
         "levels/bus-station.tmx": {
@@ -189,7 +193,7 @@
             "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1197,
+                "x": 1025,
                 "y": 549
             }
         },
@@ -225,8 +229,8 @@
             "scale": 0.2255,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1776.0532150776055,
-                "y": 1882.4833702882484
+                "x": 1394.6784922394677,
+                "y": 1878.0487804878048
             }
         },
         "levels/objects/Objects.tsx": {
@@ -239,8 +243,8 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1628.7878787878785,
-                "y": 1389.3939393939395
+                "x": 1368.181818181818,
+                "y": 1386.3636363636365
             }
         },
         "levels/slums-1.tmx": {

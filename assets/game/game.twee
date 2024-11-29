@@ -13,11 +13,11 @@ game
     "once": "orange",
     "Level": "green"
   },
-  "zoom": 0.3
+  "zoom": 0.6
 }
 
 
-:: "Here, have a sip." - hand him the whisky bottle {"position":"2700,4750","size":"100,100"}
+:: "Here, have a sip." - hand him the whisky bottle {"position":"2650,4675","size":"100,100"}
 takeItem: Quart of Whisky
 --
 
@@ -93,6 +93,23 @@ This... Looks odd.
 > {exit} [[Look away.->Barnacles]]
 
 
+:: Barricade the door {"position":"8225,3150","size":"100,100"}
+takeItem: Drawer Plank
+setFact: hotelRoomBarricaded
+--
+
+All done.
+
+> {exit} [[Leave.->Barricade the door]]
+
+
+:: Blocked Water Street {"position":"3100,3975","size":"100,100"}
+A group of people stays in your way.
+You're probably not welcome here.
+
+> {back} [[Back to crossroads->slums-crossroads]]
+
+
 :: Board {"position":"2775,2400","size":"100,100"}
 "Campbell's Tomato Soup - 10 cents"
 
@@ -101,6 +118,14 @@ This... Looks odd.
 
 :: Board the Bus {"position":"2300,1350","size":"100,100"}
 
+
+
+:: Broken Dresser {"position":"8025,3000","size":"100,100"}
+if: fact brokeDrawer
+--
+You messed it up pretty bad.
+
+> {exit} [[Leave.->Broken Dresser]]
 
 
 :: Bus {"position":"1850,1225","size":"100,100"}
@@ -198,12 +223,34 @@ You can hear disgusting voices coming from there.
 > {exit} [[Leave.->Church Tower]]
 
 
+:: Curtains {"position":"7600,3000","size":"100,100"}
+> {exit} [[Leave.->Curtains]]
+
+
 :: Dead Fish {"position":"4425,4025","size":"100,100"}
 A fish carcass rots on the ground. The smell makes your eyes watery.
 
 It's a good metaphor for this entire street.
 
 > {exit} [[Move away.->Dead Fish]]
+
+
+:: Drawer {"position":"8400,3000","size":"100,100"}
+if: fact hotelRoomBarricaded
+--
+
+Looks pretty solid.
+
+> {exit} [[Leave.->Drawer]]
+
+
+:: Dresser {"position":"7800,3000","size":"100,100"}
+unless: fact brokeDrawer
+--
+The drawer could be useful.
+
+> [[Take the drawer plank.]]
+> {exit} [[Leave.->Dresser]]
 
 
 :: Enter the room {"position":"5550,2950","size":"100,100"}
@@ -338,6 +385,16 @@ The glass is broken but the window is dark. You can't see well inside this house
 > {exit} [[Reconsider.->Roof Window]]
 
 
+:: Room Door {"position":"8225,3000","size":"100,100"}
+if: fact brokeDrawer && hasItem Drawer Plank
+--
+
+You can barricade the door now.
+
+> [[Barricade the door]]
+> {exit} [[Leave.->Room Door]]
+
+
 :: Room Keys {"position":"5350,2750","size":"100,100"}
 if: !hasItem Room Keys && fact hotelRoomBooked
 --
@@ -354,7 +411,7 @@ The number keychain reads: 428.
 > {exit} [[...]]
 
 
-:: Take a look {"position":"3150,4850","size":"100,100"}
+:: Take a look {"position":"3125,4675","size":"100,100"}
 
 
 
@@ -364,6 +421,14 @@ addItem: Hat
 You took the hat.
 
 > {exit} [[Leave.]]
+
+
+:: Take the drawer plank. {"position":"7800,3175","size":"100,100"}
+addItem: Drawer Plank
+setFact: brokeDrawer
+--
+
+> {exit} [[Leave.->Take the drawer plank.]]
 
 
 :: Take the keys {"position":"5325,2925","size":"100,100"}
@@ -513,13 +578,13 @@ If you want to explore the town, better check in that valise. You can't move fre
 > {exit} [[Continue.->Valise Reminder]]
 
 
-:: Wait for Zadok {"position":"2925,4825","size":"100,100"}
+:: Wait for Zadok {"position":"2925,4675","size":"100,100"}
 "Look at the ocean..."
 
 > {level:zadok-freaked-out} [[Take a look]]
 
 
-:: What...? {"position":"2225,5450","size":"100,100"}
+:: What...? {"position":"2350,5300","size":"100,100"}
 
 
 
@@ -587,6 +652,11 @@ unless: fact night
 > {exit} [[I'll see you later.->grocery-npc]]	
 
 
+:: hotel [Level] {"position":"5375,2350","size":"200,100"}
+unless: fact hotelRoomBarricaded
+--
+
+
 :: hotel-hall [Level] {"position":"5600,2575","size":"200,100"}
 if: hasItem Room Keys	
 --
@@ -605,6 +675,8 @@ playMusic:
 
 
 :: rooftops [Level] {"position":"7500,2375","size":"200,100"}
+setFact: escapedFromHotel
+--
 You can see the town down below.
 
 Most houses are dark except for the weird churches.
@@ -628,7 +700,12 @@ You're at crossroads.
 
 > {level:beach,0} [[Beach->slums-crossroads]]
 > {level:slums-2,0} [[Main Street->slums-crossroads]]
+
+[if fact escapedFromHotel]
 > {level:tracks,0} [[Water Street->slums-crossroads]]
+[else]
+> [[Water Street->Blocked Water Street]]
+[continue]
 
 
 :: train-station,0 [Level once] {"position":"550,325","size":"200,100"}
@@ -652,6 +729,8 @@ You were told the best way there is taking the steam train.
 
 
 :: zadok [Level] {"position":"2250,4675","size":"200,100"}
+unless: fact night
+--
 [h1]
 Zadok Allen
 [continue]
@@ -670,7 +749,7 @@ You recognize this man as Zadok, the drunk who the boy told you about.
 > {exit} [["Nothing."]]
 
 
-:: zadok-freaked-out [Level] {"position":"1875,5375","size":"200,100"}
+:: zadok-freaked-out [Level] {"position":"2075,5100","size":"200,100"}
 setFact: night
 --
 "GOD HELP US! RUN!"

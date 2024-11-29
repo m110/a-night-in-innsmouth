@@ -136,8 +136,9 @@ func (c *Controls) Update(w donburi.World) {
 				if characterFound {
 					stopCharacter(character)
 				}
-				archetype.SelectPOI(entry)
-				return
+				if archetype.SelectPOI(entry) {
+					return
+				}
 			}
 		}
 	}

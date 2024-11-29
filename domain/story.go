@@ -487,7 +487,7 @@ func (l *Link) AllVisited() bool {
 		return false
 	}
 
-	if l.IsExit() {
+	if l.IsExit() || l.Level != nil {
 		return false
 	}
 
