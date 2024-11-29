@@ -86,6 +86,16 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		return nil, err
 	}
 
+	nightOverlay, err := fs.ReadFile(assetsFS, "game/backgrounds/night-overlay.png")
+	if err != nil {
+		return nil, err
+	}
+
+	nightOverlayImg, err := newImageFromBytes(nightOverlay)
+	if err != nil {
+		return nil, err
+	}
+
 	assets := &domain.Assets{
 		Story:  story,
 		Levels: levels,
@@ -95,6 +105,7 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		},
 		Sounds:          sounds,
 		Music:           music,
+		NightOverlay:    nightOverlayImg,
 		TitleBackground: titleBackgroundImg,
 	}
 
@@ -524,8 +535,10 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 	}
 
 	var cameraZoom float64
+	var outdoor bool
 	if levelMap.Properties != nil {
 		cameraZoom = levelMap.Properties.GetFloat("cameraZoom")
+		outdoor = levelMap.Properties.GetBool("outdoor")
 	}
 
 	return domain.Level{
@@ -538,6 +551,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 		Character:   character,
 		Limits:      limits,
 		Fadepoint:   fadepoint,
+		Outdoor:     outdoor,
 	}, nil
 }
 

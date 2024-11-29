@@ -17,6 +17,7 @@ type Level struct {
 	Character   LevelCharacter
 	Limits      *engine.FloatRange
 	Fadepoint   *math.Vec2
+	Outdoor     bool
 }
 
 type LevelCharacter struct {

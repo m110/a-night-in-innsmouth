@@ -262,14 +262,14 @@ An old hat hangs on the hook in the hotel lobby.
 > [[Get your valise.]]
 [continue]
 
-[if fact evening && !fact hotelRoomBooked]
+[if fact night && !fact hotelRoomBooked]
 > [["I need a room for the night."]]
 [continue]
 
 > {exit} [["Goodbye."->Hotel Clerk]]
 
 
-:: I want to get to Arkham {"position":"1125,825","size":"100,100"}
+:: I want to get to Arkham {"position":"1050,900","size":"100,100"}
 "I got you. The train leaves today. It's $5."
 
 [if fact readTrainStationNewspaper]
@@ -624,7 +624,7 @@ You recognize this man as Zadok, the drunk who the boy told you about.
 
 
 :: zadok-freaked-out [Level] {"position":"1875,5375","size":"200,100"}
-setFact: evening
+setFact: night
 --
 "GOD HELP US! RUN!"
 

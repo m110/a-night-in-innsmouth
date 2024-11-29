@@ -13,6 +13,8 @@ type Assets struct {
 	Sounds    Sounds
 	Music     map[string][]byte
 
+	NightOverlay *ebiten.Image
+
 	TitleBackground *ebiten.Image
 }
 

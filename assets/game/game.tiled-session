@@ -123,8 +123,8 @@
             "scale": 0.2031,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1915.3126538650913,
-                "y": 1083.210241260463
+                "x": 2493.845396356475,
+                "y": 1518.956179222058
             }
         },
         "levels/beach.tmx": {
@@ -134,8 +134,8 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1918.181818181818,
-                "y": 1078.787878787879
+                "x": 2562.121212121212,
+                "y": 1425.7575757575758
             }
         },
         "levels/bus-station.tmx": {
@@ -143,11 +143,11 @@
                 5,
                 4
             ],
-            "scale": 0.2388,
+            "scale": 0.1067,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1917.9229480737017,
-                "y": 1080.4020100502512
+                "x": 1832.2399250234298,
+                "y": 838.8003748828492
             }
         },
         "levels/city.tmx": {
@@ -170,8 +170,8 @@
             "scale": 0.25,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1536,
-                "y": 864
+                "x": 74,
+                "y": 506
             }
         },
         "levels/hotel-hall.tmx": {
@@ -181,19 +181,19 @@
             "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1536,
-                "y": 864
+                "x": 1197,
+                "y": 549
             }
         },
         "levels/hotel-room.tmx": {
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 0.75,
+            "scale": 0.2406,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1536,
-                "y": 863.9999999999999
+                "x": 317.9551122194514,
+                "y": 895.6774729842061
             }
         },
         "levels/hotel.tmx": {
@@ -201,11 +201,11 @@
                 5,
                 2
             ],
-            "scale": 0.33,
+            "scale": 0.1994,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1533.3333333333335,
-                "y": 863.6363636363636
+                "x": 1682.5476429287862,
+                "y": 980.4413239719156
             }
         },
         "levels/innsmouth.tmx": {
@@ -217,8 +217,8 @@
             "scale": 0.33,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1312.121212121212,
-                "y": 648.4848484848485
+                "x": 162.12121212121212,
+                "y": 498.4848484848485
             }
         },
         "levels/objects/Objects.tsx": {
@@ -231,8 +231,8 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1918.181818181818,
-                "y": 1078.787878787879
+                "x": 1628.7878787878785,
+                "y": 1389.3939393939395
             }
         },
         "levels/slums-1.tmx": {
@@ -243,8 +243,8 @@
             "scale": 0.1058,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1918.7145557655954,
-                "y": 1086.9565217391303
+                "x": 1999.054820415879,
+                "y": 2254.2533081285446
             }
         },
         "levels/slums-2.tmx": {
@@ -255,16 +255,16 @@
             "scale": 0.33,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1918.181818181818,
-                "y": 1078.787878787879
+                "x": 1401.5151515151515,
+                "y": 1301.5151515151513
             }
         },
         "levels/slums-crossroads.tmx": {
             "scale": 0.1814,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1532.5248070562293,
-                "y": 865.4906284454244
+                "x": 1584.8952590959207,
+                "y": 984.0132304299887
             }
         },
         "levels/train-station.tmx": {
@@ -275,8 +275,8 @@
             "scale": 0.33,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1918.181818181818,
-                "y": 1078.787878787879
+                "x": 1801.5151515151515,
+                "y": 1243.939393939394
             }
         },
         "levels/zadok-freaked-out.tmx": {
@@ -286,8 +286,8 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1918.181818181818,
-                "y": 1078.787878787879
+                "x": 1492.4242424242425,
+                "y": 1116.6666666666667
             }
         },
         "levels/zadok.tmx": {
@@ -297,7 +297,7 @@
             "scale": 0.42428385416666664,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2792.941537517263,
+                "x": 2791.7630811723184,
                 "y": 1219.7023170170323
             }
         },
@@ -342,7 +342,7 @@
         "levels/train-station.tmx"
     ],
     "project": "game.tiled-project",
-    "property.type": "int",
+    "property.type": "bool",
     "recentFiles": [
         "levels/innsmouth.tmx",
         "levels/hotel.tmx",

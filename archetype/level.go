@@ -24,6 +24,9 @@ const (
 	backgroundFadeDuration   = 1000 * time.Millisecond
 	backgroundScrollSpeed    = 1
 	backgroundScrollDistance = 100
+
+	// TODO this is not generic
+	nightFact = "night"
 )
 
 func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
@@ -46,6 +49,17 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	component.Level.SetValue(entry, component.LevelData{
 		Name: targetLevel.Name,
 	})
+
+	game := component.MustFindGame(w)
+	if level.Outdoor && game.Story.Fact(nightFact) {
+		NewTagged(w, "NightOverlay").
+			WithParent(entry).
+			WithLayerInherit().
+			WithSprite(component.SpriteData{
+				Image: assets.Assets.NightOverlay,
+			}).
+			Entry()
+	}
 
 	spawned := false
 
@@ -85,8 +99,6 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	for _, o := range level.Objects {
 		NewObject(entry, o)
 	}
-
-	game := component.MustFindGame(w)
 
 	if level.Name != "" {
 		passage, ok := game.Story.PassageForLevel(targetLevel)

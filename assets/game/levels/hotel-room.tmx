@@ -37,6 +37,5 @@
     <property name="level" value="rooftops,0"/>
    </properties>
   </object>
-  <object id="26" x="763" y="895"/>
  </objectgroup>
 </map>

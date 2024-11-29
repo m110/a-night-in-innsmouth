@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="34">
+ <properties>
+  <property name="outdoor" type="bool" value="true"/>
+ </properties>
  <tileset firstgid="1" source="../objects/Objects.tsx"/>
- <tileset firstgid="51" source="../character/Character.tsx"/>
+ <tileset firstgid="52" source="../character/Character.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="../backgrounds/innsmouth.jpg" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="3" name="Entrypoints">
-  <object id="28" name="Entrypoint 0" class="entrypoint" gid="51" x="424" y="1872" width="353" height="606.428"/>
-  <object id="31" name="Entrypoint 1" class="entrypoint" gid="2147483699" x="3093" y="1860" width="353" height="606.428">
+  <object id="28" name="Entrypoint 0" class="entrypoint" gid="52" x="424" y="1872" width="353" height="606.428"/>
+  <object id="31" name="Entrypoint 1" class="entrypoint" gid="2147483700" x="3093" y="1860" width="353" height="606.428">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>

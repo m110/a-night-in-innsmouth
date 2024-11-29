@@ -124,6 +124,11 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 				story.Facts[c.Value] = false
 			}
 		}
+		for _, m := range p.Macros {
+			if m.Type == MacroTypeSetFact {
+				story.Facts[m.Value] = false
+			}
+		}
 
 		passage := &Passage{
 			story:      story,
@@ -165,6 +170,10 @@ func NewStory(w donburi.World, rawStory RawStory) *Story {
 	story.Passages = passagesMap
 
 	return story
+}
+
+func (s *Story) Fact(fact string) bool {
+	return s.Facts[fact]
 }
 
 func (s *Story) AddMoney(amount int) {
