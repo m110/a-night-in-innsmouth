@@ -2,6 +2,7 @@ package archetype
 
 import (
 	math2 "math"
+	"time"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
@@ -27,6 +28,7 @@ func NewPOI(
 		WithLayer(domain.SpriteLayerPOI).
 		WithBounds(poi.TriggerRect.Size()).
 		WithBoundsAsCollider(domain.CollisionLayerPOI).
+		With(component.Animator).
 		With(component.POI).
 		Entry()
 
@@ -34,6 +36,7 @@ func NewPOI(
 		POI: poi,
 	})
 
+	var poiSprite *component.SpriteData
 	if poi.Object.Image != nil {
 		poiImage := NewTagged(w, "POIImage").
 			WithParent(entry).
@@ -53,6 +56,103 @@ func NewPOI(
 			X: poi.Object.Position.X,
 			Y: poi.Object.Position.Y,
 		})
+
+		poiSprite = component.Sprite.Get(poiImage)
+		poiSprite.AlphaOverride = &component.AlphaOverride{
+			A: 1,
+		}
+	}
+
+	hidden := false
+
+	if poi.ParentObject != nil {
+		obj := NewObject(parent, *poi.ParentObject)
+		component.POI.Get(entry).ParentObject = obj
+
+		parentObjectSprite := component.Sprite.Get(obj)
+		parentObjectSprite.AlphaOverride = &component.AlphaOverride{
+			A: 1,
+		}
+
+		anim := component.Animator.Get(entry)
+		anim.SetAnimation("fade-in", &component.Animation{
+			Timer: engine.NewTimer(time.Second),
+			OnStart: func(e *donburi.Entry) {
+				if poiSprite != nil {
+					poiSprite.AlphaOverride.A = 0
+				}
+				parentObjectSprite.AlphaOverride.A = 0
+				hidden = false
+			},
+			OnStop: func(e *donburi.Entry) {
+				if poiSprite != nil {
+					poiSprite.AlphaOverride.A = 1
+				}
+				parentObjectSprite.AlphaOverride.A = 1
+			},
+			Update: func(e *donburi.Entry, a *component.Animation) {
+				if poiSprite != nil {
+					poiSprite.AlphaOverride.A = a.Timer.PercentDone()
+				}
+				parentObjectSprite.AlphaOverride.A = a.Timer.PercentDone()
+				a.Timer.Update()
+				if a.Timer.IsReady() {
+					a.Stop(entry)
+				}
+			},
+		})
+
+		anim.SetAnimation("fade-out", &component.Animation{
+			Timer: engine.NewTimer(time.Second),
+			OnStart: func(e *donburi.Entry) {
+				if poiSprite != nil {
+					poiSprite.AlphaOverride.A = 1
+				}
+				parentObjectSprite.AlphaOverride.A = 1
+				hidden = true
+			},
+			OnStop: func(e *donburi.Entry) {
+				if poiSprite != nil {
+					poiSprite.AlphaOverride.A = 0
+				}
+				parentObjectSprite.AlphaOverride.A = 0
+			},
+			Update: func(e *donburi.Entry, a *component.Animation) {
+				if poiSprite != nil {
+					poiSprite.AlphaOverride.A = 1 - a.Timer.PercentDone()
+				}
+				parentObjectSprite.AlphaOverride.A = 1 - a.Timer.PercentDone()
+				a.Timer.Update()
+				if a.Timer.IsReady() {
+					a.Stop(entry)
+				}
+			},
+		})
+
+		if !POIConditionsMet(parent.World, poi) {
+			hidden = true
+			if poiSprite != nil {
+				poiSprite.AlphaOverride.A = 0
+			}
+			parentObjectSprite.AlphaOverride.A = 0
+		}
+
+		checkConditions := func() {
+			conditionsMet := POIConditionsMet(parent.World, poi)
+			if hidden && conditionsMet {
+				anim.Start("fade-in", entry)
+			} else if !hidden && !conditionsMet {
+				anim.Start("fade-out", entry)
+			}
+		}
+
+		domain.StoryFactSetEvent.Subscribe(w, func(w donburi.World, event domain.StoryFactSet) {
+			checkConditions()
+		})
+
+		domain.InventoryUpdatedEvent.Subscribe(w, func(w donburi.World, event domain.InventoryUpdated) {
+			checkConditions()
+		})
 	}
 
 	return entry
@@ -70,8 +170,6 @@ func DeactivatePOIs(w donburi.World) {
 }
 
 func CanInteractWithPOI(entry *donburi.Entry) bool {
-	poi := component.POI.Get(entry)
-
 	poiImage, ok := transform.FindChildWithComponent(entry, component.POIImage)
 	if ok {
 		character, found := engine.FindWithComponent(entry.World, component.Character)
@@ -85,17 +183,22 @@ func CanInteractWithPOI(entry *donburi.Entry) bool {
 		}
 	}
 
-	game := component.MustFindGame(entry.World)
+	poi := component.POI.Get(entry)
+	return POIConditionsMet(entry.World, poi.POI)
+}
 
-	if poi.POI.Level != nil {
-		passage, ok := game.Story.PassageForLevel(*poi.POI.Level)
+func POIConditionsMet(w donburi.World, poi domain.POI) bool {
+	game := component.MustFindGame(w)
+
+	if poi.Level != nil {
+		passage, ok := game.Story.PassageForLevel(*poi.Level)
 		if ok {
 			return passage.ConditionsMet()
 		}
 		return true
 	}
 
-	passage := game.Story.PassageByTitle(poi.POI.Passage)
+	passage := game.Story.PassageByTitle(poi.Passage)
 	return passage.ConditionsMet()
 }
 

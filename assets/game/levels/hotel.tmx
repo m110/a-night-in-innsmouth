@@ -1,55 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="6" nextobjectid="39">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="7" nextobjectid="42">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
- <tileset firstgid="52" source=":/automap-tiles.tsx"/>
+ <tileset firstgid="58" source=":/automap-tiles.tsx"/>
  <imagelayer id="3" name="Background">
-  <image source="../backgrounds/hotel.jpg" width="3072" height="1728"/>
+  <image source="../backgrounds/hotel.jpg" width="3840" height="2160"/>
  </imagelayer>
+ <objectgroup id="6" name="Object POIs">
+  <properties>
+   <property name="layer" type="int" value="111"/>
+  </properties>
+  <object id="39" name="Hat Parent" class="object" gid="55" x="336" y="1112" width="154" height="245"/>
+  <object id="40" name="Keys Parent" class="object" gid="56" x="1960" y="1393" width="113" height="61"/>
+  <object id="41" name="Suitcase Parent" class="object" gid="57" x="2462" y="1863" width="335" height="318"/>
+ </objectgroup>
  <objectgroup color="#85c78d" id="2" name="Objects">
-  <object id="1" name="Trigger: Fish Sign" class="trigger" x="1248" y="144" width="584" height="320">
+  <properties>
+   <property name="layer" type="int" value="112"/>
+  </properties>
+  <object id="1" name="Trigger: Fish Sign" class="trigger" x="1557.92" y="176" width="733.977" height="402.179">
    <properties>
     <property name="poi" type="object" value="37"/>
    </properties>
   </object>
-  <object id="3" name="Trigger: Clerk" class="trigger" x="1660" y="848" width="148" height="228">
+  <object id="3" name="Trigger: Clerk" class="trigger" x="2075.72" y="1060.79" width="186.008" height="286.553">
    <properties>
     <property name="poi" type="object" value="32"/>
    </properties>
   </object>
-  <object id="4" name="Trigger: Keys" class="trigger" x="1504" y="1024" width="152" height="128">
+  <object id="4" name="Trigger: Keys" class="trigger" x="1905" y="1289" width="191.035" height="160.872">
    <properties>
     <property name="poi" type="object" value="31"/>
    </properties>
   </object>
-  <object id="5" name="Trigger: Suitcase" class="trigger" x="1976" y="1288" width="240" height="192">
+  <object id="5" name="Trigger: Suitcase" class="trigger" x="2472.87" y="1613.79" width="301.635" height="241.308">
    <properties>
     <property name="poi" type="object" value="30"/>
    </properties>
   </object>
-  <object id="7" name="Trigger: Hat" class="trigger" x="256" y="728" width="120" height="184">
+  <object id="7" name="Trigger: Hat" class="trigger" x="328" y="874" width="150.817" height="231.253">
    <properties>
     <property name="poi" type="object" value="34"/>
    </properties>
   </object>
-  <object id="9" name="Trigger: Paper" class="trigger" x="784" y="1128" width="192" height="136">
+  <object id="9" name="Trigger: Paper" class="trigger" x="977" y="1414" width="241.308" height="170.926">
    <properties>
     <property name="poi" type="object" value="33"/>
    </properties>
   </object>
-  <object id="24" name="Stairs" class="poi" x="2899" y="865" width="160" height="584">
+  <object id="24" name="Stairs" class="poi" x="3632.91" y="1082.16" width="201.09" height="733.977">
    <properties>
     <property name="level" value="hotel-hall"/>
     <property name="passage" value=""/>
     <property name="touchTrigger" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="11" name="Trigger: Painting" class="trigger" x="2256" y="656" width="336" height="264">
+  <object id="11" name="Trigger: Painting" class="trigger" x="2824.78" y="819.487" width="422.288" height="331.798">
    <properties>
     <property name="poi" type="object" value="28"/>
    </properties>
   </object>
-  <object id="25" name="Exit Touch Trigger" class="poi" x="-208" y="920" width="192" height="584">
+  <object id="25" name="Exit Touch Trigger" class="poi" x="-272" y="1151.28" width="241.308" height="733.977">
    <properties>
     <property name="edge" propertytype="edge" value="left"/>
     <property name="level" value="innsmouth,1"/>
@@ -57,54 +68,60 @@
     <property name="touchTrigger" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="28" name="Painting" class="poi" gid="42" x="2389" y="907" width="71" height="39">
+  <object id="28" name="Painting" class="poi" gid="42" x="3002" y="1143" width="89.2335" height="49.0156">
    <properties>
     <property name="passage" value="TBA"/>
    </properties>
   </object>
-  <object id="29" name="Stairs" class="poi" gid="43" x="2859" y="1402" width="77.7778" height="56">
+  <object id="29" name="Stairs" class="poi" gid="43" x="3582.64" y="1757.07" width="97.752" height="70.3814">
    <properties>
     <property name="level" value="hotel-hall"/>
    </properties>
   </object>
-  <object id="30" name="Suitcase" class="poi" gid="44" x="2045" y="1466" width="80.169" height="58.6804">
+  <object id="30" name="Suitcase" class="poi" gid="44" x="2559.59" y="1837.5" width="100.757" height="73.7501">
    <properties>
-    <property name="passage" value="TBA"/>
+    <property name="parentObject" type="object" value="41"/>
+    <property name="passage" value="Valise"/>
    </properties>
   </object>
-  <object id="31" name="Keys" class="poi" gid="41" x="1587" y="1108" width="51.5682" height="34.9077">
+  <object id="31" name="Keys" class="poi" gid="41" x="1963" y="1386" width="64.8115" height="43.8724">
    <properties>
-    <property name="passage" value="TBA"/>
+    <property name="parentObject" type="object" value="40"/>
+    <property name="passage" value="Room Keys"/>
    </properties>
   </object>
-  <object id="32" name="Clerk" class="poi" gid="39" x="1675" y="924" width="78" height="58.5">
+  <object id="32" name="Clerk" class="poi" gid="39" x="2094.57" y="1156.31" width="98.0312" height="73.5234">
    <properties>
     <property name="passage" value="Hotel Clerk"/>
    </properties>
   </object>
-  <object id="33" name="Paper" class="poi" gid="37" x="882" y="1224" width="58.3333" height="55">
+  <object id="33" name="Paper" class="poi" gid="37" x="1102" y="1532" width="73.3139" height="69.1246">
    <properties>
     <property name="passage" value="TBA"/>
    </properties>
   </object>
-  <object id="34" name="Hat" class="poi" gid="40" x="312" y="881" width="46" height="46">
+  <object id="34" name="Hat" class="poi" gid="40" x="395" y="1093" width="57.8133" height="57.8133">
    <properties>
+    <property name="parentObject" type="object" value="39"/>
     <property name="passage" value="Hat on a Hook"/>
    </properties>
   </object>
-  <object id="37" name="Fish Sign" class="poi" gid="38" x="1457" y="458" width="97" height="46">
+  <object id="37" name="Fish Sign" class="poi" gid="38" x="1838" y="575" width="121.911" height="57.8133">
    <properties>
     <property name="passage" value="TBA"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="5" name="Entrypoints">
-  <object id="18" name="Entry Point 0" class="entrypoint" gid="1" x="200" y="1524" width="432" height="742.144">
+  <properties>
+   <property name="layer" type="int" value="121"/>
+  </properties>
+  <object id="18" name="Entry Point 0" class="entrypoint" gid="1" x="240.779" y="1910.4" width="542.942" height="932.734">
    <properties>
     <property name="index" type="int" value="0"/>
    </properties>
   </object>
-  <object id="19" name="Entry Point 1" class="entrypoint" gid="2147483649" x="2594" y="1510" width="432" height="742.144">
+  <object id="19" name="Entry Point 1" class="entrypoint" gid="2147483649" x="3249.58" y="1892.8" width="542.942" height="932.734">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>

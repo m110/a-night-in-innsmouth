@@ -92,20 +92,20 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 		},
 	})
 
-	for _, poi := range level.POIs {
-		NewPOI(entry, poi)
-	}
-
-	for _, o := range level.Objects {
-		NewObject(entry, o)
-	}
-
 	if level.Name != "" {
 		passage, ok := game.Story.PassageForLevel(targetLevel)
 		if ok && passage.ConditionsMet() {
 			passage.Visit()
 			ShowPassage(w, passage, nil)
 		}
+	}
+
+	for _, o := range level.Objects {
+		NewObject(entry, o)
+	}
+
+	for _, poi := range level.POIs {
+		NewPOI(entry, poi)
 	}
 
 	var character *donburi.Entry

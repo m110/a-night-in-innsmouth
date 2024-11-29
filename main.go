@@ -16,7 +16,7 @@ func main() {
 	_ = quickFlag
 
 	config := game.Config{
-		// Quick: true,
+		Quick: true,
 	}
 
 	ebiten.SetVsyncEnabled(true)

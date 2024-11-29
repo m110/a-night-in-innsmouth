@@ -13,7 +13,7 @@ func NewObject(
 ) *donburi.Entry {
 	w := parent.World
 
-	entry := NewTagged(w, "POI").
+	entry := NewTagged(w, "Object").
 		WithParent(parent).
 		WithPosition(obj.Position).
 		WithScale(obj.Scale).

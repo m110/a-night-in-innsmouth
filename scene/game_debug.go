@@ -331,9 +331,9 @@ func (b *debugUIBuilder) newFactsWindow() *widget.Window {
 			widget.CheckboxOpts.InitialState(state),
 			widget.CheckboxOpts.StateChangedHandler(func(args *widget.CheckboxChangedEventArgs) {
 				if args.State == widget.WidgetChecked {
-					game.Story.Facts[fact] = true
+					game.Story.SetFactTo(fact, true)
 				} else {
-					game.Story.Facts[fact] = false
+					game.Story.SetFactTo(fact, false)
 				}
 			}),
 		)

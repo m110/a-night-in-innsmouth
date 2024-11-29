@@ -26,7 +26,7 @@ Zadok takes a sip.
 > [[Wait.->Wait for Zadok]]
 
 
-:: "I need a room for the night." {"position":"5125,2800","size":"100,100"}
+:: "I need a room for the night." {"position":"5125,2700","size":"100,100"}
 "No problem, sir. You can have the room 428."
 
 > [[Get the room. ($1)]]
@@ -169,7 +169,7 @@ setFact: learnedAboutInnsmouth
 > [["When does it leave?"]]
 
 
-:: Check in your valise. {"position":"4775,2725","size":"100,100"}
+:: Check in your valise. {"position":"4675,2725","size":"100,100"}
 takeItem: Valise
 changeCharacterSpeed: 3
 --
@@ -202,27 +202,21 @@ It's a good metaphor for this entire street.
 
 
 
-:: Get the room. ($1) {"position":"5000,3000","size":"100,100"}
+:: Get the room. ($1) {"position":"5025,2950","size":"100,100"}
 takeMoney: 100
 setFact: hotelRoomBooked
 --
 
-"Thank you. Please take the stairs."
+"Thank you. Take the keys and head for the stairs, please."
 
 [if hasItem Valise]
-> [["Thank you."->Hotel Clerk]]
+> {exit} [["Thank you."->Get the room. ($1)]]
 [else]
-> [[Get your valise.]]
+
+"Don't forget your valise."
+
+> [[Take the valise.->Take the valise.]]
 [continue]
-
-
-:: Get your valise. {"position":"4825,2975","size":"100,100"}
-addItem: Valise
-changeCharacterSpeed: -3
---
-"Here you go."
-
-> [["Thank you."->Hotel Clerk]]
 
 
 :: Go back downstairs {"position":"5900,2950","size":"100,100"}
@@ -243,7 +237,7 @@ The driver slowly gives you the change, looking at you suspiciously.
 
 
 :: Hat on a Hook {"position":"4025,2525","size":"100,100"}
-unless: hasItem hat
+unless: hasItem Hat
 --
 An old hat hangs on the hook in the hotel lobby.
 
@@ -256,10 +250,6 @@ An old hat hangs on the hook in the hotel lobby.
 
 [if hasItem Valise && !fact hotelRoomBooked]
 > [[Check in your valise.]]
-[continue]
-
-[if !hasItem Valise && !fact hotelRoomBooked]
-> [[Get your valise.]]
 [continue]
 
 [if fact night && !fact hotelRoomBooked]
@@ -336,6 +326,16 @@ The glass is broken but the window is dark. You can't see well inside this house
 > {exit} [[Reconsider.->Roof Window]]
 
 
+:: Room Keys {"position":"5350,2750","size":"100,100"}
+if: !hasItem Room Keys && fact hotelRoomBooked
+--
+
+The number keychain reads: 428.
+
+> [[Take the keys]]
+> {exit} [[Leave the keys->Room Keys]]
+
+
 :: TBA {"position":"200,3250","size":"100,100"}
 ...
 
@@ -347,11 +347,29 @@ The glass is broken but the window is dark. You can't see well inside this house
 
 
 :: Take it. {"position":"4275,2550","size":"100,100"}
-addItem: hat
+addItem: Hat
 --
 You took the hat.
 
 > {exit} [[Leave.]]
+
+
+:: Take the keys {"position":"5325,2925","size":"100,100"}
+addItem: Room Keys
+--
+
+You took the keys.
+
+> {exit} [[Leave.->Room Keys]]
+
+
+:: Take the valise. {"position":"4850,3150","size":"100,100"}
+addItem: Valise
+changeCharacterSpeed: -3
+--
+You take the valise.
+
+> {exit} [[Leave->Take the valise.]]
 
 
 :: Take your valise. {"position":"7150,3175","size":"100,100"}
@@ -465,6 +483,16 @@ The house is in ruin.
 > {exit} [[Nothing to do here.->Vacant House 2]]
 
 
+:: Valise {"position":"4600,2975","size":"100,100"}
+if: !hasItem Valise
+--
+
+It's the valise you checked in.
+
+> [[Take the valise.]]
+> {exit} [[Leave.->Valise]]
+
+
 :: Valise Reminder [once] {"position":"1650,2225","size":"100,100"}
 If you want to explore the town, better check in that valise at the hotel. You can't move freely with it.
 
@@ -533,17 +561,19 @@ by Howard Phillips Lovecraft
 
 
 :: grocery-npc [Level] {"position":"2250,2200","size":"200,100"}
+unless: fact night
+--
 "Hello, mister!"
 
 [unless hasItem Quart of Whisky]
 > [[Buy a Quart of Whisky ($1)]]
 [continue]
 
-> {exit} [[I'll see you later.->grocery-npc]]
+> {exit} [[I'll see you later.->grocery-npc]]	
 
 
 :: hotel-hall [Level] {"position":"5600,2575","size":"200,100"}
-if: fact hotelRoomBooked	
+if: hasItem Room Keys	
 --
 [h1]
 Hotel Hall

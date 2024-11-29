@@ -7,7 +7,8 @@ import (
 )
 
 type POIData struct {
-	POI domain.POI
+	POI          domain.POI
+	ParentObject *donburi.Entry
 }
 
 var POI = donburi.NewComponentType[POIData]()

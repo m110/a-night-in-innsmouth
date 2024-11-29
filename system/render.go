@@ -305,14 +305,14 @@ func renderSprite(entry *donburi.Entry, camera *component.CameraData) {
 
 	op.GeoM.Scale(scale.X, scale.Y)
 
-	if sprite.AlphaOverride != nil {
-		op.ColorM.Scale(1.0, 1.0, 1.0, sprite.AlphaOverride.A)
-	}
 	if sprite.ColorOverride != nil {
 		op.ColorM.Translate(sprite.ColorOverride.R, sprite.ColorOverride.G, sprite.ColorOverride.B, 0)
 	}
 	if sprite.ColorBlendOverride != nil {
 		blendMonochrome(op, sprite.ColorBlendOverride.Value)
+	}
+	if sprite.AlphaOverride != nil {
+		op.ColorM.Scale(1.0, 1.0, 1.0, sprite.AlphaOverride.A)
 	}
 
 	op.GeoM.Scale(camera.ViewportZoom, camera.ViewportZoom)
@@ -354,6 +354,8 @@ func renderText(entry *donburi.Entry, camera *component.CameraData) {
 
 	if t.AlphaOverride != nil {
 		op.ColorScale.ScaleAlpha(float32(t.AlphaOverride.A))
+	} else {
+
 	}
 
 	text.Draw(camera.Viewport, textToDraw, font, op)

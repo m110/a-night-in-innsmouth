@@ -5,9 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/yohamta/donburi/features/math"
-
 	"github.com/yohamta/donburi"
+	"github.com/yohamta/donburi/features/math"
 )
 
 const (
@@ -282,9 +281,14 @@ func (s *Story) SetFact(fact string) {
 	})
 }
 
-// RemoveFact removes a fact from the story
+// SetFactTo removes a fact from the story
 // Use only for debugging purposes.
-func (s *Story) RemoveFact(fact string) {
+func (s *Story) SetFactTo(fact string, value bool) {
+	if value {
+		s.SetFact(fact)
+		return
+	}
+
 	s.Facts[fact] = false
 }
 

@@ -133,7 +133,7 @@ func (g *Game) createWorld() donburi.World {
 
 	entrypoint := 0
 	archetype.ChangeLevel(world, domain.TargetLevel{
-		Name:       "train-station",
+		Name:       "hotel",
 		Entrypoint: &entrypoint,
 	})
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.9" tiledversion="1.9.2" name="Objects" tilewidth="1801" tileheight="1183" tilecount="31" columns="0">
+<tileset version="1.9" tiledversion="1.9.2" name="Objects" tilewidth="1801" tileheight="1183" tilecount="36" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="201" height="1183" source="city-lamp.png"/>
@@ -93,5 +93,20 @@
  </tile>
  <tile id="50">
   <image width="1801" height="741" source="attic-furniture.png"/>
+ </tile>
+ <tile id="51">
+  <image width="222" height="577" source="grocery-boy.png"/>
+ </tile>
+ <tile id="52">
+  <image width="78" height="48" source="grocery-boy-hat.png"/>
+ </tile>
+ <tile id="53">
+  <image width="154" height="245" source="hanged-hat.png"/>
+ </tile>
+ <tile id="54">
+  <image width="113" height="61" source="keys-white.png"/>
+ </tile>
+ <tile id="55">
+  <image width="335" height="318" source="suitcase-white.png"/>
  </tile>
 </tileset>

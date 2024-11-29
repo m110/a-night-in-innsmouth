@@ -26,6 +26,24 @@
             ]
         },
         {
+            "color": "#ffa0a0a4",
+            "id": 12,
+            "members": [
+            ],
+            "name": "collider",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset"
+            ]
+        },
+        {
             "id": 7,
             "name": "edge",
             "storageType": "string",
@@ -134,6 +152,11 @@
                     "value": ""
                 },
                 {
+                    "name": "parentObject",
+                    "type": "object",
+                    "value": 0
+                },
+                {
                     "name": "passage",
                     "type": "string",
                     "value": ""
@@ -168,24 +191,6 @@
                 }
             ],
             "name": "trigger",
-            "type": "class",
-            "useAs": [
-                "property",
-                "map",
-                "layer",
-                "object",
-                "tile",
-                "tileset",
-                "wangcolor",
-                "wangset"
-            ]
-        },
-        {
-            "color": "#ffa0a0a4",
-            "id": 12,
-            "members": [
-            ],
-            "name": "collider",
             "type": "class",
             "useAs": [
                 "property",

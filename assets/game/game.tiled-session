@@ -167,11 +167,11 @@
             "expandedObjectLayers": [
                 4
             ],
-            "scale": 0.25,
+            "scale": 0.4069,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 74,
-                "y": 506
+                "x": 1347.9970508724502,
+                "y": 1055.5419021872697
             }
         },
         "levels/hotel-hall.tmx": {
@@ -192,8 +192,8 @@
             "scale": 0.2406,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 317.9551122194514,
-                "y": 895.6774729842061
+                "x": 2121.7788861180384,
+                "y": 982.9592684954281
             }
         },
         "levels/hotel.tmx": {
@@ -201,24 +201,23 @@
                 5,
                 2
             ],
-            "scale": 0.1994,
+            "scale": 0.2123,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1682.5476429287862,
-                "y": 980.4413239719156
+                "x": 1415.4498351389543,
+                "y": 1005.6523787093736
             }
         },
         "levels/innsmouth.tmx": {
             "expandedObjectLayers": [
                 5,
-                4,
-                3
+                4
             ],
-            "scale": 0.33,
+            "scale": 0.2255,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 162.12121212121212,
-                "y": 498.4848484848485
+                "x": 1572.0620842572064,
+                "y": 1532.1507760532152
             }
         },
         "levels/objects/Objects.tsx": {
@@ -342,7 +341,7 @@
         "levels/train-station.tmx"
     ],
     "project": "game.tiled-project",
-    "property.type": "bool",
+    "property.type": "int",
     "recentFiles": [
         "levels/innsmouth.tmx",
         "levels/hotel.tmx",

@@ -38,9 +38,11 @@ type POI struct {
 	Level        *TargetLevel
 	EdgeTrigger  *Direction
 	TouchTrigger bool
+	ParentObject *Object
 }
 
 type Object struct {
+	ID       int
 	Image    *ebiten.Image
 	Position math.Vec2
 	Scale    math.Vec2

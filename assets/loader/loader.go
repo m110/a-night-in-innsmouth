@@ -341,6 +341,19 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
+			if obj.Class == "object" {
+				img, ok := tilesetImages[obj.GID]
+				if !ok {
+					return domain.Level{}, errors.New(fmt.Sprintf("object not found: %v on level %v", obj.GID, levelPath))
+				}
+				domainObj := loadObject(img, o, obj)
+				objects = append(objects, domainObj)
+			}
+		}
+	}
+
+	for _, o := range levelMap.ObjectGroups {
+		for _, obj := range o.Objects {
 			if obj.Class == "fadepoint" {
 				if fadepoint != nil {
 					return domain.Level{}, errors.New("multiple fadepoint objects")
@@ -360,33 +373,6 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 					Min: obj.X,
 					Max: obj.X + obj.Width,
 				}
-			}
-
-			if obj.Class == "object" {
-				img, ok := tilesetImages[obj.GID]
-				if !ok {
-					return domain.Level{}, errors.New(fmt.Sprintf("object not found: %v on level %v", obj.GID, levelPath))
-				}
-
-				objImg := ebiten.NewImageFromImage(img)
-				bounds := objImg.Bounds()
-				// TODO Replace by separate layers
-				layer := o.Properties.GetInt("layer")
-
-				domainObj := domain.Object{
-					Image: objImg,
-					Position: math.Vec2{
-						X: obj.X,
-						Y: obj.Y - obj.Height,
-					},
-					Scale: math.Vec2{
-						X: obj.Width / float64(bounds.Dx()),
-						Y: obj.Height / float64(bounds.Dy()),
-					},
-					Layer: domain.LayerID(layer),
-				}
-
-				objects = append(objects, domainObj)
 			}
 
 			if obj.Class == "poi" {
@@ -413,6 +399,32 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 					}
 				}
 
+				var parentObject *domain.Object
+				parentObjectIDStr := obj.Properties.GetString("parentObject")
+				if parentObjectIDStr != "" {
+					parentObjectID, err := strconv.Atoi(parentObjectIDStr)
+					if err != nil {
+						return domain.Level{}, err
+					}
+
+					var foundIndex *int
+					for i, oo := range objects {
+						if oo.ID == parentObjectID {
+							parentObject = &oo
+							foundIndex = &i
+							break
+						}
+					}
+
+					if foundIndex == nil {
+						return domain.Level{}, fmt.Errorf("parent object not found: %v", parentObjectID)
+					}
+
+					oo := objects[*foundIndex]
+					parentObject = &oo
+					objects = append(objects[:*foundIndex], objects[*foundIndex+1:]...)
+				}
+
 				var domainEdge *domain.Direction
 				edge := domain.Direction(obj.Properties.GetString("edge"))
 				if edge != "" {
@@ -430,6 +442,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 					TriggerRect:  rect,
 					EdgeTrigger:  domainEdge,
 					TouchTrigger: obj.Properties.GetBool("touchTrigger"),
+					ParentObject: parentObject,
 				}
 
 				passage := obj.Properties.GetString("passage")
@@ -553,6 +566,27 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 		Fadepoint:   fadepoint,
 		Outdoor:     outdoor,
 	}, nil
+}
+
+func loadObject(image *ebiten.Image, objectGroup *tiled.ObjectGroup, obj *tiled.Object) domain.Object {
+	objImg := ebiten.NewImageFromImage(image)
+	bounds := objImg.Bounds()
+	// TODO Replace by separate layers
+	layer := objectGroup.Properties.GetInt("layer")
+
+	return domain.Object{
+		ID:    int(obj.ID),
+		Image: objImg,
+		Position: math.Vec2{
+			X: obj.X,
+			Y: obj.Y - obj.Height,
+		},
+		Scale: math.Vec2{
+			X: obj.Width / float64(bounds.Dx()),
+			Y: obj.Height / float64(bounds.Dy()),
+		},
+		Layer: domain.LayerID(layer),
+	}
 }
 
 func loadSounds(assetsFS fs.FS) (domain.Sounds, error) {
