@@ -201,23 +201,24 @@
                 5,
                 2
             ],
-            "scale": 0.2123,
-            "selectedLayer": 1,
+            "scale": 0.1449,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 1415.4498351389543,
-                "y": 1005.6523787093736
+                "x": 1756.383712905452,
+                "y": 403.72670807453414
             }
         },
         "levels/innsmouth.tmx": {
             "expandedObjectLayers": [
+                6,
                 5,
                 4
             ],
             "scale": 0.2255,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1572.0620842572064,
-                "y": 1532.1507760532152
+                "x": 1776.0532150776055,
+                "y": 1882.4833702882484
             }
         },
         "levels/objects/Objects.tsx": {
@@ -239,11 +240,11 @@
                 5,
                 3
             ],
-            "scale": 0.1058,
-            "selectedLayer": 0,
+            "scale": 0.2308,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 1999.054820415879,
-                "y": 2254.2533081285446
+                "x": 2918.1109185441937,
+                "y": 1652.9462738301559
             }
         },
         "levels/slums-2.tmx": {
@@ -251,12 +252,15 @@
                 4,
                 3
             ],
-            "scale": 0.33,
-            "selectedLayer": 2,
+            "scale": 0.2587,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 1401.5151515151515,
-                "y": 1301.5151515151513
+                "x": 1180.9045226130654,
+                "y": 1818.708929261693
             }
+        },
+        "levels/slums-2.tmx#Objects": {
+            "scaleInDock": 0.0156
         },
         "levels/slums-crossroads.tmx": {
             "scale": 0.1814,

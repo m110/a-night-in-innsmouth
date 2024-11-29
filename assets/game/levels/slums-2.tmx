@@ -1,10 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="5" nextobjectid="16">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="7" nextobjectid="20">
  <properties>
   <property name="outdoor" type="bool" value="true"/>
  </properties>
- <tileset firstgid="1" source="../objects/Objects.tsx"/>
- <tileset firstgid="52" source="../character/Character.tsx"/>
+ <tileset firstgid="1" name="Objects" tilewidth="2601" tileheight="1183" tilecount="37" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="201" height="1183" source="../objects/city-lamp.png"/>
+  </tile>
+  <tile id="1">
+   <image width="74" height="78" source="../objects/doodle.png"/>
+  </tile>
+  <tile id="2">
+   <image width="89" height="92" source="../objects/knob.png"/>
+  </tile>
+  <tile id="3">
+   <image width="89" height="75" source="../objects/scarf.png"/>
+  </tile>
+  <tile id="4">
+   <image width="178" height="263" source="../objects/chair.png"/>
+  </tile>
+  <tile id="5">
+   <image width="55" height="86" source="../objects/lock.png"/>
+  </tile>
+  <tile id="22">
+   <image width="96" height="231" source="../objects/barnacles.png"/>
+  </tile>
+  <tile id="23">
+   <image width="1796" height="1125" source="../objects/bed.png"/>
+  </tile>
+  <tile id="24">
+   <image width="38" height="46" source="../objects/bottle.png"/>
+  </tile>
+  <tile id="25">
+   <image width="251" height="360" source="../objects/breakers.png"/>
+  </tile>
+  <tile id="26">
+   <image width="334" height="713" source="../objects/chimney.png"/>
+  </tile>
+  <tile id="27">
+   <image width="61" height="52" source="../objects/clock.png"/>
+  </tile>
+  <tile id="28">
+   <image width="167" height="144" source="../objects/fish.png"/>
+  </tile>
+  <tile id="29">
+   <image width="160" height="78" source="../objects/hat.png"/>
+  </tile>
+  <tile id="30">
+   <image width="110" height="48" source="../objects/newspaper.png"/>
+  </tile>
+  <tile id="31">
+   <image width="268" height="171" source="../objects/plank.png"/>
+  </tile>
+  <tile id="32">
+   <image width="113" height="57" source="../objects/sign.png"/>
+  </tile>
+  <tile id="33">
+   <image width="45" height="57" source="../objects/tie.png"/>
+  </tile>
+  <tile id="34">
+   <image width="77" height="60" source="../objects/timesheet.png"/>
+  </tile>
+  <tile id="35">
+   <image width="70" height="66" source="../objects/documents.png"/>
+  </tile>
+  <tile id="36">
+   <image width="97" height="46" source="../objects/fish-sign.png"/>
+  </tile>
+  <tile id="37">
+   <image width="92" height="69" source="../objects/hotel-guy.png"/>
+  </tile>
+  <tile id="38">
+   <image width="46" height="46" source="../objects/hotel-hat.png"/>
+  </tile>
+  <tile id="39">
+   <image width="65" height="44" source="../objects/keys.png"/>
+  </tile>
+  <tile id="40">
+   <image width="71" height="39" source="../objects/painting.png"/>
+  </tile>
+  <tile id="41">
+   <image width="100" height="72" source="../objects/stairs.png"/>
+  </tile>
+  <tile id="42">
+   <image width="97" height="71" source="../objects/suitcase.png"/>
+  </tile>
+  <tile id="47">
+   <image width="765" height="401" source="../objects/barrels.png"/>
+  </tile>
+  <tile id="48">
+   <image width="265" height="716" source="../objects/cross.png"/>
+  </tile>
+  <tile id="49">
+   <image width="233" height="157" source="../objects/plank-2.png"/>
+  </tile>
+  <tile id="50">
+   <image width="1801" height="741" source="../objects/attic-furniture.png"/>
+  </tile>
+  <tile id="51">
+   <image width="222" height="577" source="../objects/grocery-boy.png"/>
+  </tile>
+  <tile id="52">
+   <image width="78" height="48" source="../objects/grocery-boy-hat.png"/>
+  </tile>
+  <tile id="53">
+   <image width="154" height="245" source="../objects/hanged-hat.png"/>
+  </tile>
+  <tile id="54">
+   <image width="113" height="61" source="../objects/keys-white.png"/>
+  </tile>
+  <tile id="55">
+   <image width="335" height="318" source="../objects/suitcase-white.png"/>
+  </tile>
+  <tile id="56">
+   <image width="2601" height="998" source="../objects/bus.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="58" source="../character/Character.tsx"/>
+ <tileset firstgid="59" source="../objects/Objects.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="../backgrounds/slums-2.jpg" width="3840" height="2160"/>
  </imagelayer>
@@ -23,7 +137,24 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="3" name="Objects">
+ <objectgroup id="5" name="Objects">
+  <properties>
+   <property name="layer" type="int" value="110"/>
+  </properties>
+  <object id="17" name="Bus" class="object" gid="115" x="373" y="1863" width="2601" height="998"/>
+ </objectgroup>
+ <objectgroup id="6" name="Objects 2">
+  <properties>
+   <property name="layer" type="int" value="112"/>
+  </properties>
+  <object id="18" name="Bus POI" class="poi" gid="91" x="1782" y="1262" width="113" height="57">
+   <properties>
+    <property name="parentObject" type="object" value="17"/>
+    <property name="passage" value="Bus in Innsmouth"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Objects Foreground">
   <properties>
    <property name="layer" type="int" value="130"/>
   </properties>
@@ -38,16 +169,22 @@
     <property name="poi" type="object" value="2"/>
    </properties>
   </object>
-  <object id="6" name="Entry Point 1" class="entrypoint" gid="2147483700" x="3293" y="1936" width="480.812" height="826">
+  <object id="6" name="Entry Point 1" class="entrypoint" gid="2147483706" x="3293" y="1936" width="480.812" height="826">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>
    </properties>
   </object>
-  <object id="10" name="Entry Point 0" class="entrypoint" gid="52" x="476" y="1901" width="450" height="773.067">
+  <object id="10" name="Entry Point 0" class="entrypoint" gid="58" x="476" y="1901" width="450" height="773.067">
    <properties>
     <property name="flipY" type="bool" value="false"/>
     <property name="index" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="19" name="Entry Point 2" class="entrypoint" gid="58" x="1831" y="1910" width="450" height="773.067">
+   <properties>
+    <property name="flipY" type="bool" value="false"/>
+    <property name="index" type="int" value="2"/>
    </properties>
   </object>
  </objectgroup>

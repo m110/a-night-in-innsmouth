@@ -13,7 +13,7 @@ game
     "once": "orange",
     "Level": "green"
   },
-  "zoom": 0.6
+  "zoom": 0.3
 }
 
 
@@ -127,6 +127,18 @@ He gives you a lazy stare.
 > {exit} [[Leave.->Bus Driver]]
 
 
+:: Bus in Innsmouth {"position":"6275,2900","size":"100,100"}
+if: !fact busOutOfInnsmouth
+--
+[if fact night]
+Here's your ride out of this town.
+[else]
+It was quite a ride.
+[continue]
+
+> {exit} [[Leave.->Bus in Innsmouth]]
+
+
 :: Buy a Quart of Whisky ($1) {"position":"2375,2400","size":"100,100"}
 takeMoney: 100
 addItem: Quart of Whisky
@@ -233,7 +245,7 @@ takeMoney: 60
 --
 The driver slowly gives you the change, looking at you suspiciously.
 
-> {level:innsmouth,0} [[Board the Bus]]
+> {level:slums-2,2} [[Board the Bus]]
 
 
 :: Hat on a Hook {"position":"4025,2525","size":"100,100"}
@@ -494,7 +506,9 @@ It's the valise you checked in.
 
 
 :: Valise Reminder [once] {"position":"1650,2225","size":"100,100"}
-If you want to explore the town, better check in that valise at the hotel. You can't move freely with it.
+This building has to be Gilman House, the hotel.
+
+If you want to explore the town, better check in that valise. You can't move freely with it.
 
 > {exit} [[Continue.->Valise Reminder]]
 
@@ -511,6 +525,7 @@ If you want to explore the town, better check in that valise at the hotel. You c
 
 :: beach [Level] {"position":"2400,4275","size":"200,100"}
 playMusic: waves
+setFact: busOutOfInnsmouth
 --
 
 
@@ -599,6 +614,7 @@ Most houses are dark except for the weird churches.
 
 :: slums-1 [Level] {"position":"4225,3825","size":"200,100"}
 playMusic: crackle
+setFact: busOutOfInnsmouth
 --
 
 
