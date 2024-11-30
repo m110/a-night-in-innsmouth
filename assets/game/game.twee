@@ -100,6 +100,8 @@ All done.
 
 
 :: Bed {"position":"8775,3500","size":"100,100"}
+setFact: triedToSleep
+--
 [if fact chaseStarted]
 You need to run, no time to sleep!
 [continue]
@@ -289,9 +291,17 @@ Looks pretty solid.
 :: Dresser {"position":"7800,3000","size":"100,100"}
 unless: fact brokeDrawer
 --
+
+[if fact triedToSleep]
 The drawer could be useful.
 
 > [[Take the drawer plank.]]
+[else]
+
+An old dresser.
+
+[continue]
+
 > {exit} [[Leave.->Dresser]]
 
 

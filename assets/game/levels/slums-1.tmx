@@ -6,7 +6,7 @@
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="2" name="Background">
-  <image source="../backgrounds/slums-1.jpg" width="3840" height="2160"/>
+  <image source="../backgrounds/slums-1.webp" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="3" name="Objects">
   <object id="1" name="Trigger: Plank" class="trigger" x="1492" y="1110" width="192" height="472">

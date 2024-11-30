@@ -11,6 +11,9 @@
         "objects"
     ],
     "fileStates": {
+        "": {
+            "scaleInDock": 0.0156
+        },
         "/Users/milosz/src/gamedev/secrets/assets/objects/Objects.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 0.2211
@@ -123,10 +126,10 @@
                 4
             ],
             "scale": 0.1485,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 3606.060606060606,
-                "y": 2441.077441077441
+                "x": 1969.6969696969697,
+                "y": 1491.582491582492
             }
         },
         "levels/beach.tmx": {
@@ -211,11 +214,11 @@
                 4,
                 3
             ],
-            "scale": 0.75,
+            "scale": 0.5,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 448.6666666666667,
-                "y": 1651.333333333333
+                "x": 1959,
+                "y": 1501
             }
         },
         "levels/hotel.tmx": {
@@ -239,10 +242,10 @@
                 4
             ],
             "scale": 0.5625,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
                 "x": 3675.555555555555,
-                "y": 1547.5555555555554
+                "y": 1545.7777777777778
             }
         },
         "levels/objects/Objects.tsx": {
@@ -279,11 +282,11 @@
                 4,
                 3
             ],
-            "scale": 0.376,
+            "scale": 0.25,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 333.7765957446808,
-                "y": 2200.797872340426
+                "x": 1170,
+                "y": 1314
             }
         },
         "levels/slums-2.tmx#Objects": {
@@ -318,7 +321,7 @@
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 1292.4242424242425,
-                "y": 1374.2424242424242
+                "y": 1368.1818181818182
             }
         },
         "levels/zadok-freaked-out.tmx": {
@@ -329,7 +332,7 @@
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 1780.3030303030303,
-                "y": 1446.969696969697
+                "y": 1450
             }
         },
         "levels/zadok.tmx": {
@@ -386,18 +389,18 @@
     "project": "game.tiled-project",
     "property.type": "int",
     "recentFiles": [
+        "levels/slums-2.tmx",
+        "objects/Objects.tsx",
+        "levels/attic.tmx",
+        "levels/bus-station.tmx",
+        "levels/hotel-hall.tmx",
+        "levels/rooftops.tmx",
+        "levels/hotel-room.tmx",
+        "levels/hotel.tmx",
         "levels/bridge.tmx",
         "levels/tracks.tmx",
         "levels/zadok.tmx",
-        "levels/train-station.tmx",
-        "levels/zadok-freaked-out.tmx",
-        "levels/hotel-hall.tmx",
-        "levels/attic.tmx",
-        "levels/grocery-npc.tmx",
-        "levels/bus-station.tmx",
-        "levels/hotel-room.tmx",
-        "objects/Objects.tsx",
-        "levels/innsmouth.tmx"
+        "levels/train-station.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.type": 1

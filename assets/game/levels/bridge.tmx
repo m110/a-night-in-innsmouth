@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="2" name="Background">
-  <image source="../backgrounds/bridge.jpg" width="7680" height="2160"/>
+  <image source="../backgrounds/bridge.webp" width="7680" height="2160"/>
  </imagelayer>
  <objectgroup id="5" name="Objects">
   <object id="6" name="Entrypoint" class="entrypoint" gid="1" x="129" y="1910" width="400" height="687.17"/>

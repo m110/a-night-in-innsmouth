@@ -4,6 +4,6 @@
   <property name="outdoor" type="bool" value="true"/>
  </properties>
  <imagelayer id="2" name="Background">
-  <image source="../backgrounds/slums-crossroads.jpeg" width="3072" height="1728"/>
+  <image source="../backgrounds/slums-crossroads.webp" width="3072" height="1728"/>
  </imagelayer>
 </map>

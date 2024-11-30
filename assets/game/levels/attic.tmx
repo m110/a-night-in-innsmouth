@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="2" name="Background">
-  <image source="../backgrounds/attic.jpg" width="3840" height="2160"/>
+  <image source="../backgrounds/attic.webp" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="5" name="Objects">
   <object id="16" name="Limits" class="limits" x="162" y="422" width="2421" height="1557"/>

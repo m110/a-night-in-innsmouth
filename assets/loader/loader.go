@@ -17,6 +17,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
 	"github.com/lafriks/go-tiled"
 	"github.com/yohamta/donburi/features/math"
+	_ "golang.org/x/image/webp"
 
 	"github.com/m110/secrets/assets/twine"
 	"github.com/m110/secrets/domain"
@@ -24,10 +25,14 @@ import (
 )
 
 var (
+	// TODO could refactor into struct instead of a global variable
 	levelNames = map[string]struct{}{}
 
 	// TODO could refactor into struct instead of a global variable
 	characterCollider *engine.Rect
+
+	// TODO could refactor into struct instead of a global variable
+	tilesetCache = map[string]map[string]*ebiten.Image{}
 )
 
 func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, error) {
@@ -59,6 +64,30 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		}
 	}
 
+	progressChan <- "Loading objects"
+	// TODO Make this more generic
+	objects, err := fs.Glob(assetsFS, "game/objects/*.webp")
+	if err != nil {
+		return nil, err
+	}
+	// TODO Make this more generic
+	tilesetCache["Objects.tsx"] = map[string]*ebiten.Image{}
+
+	for _, o := range objects {
+		content, err := fs.ReadFile(assetsFS, o)
+		if err != nil {
+			return nil, err
+		}
+
+		name := path.Base(o)
+
+		// TODO Make this more generic
+		tilesetCache["Objects.tsx"][name], err = newImageFromBytes(content)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load object: %v: %w", name, err)
+		}
+	}
+
 	progressChan <- "Loading levels"
 	characterHeight := float64(character[2].Bounds().Dy())
 	levels, err := loadLevels(assetsFS, characterHeight, progressChan)
@@ -77,7 +106,7 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		return nil, err
 	}
 
-	titleBackground, err := fs.ReadFile(assetsFS, "game/backgrounds/title.jpg")
+	titleBackground, err := fs.ReadFile(assetsFS, "game/backgrounds/title.webp")
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +115,7 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		return nil, err
 	}
 
-	nightOverlay, err := fs.ReadFile(assetsFS, "game/backgrounds/night-overlay.png")
+	nightOverlay, err := fs.ReadFile(assetsFS, "game/backgrounds/night-overlay.webp")
 	if err != nil {
 		return nil, err
 	}
@@ -265,7 +294,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 
 	levelName := strings.TrimSuffix(path.Base(levelPath), ".tmx")
 
-	tilesetImages := map[uint32]*ebiten.Image{}
+	tilesetImages := map[uint32]string{}
 	for _, ts := range levelMap.Tilesets {
 		if ts.Image != nil {
 			// Only collection of images supported for now
@@ -286,19 +315,8 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 					}
 				}
 
-				p := path.Join("game/levels", path.Dir(ts.Source), tile.Image.Source)
-				imgBytes, err := fs.ReadFile(assetsFS, p)
-				if err != nil {
-					return domain.Level{}, err
-				}
-
 				globalID := ts.FirstGID + tile.ID
-				img, err := newImageFromBytes(imgBytes)
-				if err != nil {
-					return domain.Level{}, err
-				}
-
-				tilesetImages[globalID] = img
+				tilesetImages[globalID] = path.Base(tile.Image.Source)
 			}
 		}
 	}
@@ -342,10 +360,12 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 	for _, o := range levelMap.ObjectGroups {
 		for _, obj := range o.Objects {
 			if obj.Class == "object" {
-				img, ok := tilesetImages[obj.GID]
+				imgName, ok := tilesetImages[obj.GID]
 				if !ok {
 					return domain.Level{}, errors.New(fmt.Sprintf("object not found: %v on level %v", obj.GID, levelPath))
 				}
+
+				img := tilesetCache["Objects.tsx"][imgName]
 				domainObj := loadObject(img, o, obj)
 				objects = append(objects, domainObj)
 			}
@@ -388,11 +408,12 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 					// Image-based objects have pivot set to bottom-left
 					// Other objects have pivot set to top-left
 					object.Position.Y -= obj.Height
-					img, ok := tilesetImages[obj.GID]
+					imgName, ok := tilesetImages[obj.GID]
 					if !ok {
 						return domain.Level{}, fmt.Errorf("object not found: %v", obj.GID)
 					}
-					object.Image = ebiten.NewImageFromImage(img)
+					img := tilesetCache["Objects.tsx"][imgName]
+					object.Image = img
 
 					object.Scale = math.Vec2{
 						X: obj.Width / float64(img.Bounds().Dx()),
@@ -570,7 +591,7 @@ func loadLevel(assetsFS fs.FS, levelPath string, characterHeight float64) (domai
 }
 
 func loadObject(image *ebiten.Image, objectGroup *tiled.ObjectGroup, obj *tiled.Object) domain.Object {
-	objImg := ebiten.NewImageFromImage(image)
+	objImg := image
 	bounds := objImg.Bounds()
 	layer := objectGroup.Properties.GetInt("layer")
 

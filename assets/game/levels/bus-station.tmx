@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="3" name="Background">
-  <image source="../backgrounds/bus.jpg" width="3840" height="2160"/>
+  <image source="../backgrounds/bus.webp" width="3840" height="2160"/>
  </imagelayer>
  <objectgroup id="5" name="Objects">
   <object id="5" name="Exit" class="poi" x="-72" y="912" width="160" height="712">
