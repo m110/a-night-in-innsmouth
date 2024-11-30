@@ -1,9 +1,0 @@
-version: 2
-builds:
-  - goos:
-      - darwin
-      - windows
-
-    goarch:
-      - amd64
-      - arm64

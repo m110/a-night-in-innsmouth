@@ -45,10 +45,6 @@ Zadok takes a sip.
 > {back} [["Thanks."->Agent]]
 
 
-:: ... {"position":"200,3425","size":"100,100"}
-
-
-
 :: Agent {"position":"550,1150","size":"200,100"}
 "Hello, young lad."
 
@@ -74,13 +70,13 @@ THE END
 > [[Finish.->credits]]
 
 
-:: Attic Chest {"position":"7975,2400","size":"100,100"}
+:: Attic Chest {"position":"8150,2100","size":"100,100"}
 It's locked.
 
 > {exit} [[Leave.->Attic Chest]]
 
 
-:: Attic Mirror {"position":"8225,2400","size":"100,100"}
+:: Attic Mirror {"position":"8400,2100","size":"100,100"}
 There's a big mirror covered in dust in the corner.
 
 > [[Look in the mirror.]]
@@ -93,7 +89,7 @@ This... Looks odd.
 > {exit} [[Look away.->Barnacles]]
 
 
-:: Barricade the door {"position":"8225,3150","size":"100,100"}
+:: Barricade the door {"position":"8250,3275","size":"100,100"}
 takeItem: Drawer Plank
 setFact: hotelRoomBarricaded
 --
@@ -103,10 +99,28 @@ All done.
 > {exit} [[Leave.->Barricade the door]]
 
 
-:: Bed {"position":"8650,3000","size":"100,100"}
+:: Bed {"position":"8775,3500","size":"100,100"}
+[if fact chaseStarted]
+You need to run, no time to sleep!
+[continue]
+
+[if !fact chaseStarted && !fact hotelRoomBarricaded]
+[fear]
+You're not really comfortable falling asleep here.
+What if someone tried to rob you?
+
+> [[Go to sleep anyway.]]
+[continue]
+
+[if !fact chaseStarted && fact hotelRoomBarricaded]
+The barricade seems better than nothing. But you're still nervous.
+
+> [[Stay awake.]]
+
+[continue]
 
 
-> {exit} [[Leave.->Bed]]
+> {exit} [[Reconsider.->Bed]]
 
 
 :: Blocked Water Street {"position":"3100,3975","size":"100,100"}
@@ -158,7 +172,7 @@ He gives you a lazy stare.
 > {exit} [[Leave.->Bus Driver]]
 
 
-:: Bus in Innsmouth {"position":"6275,2900","size":"100,100"}
+:: Bus in Innsmouth {"position":"6400,2275","size":"100,100"}
 if: !fact busOutOfInnsmouth
 --
 [if fact night]
@@ -190,15 +204,13 @@ You bought the ticket.
 > [[Fold it and put in the pocket->Agent]]
 
 
-:: Chair {"position":"7000,2975","size":"100,100"}
+:: Chair {"position":"6875,3000","size":"100,100"}
+if: hasItem Valise
+--
+
 A cheap, old chair.
 
-[if hasItem Valise]
 > [[Leave your valise.]]
-[else]
-> [[Take your valise.]]
-[continue]
-
 > {exit} [[Leave.->Chair]]
 
 
@@ -221,7 +233,7 @@ changeCharacterSpeed: 3
 > [["Thank you."->Hotel Clerk]]
 
 
-:: Church Tower {"position":"7450,2600","size":"100,100"}
+:: Church Tower {"position":"7625,2300","size":"100,100"}
 The church tower in the distance.
 
 You can hear disgusting voices coming from there.
@@ -229,7 +241,23 @@ You can hear disgusting voices coming from there.
 > {exit} [[Leave.->Church Tower]]
 
 
-:: Curtains {"position":"7600,3000","size":"100,100"}
+:: Curtains {"position":"7550,3000","size":"100,100"}
+unless: fact curtainsRemoved
+--
+
+[if fact chaseStarted]
+
+This could be useful to get down.
+
+> [[Remove the curtains.]]
+
+[else]
+
+Just regular curtains.
+
+[continue]
+
+
 > {exit} [[Leave.->Curtains]]
 
 
@@ -245,7 +273,15 @@ It's a good metaphor for this entire street.
 if: fact hotelRoomBarricaded
 --
 
+[if fact chaseStarted]
+
+Someone is banging on the door! You have to run!
+
+[else]
+
 Looks pretty solid.
+
+[continue]
 
 > {exit} [[Leave.->Drawer]]
 
@@ -259,7 +295,7 @@ The drawer could be useful.
 > {exit} [[Leave.->Dresser]]
 
 
-:: Enter the room {"position":"5550,2950","size":"100,100"}
+:: Enter the room {"position":"6075,4125","size":"100,100"}
 
 
 
@@ -284,13 +320,22 @@ setFact: hotelRoomBooked
 [continue]
 
 
-:: Go back downstairs {"position":"5900,2950","size":"100,100"}
+:: Go back downstairs {"position":"6425,4125","size":"100,100"}
 
 
 
 :: Go inside {"position":"4200,4275","size":"100,100"}
 
 > {back} [[Nothing to do here->Vacant House]]
+
+
+:: Go to sleep anyway. {"position":"8525,3725","size":"100,100"}
+[effect typing 2s]
+...
+[continue]
+
+> [[...->Sleep 2]]
+
 
 
 :: Hand him money for the ticket. {"position":"2300,1225","size":"100,100"}
@@ -324,6 +369,40 @@ An old hat hangs on the hook in the hotel lobby.
 > {exit} [["Goodbye."->Hotel Clerk]]
 
 
+:: Hotel Fish Sign {"position":"5875,3400","size":"100,100"}
+
+> {exit} [[Leave->Hotel Fish Sign]]
+
+
+:: Hotel Painting {"position":"6075,3400","size":"100,100"}
+
+> {exit} [[Leave->Hotel Painting]]
+
+
+:: Hotel Paper {"position":"6250,3400","size":"100,100"}
+
+> {exit} [[Leave->Hotel Paper]]
+
+
+:: Hotel Room Window {"position":"9300,2925","size":"100,100"}
+if: fact chaseStarted
+--
+
+It seems like your way out.
+
+[if hasItem Curtains]
+[hint]
+These curtains should help you get out safely.
+> [[Use the curtains to get out.]]
+[else]
+[fear]
+It's pretty high. Is there another way?
+> [[Jump out of the window.]]
+[continue]
+
+> {exit} [[Leave.->Hotel Room Window]]
+
+
 :: I want to get to Arkham {"position":"1050,900","size":"100,100"}
 "I got you. The train leaves today. It's $5."
 
@@ -343,12 +422,20 @@ Perhaps you should consider other options.
 > [[I'll think about it->Agent]]
 
 
-:: Leave your valise. {"position":"6900,3175","size":"100,100"}
+:: Jump out of the window. {"position":"9475,3200","size":"100,100"}
+changeCharacterSpeed: -3
+--
+That was painful. Your ankle hurts, and you can't move fast.
+
+> {level:rooftops,0} [[Look around->Jump out of the window.]]
+
+
+:: Leave your valise. {"position":"6875,3275","size":"100,100"}
 takeItem: Valise
 changeCharacterSpeed: 3
 --
 
-You picked up your valise.
+You left your valise by the chair.
 
 > {exit} [[Leave.->Leave your valise.]]
 
@@ -357,14 +444,14 @@ You picked up your valise.
 
 
 
-:: Look for your room {"position":"5675,2775","size":"100,100"}
+:: Look for your room {"position":"6200,3950","size":"100,100"}
 There it is. At the end of the corridor, you see the door to room 428. The smell isn't so bad in this area.
 
 > {level:hotel-room,0} [[Enter the room]]
 > {level:hotel,1} [[Go back downstairs]]
 
 
-:: Look in the mirror. {"position":"8225,2550","size":"100,100"}
+:: Look in the mirror. {"position":"8375,2325","size":"100,100"}
 You look frightened.
 
 Is it your imagination or are your eyes bigger?
@@ -372,19 +459,17 @@ Is it your imagination or are your eyes bigger?
 > {exit} [[Look away.->Look in the mirror.]]
 
 
-:: Option 2 {"position":"650,3775","size":"100,100"}
+:: Remove the curtains. {"position":"7550,3275","size":"100,100"}
+addItem: Curtains
+setFact: curtainsRemoved
+--
+
+You managed to remove the curtains.
+
+> {exit} [[Leave.->Remove the curtains.]]
 
 
-
-:: Option 3 {"position":"775,3775","size":"100,100"}
-
-
-
-:: Option 4 that has a very long description that should probably fit two lines. {"position":"900,3775","size":"100,100"}
-
-
-
-:: Roof Window {"position":"7725,2575","size":"100,100"}
+:: Roof Window {"position":"7975,2325","size":"100,100"}
 The glass is broken but the window is dark. You can't see well inside this house.
 
 > {level:attic,0} [[Jump down->Roof Window]]
@@ -398,7 +483,7 @@ if: fact brokeDrawer && hasItem Drawer Plank
 You can barricade the door now.
 
 > [[Barricade the door]]
-> {exit} [[Leave.->Room Door]]
+> {exit} [[Perhaps later.->Room Door]]
 
 
 :: Room Keys {"position":"5350,2750","size":"100,100"}
@@ -411,10 +496,37 @@ The number keychain reads: 428.
 > {exit} [[Leave the keys->Room Keys]]
 
 
-:: TBA {"position":"200,3250","size":"100,100"}
-...
+:: Room Valise {"position":"7150,3000","size":"100,100"}
+unless: hasItem Valise 
+--
 
-> {exit} [[...]]
+> [[Take your valise.]]
+> {exit} [[Leave.->Room Valise]]
+
+
+:: Sleep 2 {"position":"8525,3900","size":"100,100"}
+[effect typing 2s]
+...
+[continue]
+
+> [[...->Sleep 3]]
+
+
+:: Sleep 3 {"position":"8525,4075","size":"100,100"}
+A loud noise wakes you up. Someone is in the door!
+
+> [[What the...->credits]] 
+
+
+:: Stay awake. {"position":"9000,3725","size":"100,100"}
+setFact: chaseStarted
+--
+
+You lie on the bed, but can't fall asleep.
+
+You hear a noise coming from the door. It's like someone is sneaking near your room.
+
+> [[Wait...]]
 
 
 :: Take a look {"position":"3125,4675","size":"100,100"}
@@ -429,7 +541,7 @@ You took the hat.
 > {exit} [[Leave.]]
 
 
-:: Take the drawer plank. {"position":"7800,3175","size":"100,100"}
+:: Take the drawer plank. {"position":"7825,3275","size":"100,100"}
 addItem: Drawer Plank
 setFact: brokeDrawer
 --
@@ -455,46 +567,14 @@ You take the valise.
 > {exit} [[Leave->Take the valise.]]
 
 
-:: Take your valise. {"position":"7150,3175","size":"100,100"}
+:: Take your valise. {"position":"7150,3275","size":"100,100"}
 addItem: Valise
 changeCharacterSpeed: -3
 --
 
-You left your valise by the chair.
+You picked up your valise.
 
 > {exit} [[Leave.->Take your valise.]]
-
-
-:: Test {"position":"700,3500","size":"100,100"}
-[h1]
-Title of the Passage
-[continue]
-
-[effect typing 1s]
-This is a test.
-[continue]
-
-[effect fade-in 1s,after 1s]
-Lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet.
-[continue]
-
-[hint]
-This is what the boy in the grocery store has been talking about.
-[continue]
-
-[if hasMoney 100]
-[fear]
-This seems like a bad idea. People disappear here.
-[continue]
-
-[effect default 3s]
-Are we clear?
-[continue]
-
-> [[Wait for the train and board it->Train to Arkham]]
-> {exit} [[Option 2]]
-> {exit} [[Option 3]]
-> {exit} [[Option 4 that has a very long description that should probably fit two lines.]]
 
 
 :: Train Sheet {"position":"875,1500","size":"100,100"}
@@ -553,6 +633,12 @@ You take the train. The travel doesn't take long.
 > [[...->Arkham]]
 
 
+:: Use the curtains to get out. {"position":"9200,3200","size":"100,100"}
+You land safely on the roof.
+
+> {level:rooftops,0} [[Look around->Use the curtains to get out.]]
+
+
 :: Vacant House {"position":"4175,4050","size":"100,100"}
 The house is in ruin.
 
@@ -588,6 +674,12 @@ If you want to explore the town, better check in that valise. You can't move fre
 "Look at the ocean..."
 
 > {level:zadok-freaked-out} [[Take a look]]
+
+
+:: Wait... {"position":"9000,3925","size":"100,100"}
+Someone is banging on the door now! Quick, you need to run!
+
+> {exit} [[Get out of the bed.->Wait...]]
 
 
 :: What...? {"position":"2350,5300","size":"100,100"}
@@ -658,12 +750,12 @@ unless: fact night
 > {exit} [[I'll see you later.->grocery-npc]]	
 
 
-:: hotel [Level] {"position":"5375,2350","size":"200,100"}
+:: hotel [Level] {"position":"6125,3250","size":"200,100"}
 unless: fact hotelRoomBarricaded
 --
 
 
-:: hotel-hall [Level] {"position":"5600,2575","size":"200,100"}
+:: hotel-hall [Level] {"position":"6125,3750","size":"200,100"}
 if: hasItem Room Keys	
 --
 [h1]
@@ -675,12 +767,17 @@ The hall is full of dust. A strong fish scent is in the air, stronger under some
 > [[Look for your room]]
 
 
+:: hotel-room [Level] {"position":"7675,2725","size":"200,100"}
+playMusic: crackle
+--
+
+
 :: innsmouth [Level] {"position":"1200,2225","size":"200,100"}
 playMusic:
 --
 
 
-:: rooftops [Level] {"position":"7500,2375","size":"200,100"}
+:: rooftops [Level] {"position":"7675,2075","size":"200,100"}
 setFact: escapedFromHotel
 --
 You can see the town down below.

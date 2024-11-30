@@ -465,7 +465,7 @@ type Link struct {
 }
 
 func (l *Link) Visit() {
-	if l.IsExit() {
+	if l.IsExit() || l.Level != nil {
 		return
 	}
 	l.Visited = true

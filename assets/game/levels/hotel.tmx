@@ -79,7 +79,7 @@
   </properties>
   <object id="44" name="Painting" class="poi" gid="42" x="3001" y="1140" width="89.2335" height="49.0156">
    <properties>
-    <property name="passage" value="TBA"/>
+    <property name="passage" value="Hotel Painting"/>
    </properties>
   </object>
   <object id="45" name="Stairs" class="poi" gid="43" x="3581.64" y="1754.07" width="97.752" height="70.3814">
@@ -106,7 +106,7 @@
   </object>
   <object id="49" name="Paper" class="poi" gid="37" x="1101" y="1529" width="73.3139" height="69.1246">
    <properties>
-    <property name="passage" value="TBA"/>
+    <property name="passage" value="Hotel Paper"/>
    </properties>
   </object>
   <object id="50" name="Hat" class="poi" gid="40" x="394" y="1090" width="57.8133" height="57.8133">
@@ -117,7 +117,7 @@
   </object>
   <object id="51" name="Fish Sign" class="poi" gid="38" x="1837" y="572" width="121.911" height="57.8133">
    <properties>
-    <property name="passage" value="TBA"/>
+    <property name="passage" value="Hotel Fish Sign"/>
    </properties>
   </object>
  </objectgroup>

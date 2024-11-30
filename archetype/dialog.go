@@ -302,10 +302,14 @@ func extendDialogLog(w donburi.World, height float64) float64 {
 	return stackedView.CurrentY
 }
 
-func scrollDialogLog(w donburi.World, y float64) {
+func scrollDialogLog(w donburi.World) {
 	cameraEntry := engine.MustFindWithComponent(w, component.DialogLogCamera)
 	cam := component.Camera.Get(cameraEntry)
 	camHeight := float64(cam.Viewport.Bounds().Dy())
+
+	dialogLog := engine.MustFindWithComponent(w, component.DialogLog)
+	stackedView := component.StackedView.Get(dialogLog)
+	y := stackedView.CurrentY
 
 	game := component.MustFindGame(w)
 
@@ -487,7 +491,7 @@ func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options Paragr
 
 	optionTextHeight := MeasureTextHeight(entry)
 	height := passageMarginTop + optionTextHeight
-	logY := extendDialogLog(w, height)
+	extendDialogLog(w, height)
 
 	switch paragraph.Align {
 	case domain.ParagraphAlignCenter:
@@ -565,7 +569,7 @@ func AddLogParagraph(w donburi.World, paragraph domain.Paragraph, options Paragr
 			}
 
 			if !options.SkipScroll {
-				scrollDialogLog(w, logY)
+				scrollDialogLog(w)
 			}
 		},
 		OnStop: func(e *donburi.Entry) {

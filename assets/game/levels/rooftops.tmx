@@ -27,6 +27,9 @@
  </objectgroup>
  <objectgroup id="5" name="POIs"/>
  <objectgroup id="4" name="Foreground Objects">
+  <properties>
+   <property name="layer" type="int" value="130"/>
+  </properties>
   <object id="8" name="Chimney" class="object" gid="27" x="1658" y="1914" width="334" height="713"/>
  </objectgroup>
 </map>
