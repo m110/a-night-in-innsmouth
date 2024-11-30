@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="8" nextobjectid="51">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="8" nextobjectid="53">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <tileset firstgid="67" source=":/automap-tiles.tsx"/>
@@ -31,10 +31,9 @@
  </objectgroup>
  <objectgroup id="4" name="Background Objects">
   <object id="27" name="Curtains" class="object" gid="63" x="515" y="1688" width="1043" height="1181"/>
-  <object id="28" name="Curtains Holder" class="poi" x="590" y="524" width="830" height="96">
+  <object id="28" name="Trigger: Curtains" class="trigger" x="590" y="524" width="830" height="96">
    <properties>
-    <property name="parentObject" type="object" value="27"/>
-    <property name="passage" value="Curtains"/>
+    <property name="poi" type="object" value="52"/>
    </properties>
   </object>
   <object id="30" name="Dresser" class="object" gid="65" x="1532" y="1648" width="705" height="571"/>
@@ -81,6 +80,12 @@
   <object id="8" name="Chair" class="poi" gid="6" x="306.458" y="1454.19" width="187.598" height="277.18">
    <properties>
     <property name="passage" value="Chair"/>
+   </properties>
+  </object>
+  <object id="52" name="Curtains" class="poi" gid="38" x="625" y="596" width="97" height="46">
+   <properties>
+    <property name="parentObject" type="object" value="27"/>
+    <property name="passage" value="Curtains"/>
    </properties>
   </object>
  </objectgroup>
