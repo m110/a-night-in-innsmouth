@@ -614,7 +614,7 @@ func loadSounds(assetsFS fs.FS) (domain.Sounds, error) {
 	sounds := domain.Sounds{}
 
 	var err error
-	sounds.Click1, err = loadMP3Stream(assetsFS, "audio/sounds/click-1.mp3")
+	sounds.Click1, err = loadMP3Stream(assetsFS, "game/audio/sounds/click-1.mp3")
 	if err != nil {
 		return sounds, err
 	}
@@ -625,7 +625,7 @@ func loadSounds(assetsFS fs.FS) (domain.Sounds, error) {
 func loadMusic(assetsFS fs.FS) (map[string][]byte, error) {
 	music := map[string][]byte{}
 
-	files, err := fs.ReadDir(assetsFS, "audio/music")
+	files, err := fs.ReadDir(assetsFS, "game/audio/music")
 	if err != nil {
 		return nil, err
 	}
@@ -638,7 +638,7 @@ func loadMusic(assetsFS fs.FS) (map[string][]byte, error) {
 		fileName := f.Name()
 		ext := path.Ext(fileName)
 		if ext == ".mp3" {
-			data, err := loadMP3Stream(assetsFS, path.Join("audio/music", fileName))
+			data, err := loadMP3Stream(assetsFS, path.Join("game/audio/music", fileName))
 			if err != nil {
 				return nil, err
 			}

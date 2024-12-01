@@ -1,5 +1,17 @@
 # secrets
 
+This game has been created for the [GitHub Game Off 2024](https://itch.io/jam/game-off-2024).
+
+All graphical assets were created by [Małgorzata Bocian](https://www.behance.net/gosiabocianart).
+The game engine was created by Miłosz Smółka (me).
+
+## License
+
+The game code is licensed under the MIT License.
+The assets in the `assets/game` directory are protected by copyright law.
+
+In short, feel free to use the engine to create your own game, but bring your own assets and story.
+
 ## Editor
 
 The game files are made of two kinds of files: story and levels.
@@ -155,5 +167,3 @@ You can add tags in the Twine editor on the passage level.
 | object      |
 | poi         |
 | trigger     |
-
-

@@ -16,9 +16,8 @@ var (
 	//go:embed fonts/UndeadPixelLight.ttf
 	normalFontData []byte
 
-	// TODO reconsider the directory structure
-	//go:embed *
-	assetsFS embed.FS
+	//go:embed game/*
+	gameAssetsFS embed.FS
 
 	SmallFont  *text.GoTextFace
 	NormalFont *text.GoTextFace
@@ -43,7 +42,7 @@ func LoadAssets(progressChan chan<- string, errorChan chan<- error) {
 		return
 	}
 
-	assets, err := loader.LoadAssets(assetsFS, progressChan)
+	assets, err := loader.LoadAssets(gameAssetsFS, progressChan)
 	if err != nil {
 		errorChan <- err
 		return
