@@ -339,6 +339,12 @@ An old dresser.
 > {exit} [[Leave.->Dresser]]
 
 
+:: End of Tracks {"position":"4925,5225","size":"100,100"}
+You see something at the reef.
+
+> {level:fishpeople} [[What the...->End of Tracks]]
+
+
 :: Enter the room {"position":"6075,4125","size":"100,100"}
 
 
@@ -698,6 +704,12 @@ You take the train. The travel doesn't take long.
 > [[...->Arkham]]
 
 
+:: Try to run away {"position":"5925,5050","size":"100,100"}
+They saw you!
+
+> [[Ohhh...->credits]]
+
+
 :: Use the curtains to get out. {"position":"9200,3200","size":"100,100"}
 You land safely on the roof.
 
@@ -748,6 +760,12 @@ setFact: chaseStarted
 Someone is banging on the door now! Quick, you need to run!
 
 > {exit} [[Get out of the bed.->Wait...]]
+
+
+:: Wear the hat {"position":"5575,5025","size":"100,100"}
+It seemes to have worked.
+
+> {exit} [[...->Wear the hat]]
 
 
 :: What...? {"position":"2350,5300","size":"100,100"}
@@ -806,10 +824,10 @@ by Howard Phillips Lovecraft
 > {main-menu} [[Back to Main Menu->credits]]
 
 
-:: fishpeople [Level] {"position":"6000,4775","size":"200,100"}
+:: fishpeople [Level] {"position":"5375,5350","size":"200,100"}
 ...
 
-> {exit} [[...->fishpeople]]
+> {level:tracks-sunrise} [[...->fishpeople]]
 
 
 :: grocery-npc [Level] {"position":"2250,2200","size":"200,100"}
@@ -817,19 +835,19 @@ unless: fact night
 --
 "Hello, mister!"
 
-[unless hasItem Quart of Whisky]
+[if fact talkedWithZadok && !hasItem Quart of Whisky]
 > [[Buy a Quart of Whisky ($1)]]
 [continue]
 
 > {exit} [[I'll see you later.->grocery-npc]]	
 
 
-:: hotel [Level] {"position":"6125,3250","size":"200,100"}
+:: hotel [Level] {"position":"6275,3200","size":"200,100"}
 unless: fact hotelRoomBarricaded
 --
 
 
-:: hotel-hall [Level] {"position":"6125,3750","size":"200,100"}
+:: hotel-hall [Level] {"position":"6400,3725","size":"200,100"}
 if: hasItem Room Keys	
 --
 [h1]
@@ -841,20 +859,48 @@ The hall is full of dust. A strong fish scent is in the air, stronger under some
 > [[Look for your room]]
 
 
-:: hotel-room [Level] {"position":"7675,2725","size":"200,100"}
+:: hotel-room [Level] {"position":"7775,2675","size":"200,100"}
 playMusic: crackle
 --
 
 
 :: innsmouth [Level] {"position":"1200,2225","size":"200,100"}
 playMusic:
+unless: fact escapedFromHotel
 --
 
 
-:: patrol [Level] {"position":"5525,4775","size":"200,100"}
+:: night-at-tracks [Level] {"position":"5800,5350","size":"200,100"}
 ...
 
-> {exit} [[...->patrol]]
+> {level:tracks-sunrise} [[...->night-at-tracks]]
+
+
+:: patrol [Level once] {"position":"5650,4825","size":"200,100"}
+...
+
+[if hasItem Hat]
+[hint]
+You can wear the hat you took from the hotel.
+
+> [[Wear the hat]]
+
+[continue]
+
+> [[Try to run away]]
+
+
+
+
+:: patrol-hotel [Level] {"position":"6125,4825","size":"200,100"}
+if: fact escapedFromHotel
+--
+
+...
+
+> [[Try to run away]]
+
+
 
 
 :: rooftops [Level] {"position":"7675,2075","size":"200,100"}
@@ -914,8 +960,8 @@ You're at crossroads.
 [continue]
 
 
-:: tracks-sunrise [Level] {"position":"1575,575","size":"200,100"}
-
+:: tracks-sunrise [Level] {"position":"6225,5350","size":"200,100"}
+...
 
 > [[Finish.->credits]]
 

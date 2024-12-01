@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="9" nextobjectid="58">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="9" nextobjectid="59">
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
- <tileset firstgid="67" source=":/automap-tiles.tsx"/>
+ <tileset firstgid="68" source=":/automap-tiles.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="../backgrounds/hotel-room.webp" width="3840" height="2160"/>
  </imagelayer>
@@ -10,7 +10,7 @@
   <object id="45" name="Limits" class="limits" x="142" y="608" width="2742" height="1106.83"/>
   <object id="46" name="Trigger: Window" class="trigger" x="789.177" y="631" width="445.823" height="634.592">
    <properties>
-    <property name="poi" type="object" value="25"/>
+    <property name="poi" type="object" value="58"/>
    </properties>
   </object>
   <object id="47" name="Bed POI Trigger" class="trigger" x="2261" y="1254" width="1286" height="662">
@@ -77,12 +77,6 @@
     <property name="passage" value="Drawer"/>
    </properties>
   </object>
-  <object id="25" name="Window" class="poi" gid="36" x="789.522" y="1234.94" width="249.192" height="194.175">
-   <properties>
-    <property name="level" value=""/>
-    <property name="passage" value="Hotel Room Window"/>
-   </properties>
-  </object>
   <object id="52" name="Curtains" class="poi" gid="38" x="625" y="596" width="97" height="46">
    <properties>
     <property name="parentObject" type="object" value="27"/>
@@ -90,6 +84,11 @@
    </properties>
   </object>
   <object id="55" name="Valise Parent" class="object" gid="57" x="281" y="1493" width="335" height="318"/>
+  <object id="58" name="Window" class="poi" gid="42" x="1064" y="1251" width="174.769" height="96">
+   <properties>
+    <property name="passage" value="Hotel Room Window"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="8" name="POIs Top">
   <properties>

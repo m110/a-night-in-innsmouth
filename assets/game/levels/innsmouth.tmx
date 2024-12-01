@@ -4,7 +4,7 @@
   <property name="outdoor" type="bool" value="true"/>
  </properties>
  <tileset firstgid="1" source="../objects/Objects.tsx"/>
- <tileset firstgid="66" source="../character/Character.tsx"/>
+ <tileset firstgid="67" source="../character/Character.tsx"/>
  <imagelayer id="2" name="Background">
   <image source="../backgrounds/innsmouth.webp" width="3840" height="2160"/>
  </imagelayer>
@@ -37,8 +37,8 @@
     <property name="touchTrigger" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="45" name="Entrypoint 0" class="entrypoint" gid="66" x="413" y="1867" width="353" height="606.428"/>
-  <object id="46" name="Entrypoint 1" class="entrypoint" gid="2147483714" x="3082" y="1855" width="353" height="606.428">
+  <object id="45" name="Entrypoint 0" class="entrypoint" gid="67" x="413" y="1867" width="353" height="606.428"/>
+  <object id="46" name="Entrypoint 1" class="entrypoint" gid="2147483715" x="3082" y="1855" width="353" height="606.428">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="1"/>
