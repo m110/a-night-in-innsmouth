@@ -117,6 +117,7 @@ func (g *Game) createWorld() donburi.World {
 	builder.Create()
 	g.createInventory(world, ui)
 
+	// TODO: Not generic, should be moved to some config
 	story.AddMoney(1000)
 	story.AddItem("Valise")
 
@@ -131,11 +132,7 @@ func (g *Game) createWorld() donburi.World {
 	cam.TransitionAlpha = 1.0
 	archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 1, ui)
 
-	entrypoint := 0
-	archetype.ChangeLevel(world, domain.TargetLevel{
-		Name:       "slums-2",
-		Entrypoint: &entrypoint,
-	})
+	archetype.ChangeLevel(world, story.StartLevel)
 
 	// TODO a hack to not show the initial money/item received event
 	domain.MoneyReceivedEvent.ProcessEvents(world)

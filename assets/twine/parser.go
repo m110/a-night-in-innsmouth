@@ -1,6 +1,7 @@
 package twine
 
 import (
+	"encoding/json"
 	"regexp"
 	"strconv"
 	"strings"
@@ -8,6 +9,10 @@ import (
 
 	"github.com/m110/secrets/domain"
 )
+
+type StoryData struct {
+	Start string `json:"start"`
+}
 
 // ParseStory parses the complete story text
 func ParseStory(content string) (domain.RawStory, error) {
@@ -36,6 +41,27 @@ func ParseStory(content string) (domain.RawStory, error) {
 		}
 
 		if firstLine == "StoryData" {
+			var data StoryData
+			err := json.Unmarshal([]byte(strings.Join(lines[1:], "\n")), &data)
+			if err != nil {
+				return domain.RawStory{}, err
+			}
+
+			parts := strings.Split(data.Start, ",")
+			var entrypoint *int
+			if len(parts) == 2 {
+				e, err := strconv.Atoi(strings.TrimSpace(parts[1]))
+				if err != nil {
+					panic(err)
+				}
+				entrypoint = &e
+			}
+
+			story.StartLevel = domain.TargetLevel{
+				Name:       parts[0],
+				Entrypoint: entrypoint,
+			}
+
 			continue
 		}
 

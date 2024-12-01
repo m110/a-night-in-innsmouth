@@ -14,8 +14,9 @@ const (
 )
 
 type RawStory struct {
-	Title    string
-	Passages []RawPassage
+	Title      string
+	Passages   []RawPassage
+	StartLevel TargetLevel
 }
 
 type RawPassage struct {
@@ -87,8 +88,9 @@ type CharacterPosition struct {
 type Story struct {
 	world donburi.World
 
-	Title    string
-	Passages map[string]*Passage
+	Title      string
+	Passages   map[string]*Passage
+	StartLevel TargetLevel
 
 	Money int
 	Items []Item
@@ -102,10 +104,11 @@ type Item struct {
 
 func NewStory(w donburi.World, rawStory RawStory) *Story {
 	story := &Story{
-		world: w,
-		Title: rawStory.Title,
-		Items: []Item{},
-		Facts: map[string]bool{},
+		world:      w,
+		Title:      rawStory.Title,
+		StartLevel: rawStory.StartLevel,
+		Items:      []Item{},
+		Facts:      map[string]bool{},
 	}
 
 	passagesMap := map[string]*Passage{}

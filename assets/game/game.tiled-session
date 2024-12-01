@@ -309,6 +309,7 @@
         },
         "levels/slums-2.tmx": {
             "expandedObjectLayers": [
+                7,
                 6,
                 5,
                 4,
@@ -317,8 +318,8 @@
             "scale": 0.125,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1020,
-                "y": 2676
+                "x": 2436,
+                "y": 1868
             }
         },
         "levels/slums-2.tmx#Objects": {

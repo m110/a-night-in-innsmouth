@@ -13,10 +13,9 @@ import (
 func main() {
 	quickFlag := flag.Bool("quick", false, "quick mode")
 	flag.Parse()
-	_ = quickFlag
 
 	config := game.Config{
-		Quick: true,
+		Quick: *quickFlag,
 	}
 
 	ebiten.SetVsyncEnabled(true)
