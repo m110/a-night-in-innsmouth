@@ -23,7 +23,9 @@ takeItem: Quart of Whisky
 
 Zadok takes a sip.
 
-> [[Wait.->Wait for Zadok]]
+"This reef... The Devil Reef... Is not what you think it is."
+
+> [[Let him speak.->Wait for Zadok]]
 
 
 :: "I need a room for the night." {"position":"5125,2700","size":"100,100"}
@@ -69,6 +71,17 @@ setFact: brokenBus
 "Whatever you plan, I would not sleep at Gilman House, the town's hotel. I've heard of guests disappearing."
 
 > {back} [["Thanks."->Agent]]
+
+
+:: "Where is everyone?" {"position":"2175,2450","size":"100,100"}
+setFact: askedGroceryBoy
+--
+
+"I'm not sure. I'm not a citizen, just working here."
+
+"If you want news, the old drunkard, Zadok Allen is the one you want to speak to."
+
+> {back} [["All right."->grocery-npc]]
 
 
 :: Agent {"position":"550,1150","size":"200,100"}
@@ -159,16 +172,16 @@ You're probably not welcome here.
 
 
 :: Board {"position":"2775,2400","size":"100,100"}
-"Campbell's Tomato Soup - 10 cents"
+"VEGETABLE SOUP WITH CRACKERS - 10 CENTS"
 
 > {exit} [[Perhaps later.->Board]]
 
 
-:: Board the Bus {"position":"2300,1350","size":"100,100"}
+:: Board the Bus {"position":"2300,1375","size":"100,100"}
 
 
 
-:: Board the bus to Arkham. {"position":"3925,3100","size":"100,100"}
+:: Board the bus to Arkham. (60 cents) {"position":"3925,3100","size":"100,100"}
 takeMoney: 60
 --
 You arrive at Arkham.
@@ -202,7 +215,7 @@ The weird looking man must be the bus' driver.
 He gives you a lazy stare.
 
 [if fact learnedAboutInnsmouth]
-> [[Hand him money for the ticket.]]
+> [[Hand him money for the ticket. (60 cents)]]
 [continue]
 
 > {exit} [[Leave.->Bus Driver]]
@@ -374,12 +387,7 @@ setFact: hotelRoomBooked
 
 
 
-:: Go inside {"position":"4200,4275","size":"100,100"}
-
-> {back} [[Nothing to do here->Vacant House]]
-
-
-:: Hand him money for the ticket. {"position":"2300,1225","size":"100,100"}
+:: Hand him money for the ticket. (60 cents) {"position":"2300,1225","size":"100,100"}
 takeMoney: 60
 --
 The driver slowly gives you the change, looking at you suspiciously.
@@ -410,17 +418,20 @@ An old hat hangs on the hook in the hotel lobby.
 > {exit} [["Goodbye."->Hotel Clerk]]
 
 
-:: Hotel Fish Sign {"position":"5875,3400","size":"100,100"}
+:: Hotel Fish Sign {"position":"6675,3400","size":"100,100"}
+A weird choice of decoration.
 
 > {exit} [[Leave->Hotel Fish Sign]]
 
 
-:: Hotel Painting {"position":"6075,3400","size":"100,100"}
+:: Hotel Painting {"position":"6475,3400","size":"100,100"}
+This has to be the town's harbor.
 
 > {exit} [[Leave->Hotel Painting]]
 
 
 :: Hotel Paper {"position":"6250,3400","size":"100,100"}
+The newspaper is from the last month.
 
 > {exit} [[Leave->Hotel Paper]]
 
@@ -544,7 +555,7 @@ if: fact talkedWithZadok && !fact escapedFromHotel
 
 "We take off shortly."
 
-> [[Board the bus to Arkham.]]
+> [[Board the bus to Arkham. (60 cents)]]
 
 [continue]
 
@@ -719,8 +730,7 @@ You land safely on the roof.
 :: Vacant House {"position":"4175,4050","size":"100,100"}
 The house is in ruin.
 
-> [[Go inside]]
-> {exit} [[Leave it be->Vacant House]]
+> {exit} [[Leave it be.->Vacant House]]
 
 
 :: Vacant House 2 {"position":"3500,4000","size":"100,100"}
@@ -778,46 +788,32 @@ setFact: busOutOfInnsmouth
 --
 
 
-:: credits {"position":"4575,350","size":"100,100"}
+:: credits {"position":"4650,275","size":"100,100"}
 [h1,center]
-- Innsmouth Game Name -
+- A Night in Innsmouth -
 [continue]
 
 [center,after 2s]
 Made by
 [continue]
 
-[center,after 1s]
-Author 1
-[continue]
-[center]
-ROLE
+[center,after 1s,effect typing 2s]
+Malgorzata Bocian (Art & Story)
 [continue]
 
-[center,after 1s]
-Author 2
-[continue]
-[center]
-ROLE
-[continue]
-
-[center,after 1s]
-Special thanks to
-[continue]
-[center]
-A
-B
-C
-D
+[center,after 1s, effect typing 2s]
+Milosz Smolka (Code & Story)
 [continue]
 
 [center,after 1s]
 Based on
 [continue]
 [center]
-The Shadow Over Inssmouth
+[effect typing 2s]
+The Shadow Over Innsmouth
 [continue]
 [center]
+[effect typing 2s]
 by Howard Phillips Lovecraft
 [continue]
 
@@ -825,7 +821,23 @@ by Howard Phillips Lovecraft
 
 
 :: fishpeople [Level] {"position":"5375,5350","size":"200,100"}
-...
+[effect typing 3s]
+WHAT
+[continue]
+
+[effect typing 3s]
+IS THIS
+[continue]
+
+[effect typing 3s]
+GOD PLEASE
+[continue]
+
+[effect typing 3s]
+[center]
+HELP
+[continue]
+
 
 > {level:tracks-sunrise} [[...->fishpeople]]
 
@@ -833,13 +845,20 @@ by Howard Phillips Lovecraft
 :: grocery-npc [Level] {"position":"2250,2200","size":"200,100"}
 unless: fact night
 --
+[h1]
+[center]
+Grocery Boy
+[continue]
+
 "Hello, mister!"
+
+> [["Where is everyone?"]]
 
 [if fact talkedWithZadok && !hasItem Quart of Whisky]
 > [[Buy a Quart of Whisky ($1)]]
 [continue]
 
-> {exit} [[I'll see you later.->grocery-npc]]	
+> {exit} [["I'll see you later".->grocery-npc]]	
 
 
 :: hotel [Level] {"position":"6275,3200","size":"200,100"}
@@ -871,13 +890,13 @@ unless: fact escapedFromHotel
 
 
 :: night-at-tracks [Level] {"position":"5800,5350","size":"200,100"}
-...
+You black out.
 
 > {level:tracks-sunrise} [[...->night-at-tracks]]
 
 
 :: patrol [Level once] {"position":"5650,4825","size":"200,100"}
-...
+There's a chase after you!
 
 [if hasItem Hat]
 [hint]
@@ -896,7 +915,7 @@ You can wear the hat you took from the hotel.
 if: fact escapedFromHotel
 --
 
-...
+There's a chase after you!
 
 > [[Try to run away]]
 
@@ -960,10 +979,12 @@ You're at crossroads.
 [continue]
 
 
-:: tracks-sunrise [Level] {"position":"6225,5350","size":"200,100"}
-...
+:: tracks-sunrise [Level] {"position":"6350,5350","size":"200,100"}
+You wake up by the sea.
 
-> [[Finish.->credits]]
+Was that a dream, or did you just...?
+
+> [[...->credits]]
 
 
 :: train-station,0 [Level once] {"position":"550,325","size":"200,100"}
@@ -990,13 +1011,19 @@ You were told the best way there is taking the steam train.
 unless: fact night
 setFact: talkedWithZadok
 --
+[if fact askedGroceryBoy]
 [h1]
 Zadok Allen
 [continue]
 
-[if hasMoney 1]
+[if fact askedGroceryBoy]
 [hint]
-You recognize this man as Zadok, the drunk who the boy told you about.
+You recognize this man as Zadok, the drunkard who the grocery boy told you about.
+
+[else]
+
+A very old man sits alone by the sea.
+
 [continue]
 
 "What do you want?"
@@ -1012,6 +1039,6 @@ You recognize this man as Zadok, the drunk who the boy told you about.
 setFact: night
 setFact: heardZadokStory
 --
-"GOD HELP US! RUN!"
+"GOD HELP US! THEY ARE COMING! RUN!"
 
 > {exit} [[What...?]]

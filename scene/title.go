@@ -29,6 +29,7 @@ type Title struct {
 	screenHeight int
 
 	switchToGameFunc func()
+	inTransition     bool
 }
 
 func NewTitle(screenWidth int, screenHeight int, switchToGame func()) *Title {
@@ -170,6 +171,12 @@ func (t *Title) switchToGame() {
 }
 
 func (t *Title) startTransition() {
+	if t.inTransition {
+		return
+	}
+
+	t.inTransition = true
+
 	uiCamera, ok := donburi.NewQuery(filter.Contains(component.Camera)).First(t.world)
 	if !ok {
 		panic("no camera found")
