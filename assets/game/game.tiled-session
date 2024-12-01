@@ -125,11 +125,11 @@
                 5,
                 4
             ],
-            "scale": 0.1485,
-            "selectedLayer": 0,
+            "scale": 0.25,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 1969.6969696969697,
-                "y": 1491.582491582492
+                "x": 1374,
+                "y": 1202
             }
         },
         "levels/beach.tmx": {
@@ -225,8 +225,8 @@
             "scale": 0.33,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 1783.3333333333333,
-                "y": 1519.6969696969697
+                "x": 1159.0909090909092,
+                "y": 1092.4242424242425
             }
         },
         "levels/hotel.tmx": {
@@ -299,6 +299,14 @@
         },
         "levels/slums-2.tmx#Objects": {
             "scaleInDock": 0.0156
+        },
+        "levels/slums-3.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": -304.5454545454545,
+                "y": 1471.2121212121212
+            }
         },
         "levels/slums-crossroads.tmx": {
             "scale": 0.1814,

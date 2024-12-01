@@ -6,7 +6,7 @@
   <image source="../backgrounds/tracks.webp" width="7680" height="2160"/>
  </imagelayer>
  <objectgroup id="3" name="Objects">
-  <object id="1" name="Entrypoint 1" class="entrypoint" gid="1" x="104" y="1920" width="456.364" height="784"/>
+  <object id="1" name="Entrypoint 1" class="entrypoint" gid="1" x="106" y="1915" width="456.364" height="784"/>
   <object id="4" name="Exit" class="poi" x="7513" y="1399" width="127" height="657">
    <properties>
     <property name="edge" propertytype="edge" value="right"/>

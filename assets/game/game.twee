@@ -809,6 +809,11 @@ playMusic: crackle
 --
 
 
+:: slums-3 [Level] {"position":"3725,3750","size":"200,100"}
+playMusic: waves
+--
+
+
 :: slums-crossroads [Level] {"position":"3050,3850","size":"200,100"}
 You're at crossroads.
 
@@ -816,7 +821,7 @@ You're at crossroads.
 > {level:slums-2,0} [[Main Street->slums-crossroads]]
 
 [if fact escapedFromHotel]
-> {level:tracks,0} [[Water Street->slums-crossroads]]
+> {level:slums-3,0} [[Water Street->slums-crossroads]]
 [else]
 > [[Water Street->Blocked Water Street]]
 [continue]

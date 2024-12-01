@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="4" nextobjectid="5">
+ <tileset firstgid="1" source="../character/Character.tsx"/>
+ <imagelayer id="2" name="Background">
+  <image source="../backgrounds/slums-3.webp" width="7680" height="2160"/>
+ </imagelayer>
+ <objectgroup id="3" name="Objects">
+  <object id="1" name="Entrypoint" class="entrypoint" gid="1" x="24" y="1912" width="398.737" height="685"/>
+  <object id="2" name="Exit" class="poi" x="7391" y="1233" width="212" height="758">
+   <properties>
+    <property name="edge" propertytype="edge" value="right"/>
+    <property name="level" value="tracks,0"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
