@@ -9,6 +9,10 @@ The game engine was created by Miłosz Smółka (me) in Go using [Ebitengine](ht
 
 State: an early prototype. The gameplay is mostly there, but the story is quite minimal, with many dialogs missing. To be added. :)
 
+Controls: Arrow keys/WASD + Mouse/Touch
+
+Cheat / Debug mode: Slash (`/`) or one long click followed by two very short clicks.
+
 ## License
 
 The game code is licensed under the MIT License.
