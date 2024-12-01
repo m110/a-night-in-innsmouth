@@ -33,8 +33,34 @@ Zadok takes a sip.
 > [["Give me a minute."->Hotel Clerk]]
 
 
+:: "I'll wait." {"position":"4175,3350","size":"100,100"}
+"You sure? Already done exploring?"
+
+> [["I'm sure."]] 
+> {exit} [["Actually, I'll look around."->"I'll wait."]]
+
+
+:: "I'm sure." {"position":"3950,3550","size":"100,100"}
+setFact: night
+--
+The driver gives you a weird look.
+
+> {level:slums-2,2} [[Wait for evening here.->"I'm sure."]]
+
+
 :: "Nothing." {"position":"2300,4875","size":"100,100"}
 
+
+
+:: "What? What do I do now?" {"position":"3600,3450","size":"100,100"}
+setFact: brokenBus
+--
+
+"You may need to spend the night at Gilman House. They should give you a good price."
+
+"Again, I'm really sorry."
+
+> {exit} [[Leave.->"What? What do I do now?"]]
 
 
 :: "When does it leave?" {"position":"1150,1075","size":"100,100"}
@@ -83,7 +109,7 @@ There's a big mirror covered in dust in the corner.
 > {exit} [[Leave.->Attic Mirror]]
 
 
-:: Barnacles {"position":"4650,4025","size":"100,100"}
+:: Barnacles {"position":"4700,4050","size":"100,100"}
 This... Looks odd.
 
 > {exit} [[Look away.->Barnacles]]
@@ -125,7 +151,7 @@ The barricade seems better than nothing. But you're still nervous.
 > {exit} [[Reconsider.->Bed]]
 
 
-:: Blocked Water Street {"position":"3100,3975","size":"100,100"}
+:: Blocked Water Street {"position":"2950,4025","size":"100,100"}
 A group of people stays in your way.
 You're probably not welcome here.
 
@@ -140,6 +166,14 @@ You're probably not welcome here.
 
 :: Board the Bus {"position":"2300,1350","size":"100,100"}
 
+
+
+:: Board the bus to Arkham. {"position":"3925,3100","size":"100,100"}
+takeMoney: 60
+--
+You arrive at Arkham.
+
+> [[Finish.->credits]]
 
 
 :: Broken Dresser {"position":"8025,3000","size":"100,100"}
@@ -174,7 +208,7 @@ He gives you a lazy stare.
 > {exit} [[Leave.->Bus Driver]]
 
 
-:: Bus in Innsmouth {"position":"6400,2275","size":"100,100"}
+:: Bus in Innsmouth {"position":"3150,3300","size":"100,100"}
 if: !fact busOutOfInnsmouth
 --
 [if fact night]
@@ -263,7 +297,7 @@ Just regular curtains.
 > {exit} [[Leave.->Curtains]]
 
 
-:: Dead Fish {"position":"4425,4025","size":"100,100"}
+:: Dead Fish {"position":"4475,4075","size":"100,100"}
 A fish carcass rots on the ground. The smell makes your eyes watery.
 
 It's a good metaphor for this entire street.
@@ -363,7 +397,7 @@ An old hat hangs on the hook in the hotel lobby.
 > [[Check in your valise.]]
 [continue]
 
-[if fact night && !fact hotelRoomBooked]
+[if fact night && fact brokenBus && !fact hotelRoomBooked]
 > [["I need a room for the night."]]
 [continue]
 
@@ -468,6 +502,47 @@ setFact: curtainsRemoved
 You managed to remove the curtains.
 
 > {exit} [[Leave.->Remove the curtains.]]
+
+
+:: Return Bus {"position":"3375,3300","size":"100,100"}
+if: fact night && !fact heardZadokStory
+--
+
+The same old, smelly bus. Leaves to Arkham soon.
+
+> {exit} [[Leave.->Return Bus]]
+
+
+:: Return Bus Driver {"position":"3750,3225","size":"100,100"}
+if: fact talkedWithZadok && !fact escapedFromHotel
+--
+
+[if !fact night]
+
+"We take off to Arkham in the evening."
+
+> [["I'll wait."]]
+
+[continue]
+
+
+[if fact night && fact heardZadokStory]
+
+"I'm afraid the engine broke. We can't drive to Arkham tonight."
+
+> [["What? What do I do now?"]]
+
+[continue]
+
+[if fact night && !fact heardZadokStory]
+
+"We take off shortly."
+
+> [[Board the bus to Arkham.]]
+
+[continue]
+
+> {exit} [[Leave.->Return Bus Driver]] 
 
 
 :: Roof Window {"position":"7975,2325","size":"100,100"}
@@ -731,6 +806,12 @@ by Howard Phillips Lovecraft
 > {main-menu} [[Back to Main Menu->credits]]
 
 
+:: fishpeople [Level] {"position":"6000,4775","size":"200,100"}
+...
+
+> {exit} [[...->fishpeople]]
+
+
 :: grocery-npc [Level] {"position":"2250,2200","size":"200,100"}
 unless: fact night
 --
@@ -770,6 +851,12 @@ playMusic:
 --
 
 
+:: patrol [Level] {"position":"5525,4775","size":"200,100"}
+...
+
+> {exit} [[...->patrol]]
+
+
 :: rooftops [Level] {"position":"7675,2075","size":"200,100"}
 setFact: escapedFromHotel
 --
@@ -804,7 +891,7 @@ setFact: busOutOfInnsmouth
 --
 
 
-:: slums-2 [Level] {"position":"3400,3775","size":"200,100"}
+:: slums-2 [Level] {"position":"3275,3100","size":"200,100"}
 playMusic: crackle
 --
 
@@ -814,7 +901,7 @@ playMusic: waves
 --
 
 
-:: slums-crossroads [Level] {"position":"3050,3850","size":"200,100"}
+:: slums-crossroads [Level] {"position":"2825,3775","size":"200,100"}
 You're at crossroads.
 
 > {level:beach,0} [[Beach->slums-crossroads]]
@@ -849,6 +936,7 @@ You were told the best way there is taking the steam train.
 
 :: zadok [Level] {"position":"2250,4675","size":"200,100"}
 unless: fact night
+setFact: talkedWithZadok
 --
 [h1]
 Zadok Allen
@@ -870,6 +958,7 @@ You recognize this man as Zadok, the drunk who the boy told you about.
 
 :: zadok-freaked-out [Level] {"position":"2075,5100","size":"200,100"}
 setFact: night
+setFact: heardZadokStory
 --
 "GOD HELP US! RUN!"
 

@@ -49,7 +49,7 @@
     <property name="index" type="int" value="1"/>
    </properties>
   </object>
-  <object id="37" name="Entry Point 2" class="entrypoint" gid="2147483649" x="2812" y="1910" width="450" height="773.067">
+  <object id="37" name="Entry Point 2" class="entrypoint" gid="2147483649" x="2188" y="1890" width="450" height="773.067">
    <properties>
     <property name="flipY" type="bool" value="true"/>
     <property name="index" type="int" value="2"/>
@@ -68,7 +68,7 @@
     <property name="passage" value="Dead Fish"/>
    </properties>
   </object>
-  <object id="40" name="Barnacles" class="poi" gid="24" x="905" y="1714" width="96" height="231">
+  <object id="40" name="Barnacles" class="poi" gid="24" x="930" y="1753" width="96" height="231">
    <properties>
     <property name="passage" value="Barnacles"/>
    </properties>

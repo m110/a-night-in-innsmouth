@@ -171,11 +171,11 @@
                 5,
                 4
             ],
-            "scale": 0.3882,
+            "scale": 0.25,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2734.4152498712006,
-                "y": 1340.8037094281299
+                "x": 1906,
+                "y": 1158
             }
         },
         "levels/city.tmx": {
@@ -189,6 +189,14 @@
             "viewCenter": {
                 "x": 1445.4545454545455,
                 "y": 1428.787878787879
+            }
+        },
+        "levels/fishpeople.tmx": {
+            "scale": 0.25,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1170,
+                "y": 954
             }
         },
         "levels/grocery-npc.tmx": {
@@ -259,6 +267,14 @@
         "levels/objects/Objects.tsx": {
             "scaleInDock": 1
         },
+        "levels/patrol.tmx": {
+            "scale": 0.125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 300,
+                "y": 540
+            }
+        },
         "levels/rooftops.tmx": {
             "expandedObjectLayers": [
                 4,
@@ -271,16 +287,24 @@
                 "y": 1344.1451346893898
             }
         },
+        "levels/sleep.tmx": {
+            "scale": 0.21375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1920.4678362573097,
+                "y": 1083.0409356725145
+            }
+        },
         "levels/slums-1.tmx": {
             "expandedObjectLayers": [
                 6,
                 3
             ],
-            "scale": 0.4629,
+            "scale": 0.25,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1586.7357960682655,
-                "y": 1344.7828904731045
+                "x": 2722,
+                "y": 926
             }
         },
         "levels/slums-2.tmx": {
@@ -290,15 +314,15 @@
                 4,
                 3
             ],
-            "scale": 0.25,
-            "selectedLayer": 2,
+            "scale": 0.125,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 1170,
-                "y": 1314
+                "x": 1020,
+                "y": 2676
             }
         },
         "levels/slums-2.tmx#Objects": {
-            "scaleInDock": 0.0156
+            "scaleInDock": 0.03125
         },
         "levels/slums-3.tmx": {
             "scale": 0.33,
@@ -321,11 +345,11 @@
                 4,
                 3
             ],
-            "scale": 0.0998,
+            "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2159.318637274549,
-                "y": 3411.823647294589
+                "x": 463.5,
+                "y": 1969.5
             }
         },
         "levels/train-station.tmx": {
@@ -337,7 +361,7 @@
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 1289.3939393939393,
-                "y": 1368.1818181818182
+                "y": 1371.2121212121212
             }
         },
         "levels/zadok-freaked-out.tmx": {

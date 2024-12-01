@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="7" nextobjectid="29">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="8" nextobjectid="34">
  <properties>
   <property name="outdoor" type="bool" value="true"/>
  </properties>
@@ -162,12 +162,19 @@
     <property name="touchTrigger" type="bool" value="true"/>
    </properties>
   </object>
+  <object id="30" name="Return Bus" class="object" gid="115" x="373" y="1863" width="2601" height="998"/>
  </objectgroup>
  <objectgroup id="6" name="POIs">
   <properties>
    <property name="layer" type="int" value="112"/>
   </properties>
-  <object id="18" name="Bus POI" class="poi" gid="91" x="1782" y="1262" width="113" height="57">
+  <object id="31" name="Bus POI" class="poi" gid="91" x="1782" y="1262" width="113" height="57">
+   <properties>
+    <property name="parentObject" type="object" value="30"/>
+    <property name="passage" value="Return Bus"/>
+   </properties>
+  </object>
+  <object id="18" name="Return Bus POI" class="poi" gid="91" x="1782" y="1262" width="113" height="57">
    <properties>
     <property name="parentObject" type="object" value="17"/>
     <property name="passage" value="Bus in Innsmouth"/>
@@ -176,6 +183,18 @@
   <object id="21" name="Plank" class="poi" gid="50" x="2228" y="1341" width="233" height="157">
    <properties>
     <property name="passage" value="Vacant House 2"/>
+   </properties>
+  </object>
+  <object id="32" name="Bus Driver" class="object" gid="124" x="1903.95" y="1839" width="352.048" height="597"/>
+ </objectgroup>
+ <objectgroup id="7" name="POIs Top">
+  <properties>
+   <property name="layer" type="int" value="113"/>
+  </properties>
+  <object id="33" name="Bus Driver POI" class="poi" gid="92" x="2071" y="1445" width="45" height="57">
+   <properties>
+    <property name="parentObject" type="object" value="32"/>
+    <property name="passage" value="Return Bus Driver"/>
    </properties>
   </object>
  </objectgroup>

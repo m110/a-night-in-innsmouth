@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.9" tiledversion="1.9.2" name="Objects" tilewidth="4999" tileheight="1879" tilecount="45" columns="0">
+<tileset version="1.9" tiledversion="1.9.2" name="Objects" tilewidth="4999" tileheight="1879" tilecount="46" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="201" height="1183" source="city-lamp.webp"/>
@@ -135,5 +135,8 @@
  </tile>
  <tile id="64">
   <image width="755" height="563" source="dresser-broken.webp"/>
+ </tile>
+ <tile id="65">
+  <image width="309" height="524" source="bus-driver.webp"/>
  </tile>
 </tileset>
