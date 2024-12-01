@@ -99,7 +99,7 @@ All done.
 > {exit} [[Leave.->Barricade the door]]
 
 
-:: Bed {"position":"8775,3500","size":"100,100"}
+:: Bed {"position":"8800,3500","size":"100,100"}
 setFact: triedToSleep
 --
 [if fact chaseStarted]
@@ -111,13 +111,13 @@ You need to run, no time to sleep!
 You're not really comfortable falling asleep here.
 What if someone tried to rob you?
 
-> [[Go to sleep anyway.]]
+> {level:sleep} [[Go to sleep anyway.->sleep]]
 [continue]
 
 [if !fact chaseStarted && fact hotelRoomBarricaded]
 The barricade seems better than nothing. But you're still nervous.
 
-> [[Stay awake.]]
+> {level:sleep} [[Stay awake.->sleep]]
 
 [continue]
 
@@ -339,15 +339,6 @@ setFact: hotelRoomBooked
 > {back} [[Nothing to do here->Vacant House]]
 
 
-:: Go to sleep anyway. {"position":"8525,3725","size":"100,100"}
-[effect typing 2s]
-...
-[continue]
-
-> [[...->Sleep 2]]
-
-
-
 :: Hand him money for the ticket. {"position":"2300,1225","size":"100,100"}
 takeMoney: 60
 --
@@ -514,7 +505,7 @@ unless: hasItem Valise
 > {exit} [[Leave.->Room Valise]]
 
 
-:: Sleep 2 {"position":"8525,3900","size":"100,100"}
+:: Sleep 2 {"position":"8575,3950","size":"100,100"}
 [effect typing 2s]
 ...
 [continue]
@@ -522,21 +513,10 @@ unless: hasItem Valise
 > [[...->Sleep 3]]
 
 
-:: Sleep 3 {"position":"8525,4075","size":"100,100"}
+:: Sleep 3 {"position":"8500,4175","size":"100,100"}
 A loud noise wakes you up. Someone is in the door!
 
 > [[What the...->credits]] 
-
-
-:: Stay awake. {"position":"9000,3725","size":"100,100"}
-setFact: chaseStarted
---
-
-You lie on the bed, but can't fall asleep.
-
-You hear a noise coming from the door. It's like someone is sneaking near your room.
-
-> [[Wait...]]
 
 
 :: Take a look {"position":"3125,4675","size":"100,100"}
@@ -686,7 +666,10 @@ If you want to explore the town, better check in that valise. You can't move fre
 > {level:zadok-freaked-out} [[Take a look]]
 
 
-:: Wait... {"position":"9000,3925","size":"100,100"}
+:: Wait... {"position":"9075,4100","size":"100,100"}
+setFact: chaseStarted
+--
+
 Someone is banging on the door now! Quick, you need to run!
 
 > {exit} [[Get out of the bed.->Wait...]]
@@ -795,6 +778,24 @@ You can see the town down below.
 Most houses are dark except for the weird churches.
 
 > {exit} [[Look around.->rooftops]]
+
+
+:: sleep [Level] {"position":"8750,3825","size":"200,100"}
+[if fact hotelRoomBarricaded]
+
+You lie on the bed, but can't fall asleep.
+
+You hear a noise coming from the door. It's like someone is sneaking near your room.
+
+> [[Wait...]]
+
+[else]
+[effect typing 2s]
+...
+
+
+> [[...->Sleep 2]]
+[continue]
 
 
 :: slums-1 [Level] {"position":"4225,3825","size":"200,100"}

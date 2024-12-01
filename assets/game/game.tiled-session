@@ -145,6 +145,14 @@
                 "y": 1926.3328530259364
             }
         },
+        "levels/blank.tmx": {
+            "scale": 0.125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 844,
+                "y": 1212
+            }
+        },
         "levels/bridge.tmx": {
             "expandedObjectLayers": [
                 5,
@@ -190,7 +198,7 @@
             "scale": 0.4069,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1136.642909805849,
+                "x": 1134.185303514377,
                 "y": 1053.0842958957976
             }
         },
@@ -214,11 +222,11 @@
                 4,
                 3
             ],
-            "scale": 0.5,
+            "scale": 0.33,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 1959,
-                "y": 1501
+                "x": 1783.3333333333333,
+                "y": 1519.6969696969697
             }
         },
         "levels/hotel.tmx": {
@@ -320,7 +328,7 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1292.4242424242425,
+                "x": 1289.3939393939393,
                 "y": 1368.1818181818182
             }
         },
@@ -389,18 +397,18 @@
     "project": "game.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "levels/slums-2.tmx",
+        "levels/blank.tmx",
         "objects/Objects.tsx",
+        "levels/slums-2.tmx",
+        "levels/innsmouth.tmx",
+        "levels/train-station.tmx",
+        "levels/zadok-freaked-out.tmx",
+        "levels/grocery-npc.tmx",
         "levels/attic.tmx",
         "levels/bus-station.tmx",
         "levels/hotel-hall.tmx",
         "levels/rooftops.tmx",
-        "levels/hotel-room.tmx",
-        "levels/hotel.tmx",
-        "levels/bridge.tmx",
-        "levels/tracks.tmx",
-        "levels/zadok.tmx",
-        "levels/train-station.tmx"
+        "levels/hotel-room.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.type": 1

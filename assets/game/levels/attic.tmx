@@ -3,10 +3,10 @@
  <tileset firstgid="1" source="../character/Character.tsx"/>
  <tileset firstgid="2" source="../objects/Objects.tsx"/>
  <imagelayer id="2" name="Background">
-  <image source="../backgrounds/attic.webp" width="3840" height="2160"/>
+  <image source="../backgrounds/attic.webp" width="3072" height="1728"/>
  </imagelayer>
  <objectgroup id="5" name="Objects">
-  <object id="16" name="Limits" class="limits" x="162" y="422" width="2421" height="1557"/>
+  <object id="16" name="Limits" class="limits" x="162" y="422" width="2525" height="1557"/>
   <object id="17" name="Exit" class="poi" x="1847" y="1688" width="937" height="265">
    <properties>
     <property name="level" value="slums-1,2"/>
