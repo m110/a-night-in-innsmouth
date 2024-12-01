@@ -4,7 +4,7 @@
   <property name="outdoor" type="bool" value="true"/>
  </properties>
  <tileset firstgid="1" source="../objects/Objects.tsx"/>
- <tileset firstgid="66" source="../character/Character.tsx"/>
+ <tileset firstgid="67" source="../character/Character.tsx"/>
  <imagelayer id="3" name="Background">
   <image source="../backgrounds/beach.webp" width="3840" height="2160"/>
  </imagelayer>
@@ -12,7 +12,7 @@
   <properties>
    <property name="layer" type="int" value="130"/>
   </properties>
-  <object id="6" name="Entrypoint" class="entrypoint" gid="2147483714" x="3494" y="1928" width="283" height="486.173">
+  <object id="6" name="Entrypoint" class="entrypoint" gid="2147483715" x="3494" y="1928" width="283" height="486.173">
    <properties>
     <property name="flipY" type="bool" value="true"/>
    </properties>
@@ -38,6 +38,9 @@
   </object>
  </objectgroup>
  <objectgroup id="4" name="Foreground Objects">
+  <properties>
+   <property name="layer" type="int" value="130"/>
+  </properties>
   <object id="12" name="Breaker" class="object" gid="26" x="1676" y="2141" width="251" height="360"/>
   <object id="13" name="Breaker" class="object" gid="26" x="1157" y="2121" width="251" height="360"/>
  </objectgroup>
