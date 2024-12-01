@@ -33,7 +33,7 @@ Zadok takes a sip.
 > [["Give me a minute."->Hotel Clerk]]
 
 
-:: "I'll wait." {"position":"4175,3350","size":"100,100"}
+:: "I'll wait." {"position":"4200,3350","size":"100,100"}
 "You sure? Already done exploring?"
 
 > [["I'm sure."]] 
@@ -885,7 +885,7 @@ You hear a noise coming from the door. It's like someone is sneaking near your r
 [continue]
 
 
-:: slums-1 [Level] {"position":"4225,3825","size":"200,100"}
+:: slums-1 [Level] {"position":"4325,3800","size":"200,100"}
 playMusic: crackle
 setFact: busOutOfInnsmouth
 --
@@ -896,7 +896,7 @@ playMusic: crackle
 --
 
 
-:: slums-3 [Level] {"position":"3725,3750","size":"200,100"}
+:: slums-3 [Level] {"position":"3750,3975","size":"200,100"}
 playMusic: waves
 --
 
@@ -912,6 +912,12 @@ You're at crossroads.
 [else]
 > [[Water Street->Blocked Water Street]]
 [continue]
+
+
+:: tracks-sunrise [Level] {"position":"1575,575","size":"200,100"}
+
+
+> [[Finish.->credits]]
 
 
 :: train-station,0 [Level once] {"position":"550,325","size":"200,100"}

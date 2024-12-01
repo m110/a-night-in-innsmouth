@@ -79,19 +79,30 @@ func (t *Title) createWorld() donburi.World {
 		WithLayer(domain.SpriteUILayerUI).
 		Entry()
 
+	bgImg := assets.Assets.TitleBackground
+
 	archetype.NewTagged(world, "Title").
 		WithParent(ui).
 		WithLayerInherit().
 		WithSprite(component.SpriteData{
-			Image: assets.Assets.TitleBackground,
+			Image: bgImg,
 		}).
 		WithSpriteBounds()
 
 	uiCamera := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: t.screenWidth, Height: t.screenHeight}, 1, ui)
 
+	marginPercent := 0.01
+	screenHeight := float64(t.screenHeight)
+	bgHeight := float64(bgImg.Bounds().Dy())
+
+	totalMarginHeight := screenHeight * marginPercent * 2
+	availableHeight := screenHeight - totalMarginHeight
+
+	cam := component.Camera.Get(uiCamera)
+	cam.ViewportZoom = availableHeight / bgHeight
+
 	overlay := ebiten.NewImage(t.screenWidth, t.screenHeight)
 	overlay.Fill(color.Black)
-	cam := component.Camera.Get(uiCamera)
 	cam.TransitionOverlay = overlay
 	cam.TransitionAlpha = 1.0
 
