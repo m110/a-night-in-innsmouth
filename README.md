@@ -1,9 +1,13 @@
-# secrets
+# A Night in Innsmouth
 
 This game has been created for the [GitHub Game Off 2024](https://itch.io/jam/game-off-2024).
 
+It's a narrative game based on the prose of H. P. Lovecraft.
+
 All graphical assets were created by [Małgorzata Bocian](https://www.behance.net/gosiabocianart).
-The game engine was created by Miłosz Smółka (me).
+The game engine was created by Miłosz Smółka (me) in Go using [Ebitengine](https://github.com/hajimehoshi/ebiten) and [donburi](https://github.com/yohamta/donburi).
+
+State: an early prototype. The gameplay is mostly there, but the story is quite minimal, with many dialogs missing. To be added. :)
 
 ## License
 
@@ -96,6 +100,22 @@ addMoney: 100
 ```
 
 #### Paragraphs
+
+TODO
+
+```
+[h1]
+[center]
+[continue]
+```
+
+```
+[effect typing 2s]
+[continue]
+
+[after 2s]
+[continue]
+```
 
 #### Links
 
