@@ -3,6 +3,7 @@
 ![](assets/game/backgrounds/title.webp)
 
 This game has been created for the [GitHub Game Off 2024](https://itch.io/jam/game-off-2024).
+(See [v0.2.0](https://github.com/m110/a-night-in-innsmouth/releases/tag/v0.2.0) for where the jam version stopped.)
 
 It's a narrative game based on the prose of H. P. Lovecraft.
 

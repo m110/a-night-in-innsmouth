@@ -3,11 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "levels/hotel-room.tmx",
+    "activeFile": "levels/beach.tmx",
     "expandedProjectPaths": [
-        "character",
         "levels",
         ".",
+        "character",
         "objects"
     ],
     "fileStates": {
@@ -138,11 +138,11 @@
                 2,
                 4
             ],
-            "scale": 0.5552,
-            "selectedLayer": 1,
+            "scale": 0.33,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 1918.2276657060515,
-                "y": 1079.7910662824206
+                "x": 1642.4242424242423,
+                "y": 2228.787878787879
             }
         },
         "levels/blank.tmx": {
@@ -457,17 +457,17 @@
     "project": "game.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "levels/blank.tmx",
-        "objects/Objects.tsx",
-        "levels/slums-2.tmx",
         "levels/innsmouth.tmx",
+        "levels/hotel.tmx",
+        "levels/rooftops.tmx",
+        "levels/slums-1.tmx",
+        "levels/slums-2.tmx",
+        "levels/slums-crossroads.tmx",
         "levels/train-station.tmx",
         "levels/zadok-freaked-out.tmx",
-        "levels/grocery-npc.tmx",
-        "levels/attic.tmx",
-        "levels/bus-station.tmx",
         "levels/hotel-hall.tmx",
-        "levels/rooftops.tmx",
+        "levels/grocery-npc.tmx",
+        "levels/bus-station.tmx",
         "levels/hotel-room.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",

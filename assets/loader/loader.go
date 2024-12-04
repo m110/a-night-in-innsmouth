@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/BurntSushi/toml"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
 	"github.com/lafriks/go-tiled"
@@ -125,9 +127,16 @@ func LoadAssets(assetsFS fs.FS, progressChan chan<- string) (*domain.Assets, err
 		return nil, err
 	}
 
+	var settings domain.Settings
+	_, err = toml.DecodeFS(assetsFS, "game/settings.toml", &settings)
+	if err != nil {
+		return nil, err
+	}
+
 	assets := &domain.Assets{
-		Story:  story,
-		Levels: levels,
+		Story:    story,
+		Settings: settings,
+		Levels:   levels,
 		Character: domain.Character{
 			Frames:   character,
 			Collider: *characterCollider,

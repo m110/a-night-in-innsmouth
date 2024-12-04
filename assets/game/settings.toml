@@ -1,0 +1,4 @@
+[character]
+moveSpeed = 8
+startMoney = 1000
+startItems = ["Valise"]

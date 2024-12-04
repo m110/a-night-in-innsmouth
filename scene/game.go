@@ -92,6 +92,7 @@ func (g *Game) createWorld() donburi.World {
 	world := donburi.NewWorld()
 
 	story := domain.NewStory(world, assets.Assets.Story)
+	settings := assets.Assets.Settings
 
 	game := world.Entry(world.Create(component.Game, component.Input))
 	component.Game.SetValue(game, component.GameData{
@@ -104,7 +105,7 @@ func (g *Game) createWorld() donburi.World {
 		MoveRightKeys: []ebiten.Key{ebiten.KeyD, ebiten.KeyRight},
 		MoveLeftKeys:  []ebiten.Key{ebiten.KeyA, ebiten.KeyLeft},
 		ActionKeys:    []ebiten.Key{ebiten.KeySpace},
-		MoveSpeed:     8,
+		MoveSpeed:     settings.Character.MoveSpeed,
 	})
 
 	ui := archetype.NewTagged(world, "UI").
@@ -117,9 +118,10 @@ func (g *Game) createWorld() donburi.World {
 	builder.Create()
 	g.createInventory(world, ui)
 
-	// TODO: Not generic, should be moved to some config
-	story.AddMoney(1000)
-	story.AddItem("Valise")
+	story.AddMoney(settings.Character.StartMoney)
+	for _, i := range settings.Character.StartItems {
+		story.AddItem(i)
+	}
 
 	levelCam := archetype.NewCamera(world, math.Vec2{X: 0, Y: 0}, engine.Size{Width: g.screenWidth, Height: g.screenHeight}, 0, nil)
 	levelCam.AddComponent(component.LevelCamera)
