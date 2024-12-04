@@ -51,6 +51,7 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 	})
 
 	game := component.MustFindGame(w)
+	// TODO Move out
 	if level.Outdoor && game.Story.Fact(nightFact) {
 		NewTagged(w, "NightOverlay").
 			WithParent(entry).
@@ -92,12 +93,10 @@ func NewLevel(w donburi.World, targetLevel domain.TargetLevel) {
 		},
 	})
 
-	if level.Name != "" {
-		passage, ok := game.Story.PassageForLevel(targetLevel)
-		if ok && passage.ConditionsMet() {
-			passage.Visit()
-			ShowPassage(w, passage, nil)
-		}
+	passage, ok := game.Story.PassageForLevel(targetLevel)
+	if ok && passage.ConditionsMet() {
+		passage.Visit()
+		ShowPassage(w, passage, nil)
 	}
 
 	for _, o := range level.Objects {

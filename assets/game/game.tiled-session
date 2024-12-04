@@ -134,15 +134,15 @@
         },
         "levels/beach.tmx": {
             "expandedObjectLayers": [
-                5,
                 2,
+                5,
                 4
             ],
             "scale": 0.33,
-            "selectedLayer": 3,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1642.4242424242423,
-                "y": 2228.787878787879
+                "x": 2193.9393939393935,
+                "y": 1274.2424242424245
             }
         },
         "levels/blank.tmx": {
@@ -155,15 +155,15 @@
         },
         "levels/bridge.tmx": {
             "expandedObjectLayers": [
+                3,
                 5,
-                4,
-                3
+                4
             ],
             "scale": 0.25,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 7054,
-                "y": 1162
+                "x": 4960,
+                "y": 1190
             }
         },
         "levels/bus-station.tmx": {
@@ -175,7 +175,7 @@
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 1920,
-                "y": 1082
+                "y": 1080
             }
         },
         "levels/city.tmx": {
@@ -206,8 +206,8 @@
             "scale": 0.4069,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1533.5463258785944,
-                "y": 866.3062177439174
+                "x": 1533.5463258785942,
+                "y": 862.6198083067094
             }
         },
         "levels/hotel-hall.tmx": {
@@ -218,30 +218,30 @@
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 1536,
-                "y": 865
+                "y": 864
             }
         },
         "levels/hotel-room.tmx": {
             "expandedObjectLayers": [
-                5,
-                8,
                 3,
-                6,
+                5,
+                4,
                 7,
-                4
+                6,
+                8
             ],
             "scale": 0.33,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 630.3030303030303,
-                "y": 595.4545454545455
+                "x": 1918.181818181818,
+                "y": 1078.787878787879
             }
         },
         "levels/hotel.tmx": {
             "expandedObjectLayers": [
                 2,
-                6,
-                7
+                7,
+                6
             ],
             "scale": 0.5,
             "selectedLayer": 3,
@@ -253,22 +253,22 @@
         "levels/innsmouth.tmx": {
             "expandedObjectLayers": [
                 5,
-                6,
+                4,
                 7,
-                4
+                6
             ],
             "scale": 0.5625,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1920,
-                "y": 1069.3333333333333
+                "x": 2583.111111111111,
+                "y": 1236.4444444444443
             }
         },
         "levels/night-at-tracks.tmx": {
             "scale": 0.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 711,
+                "x": 712,
                 "y": 851
             }
         },
@@ -279,7 +279,7 @@
             "scale": 0.25,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 742,
+                "x": 744,
                 "y": 774
             }
         },
@@ -300,14 +300,14 @@
             "selectedLayer": 2,
             "viewCenter": {
                 "x": 1918.181818181818,
-                "y": 1080.3030303030303
+                "y": 1078.787878787879
             }
         },
         "levels/sleep.tmx": {
             "scale": 0.21375,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1920.4678362573097,
+                "x": 1922.8070175438595,
                 "y": 1083.0409356725145
             }
         },
@@ -320,22 +320,22 @@
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 1918.181818181818,
-                "y": 1080.3030303030303
+                "y": 1078.787878787879
             }
         },
         "levels/slums-2.tmx": {
             "expandedObjectLayers": [
-                5,
                 3,
-                6,
+                5,
+                4,
                 7,
-                4
+                6
             ],
             "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1919.9999999999998,
-                "y": 1079.3333333333333
+                "x": 1920,
+                "y": 1080
             }
         },
         "levels/slums-2.tmx#Objects": {
@@ -356,27 +356,27 @@
             "scale": 0.1814,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1538.0374862183019,
-                "y": 868.246968026461
+                "x": 1532.5248070562293,
+                "y": 865.4906284454244
             }
         },
         "levels/tracks-sunrise.tmx": {
             "scale": 0.25,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1962,
+                "x": 1964,
                 "y": 1278
             }
         },
         "levels/tracks.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 0.25,
-            "selectedLayer": -1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 7126,
+                "x": 7124,
                 "y": 1194
             }
         },
@@ -388,7 +388,7 @@
             "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1918.181818181818,
+                "x": 1918.1818181818182,
                 "y": 1080.3030303030303
             }
         },
@@ -400,7 +400,7 @@
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 1918.181818181818,
-                "y": 1080.3030303030303
+                "y": 1078.787878787879
             }
         },
         "levels/zadok.tmx": {
